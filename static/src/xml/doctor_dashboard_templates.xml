@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--Doctor dashboard template with modern design-->
+<templates id="doc_dashboard" xml:space="preserve">
+    <t t-name="DoctorDashboard" owl="1">
+        <div class="oh_dashboards" t-ref="root">
+            <!-- Navbar -->
+            <div class="dashboard-navbar">
+                <div class="navbar-brand">
+                    <div class="logo">🏥</div>
+                    <span>Hospital Management</span>
+                </div>
+                <div class="navbar-right">
+                    <div class="user-profile">
+                        <div class="user-avatar">
+                            <t t-esc="state.user_name ? state.user_name.substring(0, 2).toUpperCase() : 'DR'"/>
+                        </div>
+                        <span t-esc="state.user_name || 'Doctor'"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-container">
+                <!-- Welcome Section -->
+                <div class="welcome-section">
+                    <h1>Welcome, <t t-esc="state.user_name || 'Doctor'"/></h1>
+                    <p>Voici votre tableau de bord médical pour aujourd'hui</p>
+                </div>
+
+                <!-- Statistics Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card patients">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-content">
+                            <h3 t-esc="state.stats.total_patients || 0"/>
+                            <p>Patients Total</p>
+                            <div class="trend up" t-if="state.stats.patients_trend > 0">
+                                ↑ <t t-esc="state.stats.patients_trend"/>% ce mois
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card consultations">
+                        <div class="stat-icon">📅</div>
+                        <div class="stat-content">
+                            <h3 t-esc="state.stats.consultations_today || 0"/>
+                            <p>Consultations Aujourd'hui</p>
+                            <div class="trend up" t-if="state.stats.consultations_trend > 0">
+                                ↑ <t t-esc="state.stats.consultations_trend"/>% cette semaine
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card inpatients">
+                        <div class="stat-icon">🏥</div>
+                        <div class="stat-content">
+                            <h3 t-esc="state.stats.active_inpatients || 0"/>
+                            <p>Patients Hospitalisés</p>
+                            <div class="trend" t-att-class="{'up': state.stats.inpatients_trend >= 0, 'down': state.stats.inpatients_trend &lt; 0}">
+                                <t t-if="state.stats.inpatients_trend >= 0">↑</t>
+                                <t t-else="">↓</t>
+                                <t t-esc="Math.abs(state.stats.inpatients_trend)"/>% ce mois
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card allocations">
+                        <div class="stat-icon">⏰</div>
+                        <div class="stat-content">
+                            <h3 t-esc="state.stats.active_allocations || 0"/>
+                            <p>Allocations Actives</p>
+                            <div class="trend up">
+                                <t t-esc="state.stats.total_slots || 0"/> slots disponibles
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Action Buttons -->
+                <div class="main-actions">
+                    <button class="action-btn consultation"
+                            t-att-class="{ 'active': state.activeSection === 'consultation' }"
+                            t-on-click="fetch_consultation">
+                        <span class="btn-icon">💉</span>
+                        <span class="btn-text">Consultation</span>
+                    </button>
+                    <button class="action-btn patient"
+                            t-att-class="{ 'active': state.activeSection === 'patient' }"
+                            t-on-click="list_patient_data">
+                        <span class="btn-icon">👤</span>
+                        <span class="btn-text">Patient</span>
+                    </button>
+                    <button class="action-btn inpatient"
+                            t-att-class="{ 'active': state.activeSection === 'inpatient' }"
+                            t-on-click="action_list_inpatient">
+                        <span class="btn-icon">🛏️</span>
+                        <span class="btn-text">Inpatient</span>
+                    </button>
+                    <button class="action-btn surgery"
+                            t-att-class="{ 'active': state.activeSection === 'surgery' }"
+                            t-on-click="fetch_doctors_schedule">
+                        <span class="btn-icon">⚕️</span>
+                        <span class="btn-text">Surgery</span>
+                    </button>
+                    <button class="action-btn shift"
+                            t-att-class="{ 'active': state.activeSection === 'shift' }"
+                            t-on-click="fetch_allocation_lines">
+                        <span class="btn-icon">📋</span>
+                        <span class="btn-text">Shift Allocation</span>
+                    </button>
+                </div>
+
+                <!-- Charts Grid -->
+                <div class="charts-grid">
+                    <!-- Consultations par mois -->
+                    <div class="chart-card">
+                        <h3>📊 Consultations par Mois</h3>
+                        <div class="chart-container">
+                            <canvas t-ref="consultationsChart"/>
+                        </div>
+                    </div>
+
+                    <!-- Répartition Admissions -->
+                    <div class="chart-card">
+                        <h3>🏥 Types d'Admission</h3>
+                        <div class="chart-container">
+                            <canvas t-ref="admissionsChart"/>
+                        </div>
+                    </div>
+
+                    <!-- Admissions par jour -->
+                    <div class="chart-card">
+                        <h3>📈 Admissions par Jour</h3>
+                        <div class="chart-container">
+                            <canvas t-ref="weeklyChart"/>
+                        </div>
+                    </div>
+
+                    <!-- Charge de travail -->
+                    <div class="chart-card">
+                        <h3>⏰ Charge de Travail</h3>
+                        <div class="chart-container">
+                            <canvas t-ref="workloadChart"/>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activities -->
+                <div class="recent-activity">
+                    <h3>🔔 Activités Récentes</h3>
+                    <div class="activity-list">
+                        <t t-foreach="state.recent_activities" t-as="activity" t-key="activity.id">
+                            <div class="activity-item" t-att-class="activity.type">
+                                <div class="activity-icon" t-att-class="activity.type">
+                                    <t t-if="activity.type === 'consultation'">💉</t>
+                                    <t t-elif="activity.type === 'admission'">🏥</t>
+                                    <t t-elif="activity.type === 'discharge'">✅</t>
+                                    <t t-elif="activity.type === 'surgery'">⚕️</t>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="title" t-esc="activity.title"/>
+                                    <div class="time" t-esc="activity.time"/>
+                                </div>
+                            </div>
+                        </t>
+                        <div t-if="!state.recent_activities || state.recent_activities.length === 0" class="no-activity">
+                            <p>Aucune activité récente</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

@@ -1,0 +1,536 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+
+<t t-name="PharmacyDashboard">
+    <div class="pf-dashboard" t-ref="root">
+        
+        <!-- HARMAFLOW NAVBAR -->
+        <div class="pf-navbar">
+            <div class="pf-navbar-left">
+                <div class="pf-logo">⚕ <strong>PharmaFlow</strong></div>
+                <div class="pf-navbar-date">
+                    <i class="fa fa-calendar"></i>
+                    <span t-out="new Date().toLocaleDateString('fr-FR')"/>
+                </div>
+            </div>
+            <div class="pf-navbar-center">
+                <div class="pf-search">
+                    <i class="fa fa-search"></i>
+                    <input type="text" placeholder="Rechercher..."/>
+                </div>
+            </div>
+            <div class="pf-navbar-right">
+                <button class="pf-icon-btn">
+                    <i class="fa fa-bell"></i>
+                    <span class="pf-badge">3</span>
+                </button>
+                <div class="pf-user">
+                    <div class="pf-avatar" t-out="user.name ? user.name.substring(0, 2).toUpperCase() : 'U'"/>
+                    <span>Dr. Smith</span>
+                    <span class="pf-role">Pharmacien Chef</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN LAYOUT -->
+        <div class="pf-main">
+            
+            <!-- SIDEBAR -->
+            <div class="pf-sidebar">
+                <nav class="pf-menu">
+                    <div class="pf-menu-item active" t-on-click="() => this.setMenu('home')">
+                        <i class="fa fa-th-large"></i>
+                        <span>Tableau de bord</span>
+                    </div>
+                    <div class="pf-menu-item" t-on-click="() => this.setMenu('medicines')">
+                        <i class="fa fa-pills"></i>
+                        <span>Médicaments</span>
+                    </div>
+                    <div class="pf-menu-item" t-on-click="() => this.setMenu('vaccines')">
+                        <i class="fa fa-syringe"></i>
+                        <span>Vaccins</span>
+                    </div>
+                    <div class="pf-menu-item" t-on-click="() => this.setMenu('suppliers')">
+                        <i class="fa fa-shopping-cart"></i>
+                        <span>Commandes Fournisseurs</span>
+                    </div>
+                    <div class="pf-menu-item" t-on-click="() => this.setMenu('orders')">
+                        <i class="fa fa-receipt"></i>
+                        <span>Commandes</span>
+                    </div>
+                </nav>
+            </div>
+
+            <!-- CONTENT -->
+            <div class="pf-content">
+                
+                <!-- ===== TABLEAU DE BORD ===== -->
+                <t t-if="state.menu === 'home'">
+                    <div class="pf-header">
+                        <div>
+                            <h1>Tableau de bord</h1>
+                            <p>Bienvenue, Dr. Jean Dupont. Voici l'état actuel de votre pharmacie.</p>
+                        </div>
+                        <button class="pf-btn pf-btn-primary" t-on-click="() => this.setMenu('new_order')">
+                            <i class="fa fa-plus"></i> Nouvelle commande
+                        </button>
+                    </div>
+
+                    <!-- KPI CARDS -->
+                    <div class="pf-kpi-grid">
+                        <div class="pf-kpi pf-kpi-purple">
+                            <div class="pf-kpi-icon">📥</div>
+                            <div class="pf-kpi-body">
+                                <div class="pf-kpi-label">Entrées de stock</div>
+                                <div class="pf-kpi-value" t-out="state.stats.total_medicines"/>
+                                <div class="pf-kpi-trend">+12.5% ce mois</div>
+                            </div>
+                        </div>
+                        <div class="pf-kpi pf-kpi-pink">
+                            <div class="pf-kpi-icon">🛒</div>
+                            <div class="pf-kpi-body">
+                                <div class="pf-kpi-label">Commandes Fournisseurs</div>
+                                <div class="pf-kpi-value">28</div>
+                                <div class="pf-kpi-trend"><span t-out="state.currency"/>45,200 total</div>
+                            </div>
+                        </div>
+                        <div class="pf-kpi pf-kpi-teal">
+                            <div class="pf-kpi-icon">💰</div>
+                            <div class="pf-kpi-body">
+                                <div class="pf-kpi-label">Ventes du jour</div>
+                                <div class="pf-kpi-value"><span t-out="state.currency"/><span t-out="state.stats.revenue_today"/></div>
+                                <div class="pf-kpi-trend"><span t-out="state.stats.orders_today"/> transactions</div>
+                            </div>
+                        </div>
+                        <div class="pf-kpi pf-kpi-red">
+                            <div class="pf-kpi-icon">⚠️</div>
+                            <div class="pf-kpi-body">
+                                <div class="pf-kpi-label">Produits en Alerte</div>
+                                <div class="pf-kpi-value" t-out="state.stock_alerts.out_of_stock_count + state.stock_alerts.low_stock_count"/>
+                                <div class="pf-kpi-trend">articles</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ALERTES -->
+                    <t t-if="state.stock_alerts.out_of_stock_count > 0 or state.stock_alerts.expiring_count > 0">
+                        <div class="pf-section">
+                            <h2><i class="fa fa-exclamation-circle"></i> Alertes Critiques</h2>
+                            <div class="pf-alerts">
+                                <t t-if="state.stock_alerts.out_of_stock_count > 0">
+                                    <div class="pf-alert pf-alert-error">
+                                        <i class="fa fa-times-circle"></i>
+                                        <div class="pf-alert-text">
+                                            <strong>🔴 Rupture de stock immédiate</strong>
+                                            <p>
+                                                <t t-foreach="state.stock_alerts.out_of_stock.slice(0, 3)" t-as="item" t-key="item.name">
+                                                    <span class="pf-tag"><t t-out="item.name"/></span>
+                                                </t>
+                                                <t t-if="state.stock_alerts.out_of_stock_count > 3">
+                                                    +<t t-out="state.stock_alerts.out_of_stock_count - 3"/> autres
+                                                </t>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </t>
+                                <t t-if="state.stock_alerts.expiring_count > 0">
+                                    <div class="pf-alert pf-alert-warning">
+                                        <i class="fa fa-clock"></i>
+                                        <div class="pf-alert-text">
+                                            <strong>⏰ Expiration proche</strong>
+                                            <p>
+                                                <t t-foreach="state.stock_alerts.expiring_soon.slice(0, 2)" t-as="item" t-key="item.name">
+                                                    <strong><span t-out="item.name"/></strong> - <span t-out="item.date"/>
+                                                </t>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </t>
+
+                    <!-- TOP PRODUITS & FINANCES -->
+                    <div class="pf-grid-2">
+                        <div class="pf-section">
+                            <h3>Top Produits Commandés</h3>
+                            <table class="pf-table">
+                                <thead>
+                                    <tr>
+                                        <th>Produit</th>
+                                        <th>Catégorie</th>
+                                        <th class="pf-ar">Stock</th>
+                                        <th class="pf-ar">Cmd</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Paracétamol 500mg</strong></td>
+                                        <td>Analgésique</td>
+                                        <td class="pf-ar">1240</td>
+                                        <td class="pf-ar pf-text-accent">450</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Amoxicilline 1g</strong></td>
+                                        <td>Antibiotique</td>
+                                        <td class="pf-ar">850</td>
+                                        <td class="pf-ar pf-text-accent">320</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Ibuprofène 400mg</strong></td>
+                                        <td>Anti-inflammatoire</td>
+                                        <td class="pf-ar">820</td>
+                                        <td class="pf-ar pf-text-accent">280</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="pf-section">
+                            <h3>Récapitulatif Financier</h3>
+                            <div class="pf-finance">
+                                <div class="pf-finance-row">
+                                    <span>Sous-total HT</span>
+                                    <span class="pf-text-bold"><span t-out="state.currency"/>300.00</span>
+                                </div>
+                                <div class="pf-finance-row">
+                                    <span>TVA (20%)</span>
+                                    <span class="pf-text-bold"><span t-out="state.currency"/>60.00</span>
+                                </div>
+                                <div class="pf-finance-row">
+                                    <span>Frais de port</span>
+                                    <span class="pf-text-bold">Gratuit</span>
+                                </div>
+                                <div class="pf-finance-row pf-finance-total">
+                                    <span><strong>TOTAL TTC</strong></span>
+                                    <span class="pf-text-bold"><strong><span t-out="state.currency"/>360.00</strong></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+
+                <!-- ===== GESTION DES MÉDICAMENTS ===== -->
+                <t t-if="state.menu === 'medicines'">
+                    <div class="pf-header">
+                        <div>
+                            <h1>Gestion des Médicaments</h1>
+                            <p>Gérez votre inventaire et surveillez les stocks.</p>
+                        </div>
+                        <div class="pf-header-btns">
+                            <button class="pf-btn pf-btn-secondary"><i class="fa fa-download"></i> CSV</button>
+                            <button class="pf-btn pf-btn-primary"><i class="fa fa-plus"></i> Ajouter</button>
+                        </div>
+                    </div>
+
+                    <div class="pf-mini-stats">
+                        <div class="pf-mini-stat">
+                            <span class="pf-label">Total Références</span>
+                            <span class="pf-value" t-out="state.product_lst.length"/>
+                        </div>
+                        <div class="pf-mini-stat">
+                            <span class="pf-label">Stocks Faibles</span>
+                            <span class="pf-value pf-warning" t-out="state.stock_alerts.low_stock_count"/>
+                        </div>
+                        <div class="pf-mini-stat">
+                            <span class="pf-label">Ruptures</span>
+                            <span class="pf-value pf-error" t-out="state.stock_alerts.out_of_stock_count"/>
+                        </div>
+                    </div>
+
+                    <table class="pf-table pf-table-full">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Nom du Médicament</th>
+                                <th>Catégorie</th>
+                                <th class="pf-ar">Stock</th>
+                                <th>Unité</th>
+                                <th>Expiration</th>
+                                <th>Statut</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="state.product_lst.slice(0, 8)" t-as="med" t-key="med.id">
+                                <tr>
+                                    <td class="pf-code" t-out="med.name.substring(0, 6).toUpperCase()"/>
+                                    <td><strong t-out="med.name"></strong></td>
+                                    <td>Analgésique</td>
+                                    <td class="pf-ar pf-bold" t-out="(med.qty_available || 0).toFixed(0)"/>
+                                    <td>Boîtes</td>
+                                    <td>12/06/2025</td>
+                                    <td>
+                                        <t t-if="(med.qty_available || 0) === 0">
+                                            <span class="pf-badge pf-badge-danger">Rupture</span>
+                                        </t>
+                                        <t t-elif="(med.qty_available || 0) &lt; 10">
+                                            <span class="pf-badge pf-badge-warning">Faible</span>
+                                        </t>
+                                        <t t-else="">
+                                            <span class="pf-badge pf-badge-success">Disponible</span>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </t>
+
+                <!-- ===== MODULE VACCINS ===== -->
+                <t t-if="state.menu === 'vaccines'">
+                    <div class="pf-header">
+                        <div>
+                            <h1>Module Vaccins</h1>
+                            <p>Gestion des stocks sensibles et chaîne du froid.</p>
+                        </div>
+                        <button class="pf-btn pf-btn-primary"><i class="fa fa-plus"></i> Admin</button>
+                    </div>
+
+                    <div class="pf-kpi-grid pf-kpi-4">
+                        <div class="pf-kpi pf-kpi-sm pf-kpi-purple">
+                            <span class="pf-kpi-lbl">Doses Stock</span>
+                            <span class="pf-kpi-val">1,245</span>
+                            <span class="pf-kpi-sub">+123 ce mois</span>
+                        </div>
+                        <div class="pf-kpi pf-kpi-sm pf-kpi-pink">
+                            <span class="pf-kpi-lbl">Alertes Expiration</span>
+                            <span class="pf-kpi-val">08</span>
+                            <span class="pf-kpi-sub">À renouveler</span>
+                        </div>
+                        <div class="pf-kpi pf-kpi-sm pf-kpi-teal">
+                            <span class="pf-kpi-lbl">Chaîne Froid</span>
+                            <span class="pf-kpi-val">Stable</span>
+                            <span class="pf-kpi-sub">↓ 23°C - OK</span>
+                        </div>
+                        <div class="pf-kpi pf-kpi-sm pf-kpi-green">
+                            <span class="pf-kpi-lbl">Administrés</span>
+                            <span class="pf-kpi-val">3</span>
+                            <span class="pf-kpi-sub">7 derniers jours</span>
+                        </div>
+                    </div>
+
+                    <h3>Inventaire par Lot</h3>
+                    <table class="pf-table pf-table-full">
+                        <thead>
+                            <tr>
+                                <th>Vaccin</th>
+                                <th>N° Lot</th>
+                                <th>Doses</th>
+                                <th class="pf-ar">Stock</th>
+                                <th>Conservation</th>
+                                <th>Expiration</th>
+                                <th>Statut</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>BCG Vaccine</strong></td>
+                                <td class="pf-code">BCG-2024-001</td>
+                                <td>10 doses</td>
+                                <td class="pf-ar pf-bold">450</td>
+                                <td>🌡️ 2-8°C</td>
+                                <td>15/12/2025</td>
+                                <td><span class="pf-badge pf-badge-success">Disponible</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>VaxigripTetra</strong></td>
+                                <td class="pf-code">FLU-2542-X</td>
+                                <td>1 dose</td>
+                                <td class="pf-ar pf-bold">0</td>
+                                <td>🌡️ 2-8°C</td>
+                                <td>10/03/2024</td>
+                                <td><span class="pf-badge pf-badge-danger">Expiré</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Prevenar 13</strong></td>
+                                <td class="pf-code">PRV-13-082</td>
+                                <td>1 dose</td>
+                                <td class="pf-ar pf-bold">85</td>
+                                <td>🌡️ 2-8°C</td>
+                                <td>20/11/2024</td>
+                                <td><span class="pf-badge pf-badge-warning">Alerte</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+
+                <!-- ===== COMMANDS FOURNISSEURS ===== -->
+                <t t-if="state.menu === 'suppliers'">
+                    <div class="pf-header">
+                        <div>
+                            <h1>Commandes Fournisseurs</h1>
+                            <p>Suiv les approvisionnements en temps réel.</p>
+                        </div>
+                        <div class="pf-header-btns">
+                            <button class="pf-btn pf-btn-secondary"><i class="fa fa-download"></i> Export CSV</button>
+                            <button class="pf-btn pf-btn-primary"><i class="fa fa-plus"></i> Voir Liste</button>
+                        </div>
+                    </div>
+
+                    <div class="pf-mini-stats">
+                        <div class="pf-mini-stat">
+                            <span class="pf-label">TOTAL CMD</span>
+                            <span class="pf-value">24</span>
+                            <span class="pf-detail">> 3 cette semaine</span>
+                        </div>
+                        <div class="pf-mini-stat">
+                            <span class="pf-label">EN ATTENTE</span>
+                            <span class="pf-value">08</span>
+                            <span class="pf-detail">4,250 €</span>
+                        </div>
+                        <div class="pf-mini-stat">
+                            <span class="pf-label">REÇUES (MOIS)</span>
+                            <span class="pf-value">14</span>
+                            <span class="pf-detail">98% conforme</span>
+                        </div>
+                        <div class="pf-mini-stat">
+                            <span class="pf-label">BUDGET ENGAGÉ</span>
+                            <span class="pf-value" style="color: #f59e0b;">12,480 €</span>
+                            <span class="pf-detail">Disponible: 5,000 €</span>
+                        </div>
+                    </div>
+
+                    <table class="pf-table pf-table-full">
+                        <thead>
+                            <tr>
+                                <th>Fournisseur</th>
+                                <th>Date Prévue</th>
+                                <th>Statut</th>
+                                <th class="pf-ar">Montant</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Pharmacie Centrale</strong></td>
+                                <td>2026-02-28</td>
+                                <td><span class="pf-badge pf-badge-primary">Confirmé</span></td>
+                                <td class="pf-ar pf-bold">1,250.00 €</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Grossiste Pharma</strong></td>
+                                <td>2026-02-25</td>
+                                <td><span class="pf-badge pf-badge-secondary">En cours</span></td>
+                                <td class="pf-ar pf-bold">890.50 €</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+
+                <!-- ===== COMMANDES ===== -->
+                <t t-if="state.menu === 'orders'">
+                    <div class="pf-header">
+                        <h1>Toutes les Commandes</h1>
+                    </div>
+                    <table class="pf-table pf-table-full">
+                        <thead>
+                            <tr>
+                                <th>Référence</th>
+                                <th>Patient</th>
+                                <th>Date</th>
+                                <th class="pf-ar">Montant</th>
+                                <th>Statut</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="state.order_data" t-as="order" t-key="order.id">
+                                <tr>
+                                    <td class="pf-code" t-out="order.name"/>
+                                    <td t-out="order.partner_id ? order.partner_id[1] : '-'"/>
+                                    <td t-out="order.create_date ? order.create_date.substring(0, 10) : '-'"/>
+                                    <td class="pf-ar pf-bold"><span t-out="state.currency"/><span t-out="order.amount_total"/></td>
+                                    <td>
+                                        <t t-if="order.state === 'sale'">
+                                            <span class="pf-badge pf-badge-success">Confirmée</span>
+                                        </t>
+                                        <t t-elif="order.state === 'draft'">
+                                            <span class="pf-badge pf-badge-warning">Brouillon</span>
+                                        </t>
+                                        <t t-else="">
+                                            <span class="pf-badge pf-badge-secondary"><t t-out="order.state"/></span>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </t>
+
+                <!-- ===== NOUVELLE COMMANDE ===== -->
+                <t t-if="state.menu === 'new_order'">
+                    <div class="pf-header">
+                        <h1>Nouvelle Commande</h1>
+                    </div>
+                    <div class="pf-form">
+                        <div class="pf-form-section">
+                            <h3>Informations Patient</h3>
+                            <div class="pf-form-grid">
+                                <input type="text" placeholder="Nom" t-ref="PatientName" class="pf-input"/>
+                                <input type="email" placeholder="Email" t-ref="Email" class="pf-input"/>
+                                <input type="tel" placeholder="Téléphone" t-ref="Phone" class="pf-input"/>
+                                <input type="date" t-ref="Dob" class="pf-input"/> 
+                            </div>
+                        </div>
+                        <div class="pf-form-section">
+                            <h3>Médicaments</h3>
+                            <table class="pf-table">
+                                <thead>
+                                    <tr>
+                                        <th>Médicament</th>
+                                        <th>Quantité</th>
+                                        <th>Prix</th>
+                                        <th>Sous-total</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="state.order_line" t-as="line" t-key="line.id">
+                                        <PharmacyOrderLines line="line" state="state" updateOrderLine="(l, id) => this.updateOrderLine(l, id)" removeLine="(id) => this.removeLine(id)"/>
+                                    </t>
+                                </tbody>
+                            </table>
+                            <button class="pf-btn pf-btn-secondary" t-on-click="addRow">+ Ajouter ligne</button>
+                        </div>
+                        <div class="pf-form-actions">
+                            <button class="pf-btn pf-btn-ghost" t-on-click="() => this.setMenu('home')">Annuler</button>
+                            <button class="pf-btn pf-btn-primary" t-on-click="create_sale_order">✓ Créer</button>
+                        </div>
+                    </div>
+                </t>
+
+            </div>
+
+        </div>
+
+    </div>
+    </t>
+
+    <!-- PHARMACY ORDER LINES COMPONENT -->
+    <t t-name="PharmacyOrderLines">
+        <tr>
+            <td>
+                <select class="pf-input" t-on-change="(e) => this.props.updateOrderLine(Object.assign({}, this.props.line, {product_id: e.target.value}), this.props.line.id)">
+                    <option value="">-- Sélectionner --</option>
+                    <t t-foreach="this.props.state.product_lst" t-as="prod" t-key="prod.id">
+                        <option t-att-value="prod.id" t-att-selected="prod.id == this.props.line.product_id">
+                            <t t-out="prod.name"/>
+                        </option>
+                    </t>
+                </select>
+            </td>
+            <td>
+                <input type="number" min="0" class="pf-input" t-att-value="this.props.line.qty" t-on-change="(e) => this.props.updateOrderLine(Object.assign({}, this.props.line, {qty: parseInt(e.target.value) || 0}), this.props.line.id)"/>
+            </td>
+            <td>
+                <input type="number" min="0" class="pf-input" t-att-value="this.props.line.price" t-on-change="(e) => this.props.updateOrderLine(Object.assign({}, this.props.line, {price: parseFloat(e.target.value) || 0}), this.props.line.id)"/>
+            </td>
+            <td class="pf-ar pf-bold">
+                <t t-out="((this.props.line.qty || 0) * (this.props.line.price || 0)).toFixed(2)"/>
+            </td>
+            <td>
+                <button class="pf-btn pf-btn-danger pf-btn-sm" t-on-click="() => this.props.removeLine(this.props.line.id)">
+                    <i class="fa fa-trash"></i>
+                </button>
+            </td>
+        </tr>
+    </t>
+    
+</templates>

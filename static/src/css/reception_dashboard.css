@@ -1,0 +1,1422 @@
+/* ====================================
+   RECEPTION DASHBOARD - FINAL CSS
+   Professional Design - Odoo Style
+   ==================================== */
+
+/* ====================================
+   COLOR VARIABLES
+   ==================================== */
+:root {
+    --primary-color: #017E84;
+    --primary-dark: #015a5f;
+    --secondary-color: #00A09D;
+    --accent-color: #875A7B;
+    --text-dark: #2C2C2C;
+    --text-light: #6c757d;
+    --border-color: #dee2e6;
+    --bg-light: #f8f9fa;
+    --bg-white: #ffffff;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-md: 0 2px 8px rgba(0,0,0,0.1);
+    --shadow-lg: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+/* ====================================
+   GLOBAL RESET
+   ==================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ====================================
+   MAIN CONTAINER
+   ==================================== */
+.r_Container {
+    padding: 20px;
+    min-height: 90vh;
+    background-color: var(--bg-light);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* ====================================
+   HEADER NAVIGATION
+   ==================================== */
+.r_dashButtonContainer {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
+    margin-bottom: 25px;
+    padding: 15px;
+    background: var(--bg-white);
+    border: 1px solid var(--border-color);
+}
+
+.r_dashButton {
+    height: 48px;
+    padding: 0 24px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-white);
+    color: var(--text-dark);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.r_dashButton:hover {
+    background-color: var(--bg-light);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.r_dashButton.r_active {
+    background-color: var(--primary-color);
+    color: var(--bg-white);
+    border-color: var(--primary-color);
+}
+
+.patient_img, .apnmnt_img, .booking_img, .room_ward_img, .out_p_image, .in_p_img {
+    width: 20px;
+    height: 20px;
+}
+
+/* ====================================
+   CONTENT AREA
+   ==================================== */
+#view_main {
+    padding: 25px;
+    background: var(--bg-white);
+    border: 1px solid var(--border-color);
+    margin-bottom: 20px;
+}
+
+.r_View {
+    margin-bottom: 20px;
+    padding: 0;
+    min-height: 60vh;
+}
+
+.r_Profile {
+    padding: 0;
+    margin: 0;
+}
+
+/* ====================================
+   FORM SECTIONS
+   ==================================== */
+.form-section {
+    background: var(--bg-white);
+    border: 1px solid var(--border-color);
+    padding: 24px;
+    margin-bottom: 20px;
+}
+
+.form-section-header {
+    padding-bottom: 16px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.form-section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.form-section-subtitle {
+    font-size: 13px;
+    color: var(--text-light);
+    margin-top: 4px;
+}
+
+.hsp_table {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+.hsp_table table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 15px;
+}
+
+.hsp_table td {
+    padding: 0;
+    vertical-align: top;
+}
+
+.row.r_Profile table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* ====================================
+   FORM GROUPS
+   ==================================== */
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label,
+.hsp_table label,
+#op_table label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-dark);
+    margin-bottom: 6px;
+    padding-bottom: 6px;
+}
+
+.form-group-required label::after {
+    content: " *";
+    color: var(--danger-color);
+}
+
+.form-help-text {
+    font-size: 12px;
+    color: var(--text-light);
+    margin-top: 4px;
+}
+
+/* ====================================
+   FORM INPUTS
+   ==================================== */
+input[type="text"],
+input[type="tel"],
+input[type="date"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+select,
+textarea {
+    width: 100%;
+    max-width: 100%;
+    min-height: 38px;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-white);
+    font-size: 14px;
+    color: var(--text-dark);
+    transition: all 0.2s ease;
+}
+
+input[type="text"]:focus,
+input[type="tel"]:focus,
+input[type="date"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(1, 126, 132, 0.1);
+}
+
+select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%232C2C2C' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 35px;
+    cursor: pointer;
+}
+
+textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+#op_table input[type="text"],
+#op_table input[type="tel"],
+#op_table input[type="date"],
+#op_table select,
+#patient-bloodgroup,
+#patient-m-status,
+#sl_patient_id,
+#admission_type,
+#attending_doctor_id,
+#reason_of_admission {
+    max-width: 100%;
+    min-height: 38px;
+    margin-bottom: 15px;
+}
+
+#controls {
+    margin: 15px 0;
+}
+
+/* ====================================
+   RADIO AND CHECKBOX
+   ==================================== */
+.radio {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    margin-right: 15px;
+    cursor: pointer;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    cursor: pointer;
+}
+
+#p_radio {
+    margin-right: 8px;
+    padding: 0;
+}
+
+.o_radio_input {
+    margin-left: 12px;
+}
+
+/* ====================================
+   BUTTONS
+   ==================================== */
+.save {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-start;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+.save_patient,
+.saveandnew_patient,
+.save_out_patient,
+.saveandnew_out_patient {
+    min-width: 140px;
+    height: 40px;
+    padding: 0 20px;
+    border: none;
+    background-color: var(--primary-color);
+    color: var(--bg-white);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.save_patient:hover,
+.saveandnew_patient:hover,
+.save_out_patient:hover,
+.saveandnew_out_patient:hover {
+    background-color: var(--primary-dark);
+}
+
+.saveandnew_patient,
+.saveandnew_out_patient {
+    background-color: var(--bg-white);
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+}
+
+.saveandnew_patient:hover,
+.saveandnew_out_patient:hover {
+    background-color: var(--bg-light);
+}
+
+/* History Buttons */
+.o_patient_history_button,
+.o_in_patient_history_button,
+.o_out_patient_history_button {
+    padding: 6px 16px;
+    background: transparent;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.o_patient_history_button:hover,
+.o_in_patient_history_button:hover,
+.o_out_patient_history_button:hover {
+    background-color: var(--primary-color);
+    color: var(--bg-white);
+}
+
+/* ====================================
+   SECONDARY NAVIGATION
+   ==================================== */
+.rd_buttons,
+.r_AppntBtn {
+    margin: 0 0 20px 0;
+}
+
+.r_AppointmentBtn,
+.r_RoomWard {
+    height: 48px;
+    padding: 0 20px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-white);
+    color: var(--text-dark);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+}
+
+.r_AppointmentBtn:hover,
+.r_RoomWard:hover {
+    background-color: var(--bg-light);
+    border-color: var(--primary-color);
+}
+
+.r_AppointmentBtn.r_active1,
+.r_RoomWard.r_active2 {
+    background-color: var(--primary-color);
+    color: var(--bg-white);
+    border-color: var(--primary-color);
+}
+
+/* Outpatient/Inpatient Buttons */
+.o_outpatient_button,
+.o_inpatient_button {
+    height: 48px;
+    padding: 0 24px;
+    margin: 10px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-white);
+    color: var(--text-dark);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.o_outpatient_button:hover,
+.o_inpatient_button:hover {
+    background-color: var(--bg-light);
+    border-color: var(--primary-color);
+}
+
+/* Room/Ward Buttons */
+.o_room_button,
+.o_ward_button {
+    height: 48px;
+    padding: 0 24px;
+    margin: 10px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-white);
+    color: var(--text-dark);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.o_room_button:hover,
+.o_ward_button:hover {
+    background-color: var(--bg-light);
+    border-color: var(--primary-color);
+}
+
+/* ====================================
+   STATISTICS/REPORTS
+   ==================================== */
+.r_ReportContainer {
+    height: auto;
+    min-height: 100px;
+    margin: 15px;
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-white);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.stat-card {
+    background: var(--bg-white);
+    border: 1px solid var(--border-color);
+    padding: 20px;
+    transition: all 0.2s ease;
+}
+
+.stat-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.stat-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.stat-card-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-light);
+    color: var(--primary-color);
+    font-size: 20px;
+}
+
+.stat-card-title {
+    font-size: 13px;
+    color: var(--text-light);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-card-value {
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin: 8px 0;
+}
+
+.stat-card-trend {
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.stat-card-trend.positive {
+    color: var(--success-color);
+}
+
+.stat-card-trend.negative {
+    color: var(--danger-color);
+}
+
+/* ====================================
+   PATIENT IMAGES
+   ==================================== */
+#r_patient-image,
+.patient_create,
+.outpatient_create,
+.allocation_create,
+.inpatient_create,
+.booking_create,
+.ward_create,
+.room_create {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border: 2px solid var(--border-color);
+}
+
+/* ====================================
+   DATA TABLES
+   ==================================== */
+.data-table-container {
+    background: var(--bg-white);
+    border: 1px solid var(--border-color);
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.data-table-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.data-table-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.data-table-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table thead {
+    background: var(--bg-light);
+}
+
+.data-table th {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-dark);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.data-table td {
+    padding: 14px 16px;
+    font-size: 14px;
+    color: var(--text-dark);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.data-table tbody tr:hover {
+    background-color: var(--bg-light);
+}
+
+.data-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ====================================
+   PATIENT CARD
+   ==================================== */
+.patient-card {
+    background: var(--bg-white);
+    border: 1px solid var(--border-color);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.patient-card-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.patient-avatar {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border: 2px solid var(--border-color);
+}
+
+.patient-info {
+    flex: 1;
+}
+
+.patient-name {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 4px;
+}
+
+.patient-id {
+    font-size: 14px;
+    color: var(--text-light);
+    margin-bottom: 8px;
+}
+
+.patient-meta {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.patient-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-dark);
+}
+
+.patient-card-body {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.patient-detail {
+    display: flex;
+    flex-direction: column;
+}
+
+.patient-detail-label {
+    font-size: 12px;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.patient-detail-value {
+    font-size: 14px;
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
+/* ====================================
+   APPOINTMENT LIST
+   ==================================== */
+.appointment-list {
+    background: var(--bg-white);
+    border: 1px solid var(--border-color);
+}
+
+.appointment-item {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.2s ease;
+}
+
+.appointment-item:hover {
+    background-color: var(--bg-light);
+}
+
+.appointment-item:last-child {
+    border-bottom: none;
+}
+
+.appointment-info {
+    flex: 1;
+}
+
+.appointment-time {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 4px;
+}
+
+.appointment-patient {
+    font-size: 15px;
+    color: var(--text-dark);
+    margin-bottom: 2px;
+}
+
+.appointment-doctor {
+    font-size: 13px;
+    color: var(--text-light);
+}
+
+.appointment-status {
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.appointment-status.scheduled {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.appointment-status.completed {
+    background: #e8f5e9;
+    color: #388e3c;
+}
+
+.appointment-status.cancelled {
+    background: #ffebee;
+    color: #d32f2f;
+}
+
+/* ====================================
+   ROOM/WARD CARDS
+   ==================================== */
+.room-ward-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.room-card,
+.ward-card {
+    background: var(--bg-white);
+    border: 1px solid var(--border-color);
+    padding: 20px;
+    transition: all 0.2s ease;
+}
+
+.room-card:hover,
+.ward-card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.room-card-header,
+.ward-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.room-name,
+.ward-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.room-status-badge,
+.ward-status-badge {
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-available {
+    background: #e8f5e9;
+    color: #388e3c;
+}
+
+.status-reserved {
+    background: #fff3e0;
+    color: #f57c00;
+}
+
+.status-occupied {
+    background: #ffebee;
+    color: #d32f2f;
+}
+
+.room-details,
+.ward-details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.room-detail-item,
+.ward-detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+}
+
+.detail-label {
+    color: var(--text-light);
+}
+
+.detail-value {
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
+/* ====================================
+   BADGES AND LABELS
+   ==================================== */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1;
+}
+
+.badge-primary {
+    background: var(--primary-color);
+    color: var(--bg-white);
+}
+
+.badge-success {
+    background: var(--success-color);
+    color: var(--bg-white);
+}
+
+.badge-warning {
+    background: var(--warning-color);
+    color: var(--text-dark);
+}
+
+.badge-danger {
+    background: var(--danger-color);
+    color: var(--bg-white);
+}
+
+.badge-secondary {
+    background: var(--bg-light);
+    color: var(--text-dark);
+    border: 1px solid var(--border-color);
+}
+
+/* ====================================
+   ALERTS
+   ==================================== */
+.alert {
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    border-left: 4px solid;
+    background: var(--bg-light);
+}
+
+.alert-info {
+    border-color: #2196f3;
+    background: #e3f2fd;
+    color: #1565c0;
+}
+
+.alert-success {
+    border-color: var(--success-color);
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.alert-warning {
+    border-color: var(--warning-color);
+    background: #fff3e0;
+    color: #f57c00;
+}
+
+.alert-danger {
+    border-color: var(--danger-color);
+    background: #ffebee;
+    color: #c62828;
+}
+
+/* ====================================
+   EMPTY STATES
+   ==================================== */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: var(--bg-light);
+}
+
+.empty-state-icon {
+    font-size: 48px;
+    color: var(--text-light);
+    margin-bottom: 16px;
+}
+
+.empty-state-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+}
+
+.empty-state-description {
+    font-size: 14px;
+    color: var(--text-light);
+    margin-bottom: 20px;
+}
+
+/* ====================================
+   LOADING STATES
+   ==================================== */
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border-color);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ====================================
+   PAGINATION
+   ==================================== */
+.pagination {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination-item {
+    min-width: 36px;
+    height: 36px;
+    padding: 0 12px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-white);
+    color: var(--text-dark);
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.pagination-item:hover {
+    background: var(--bg-light);
+    border-color: var(--primary-color);
+}
+
+.pagination-item.active {
+    background: var(--primary-color);
+    color: var(--bg-white);
+    border-color: var(--primary-color);
+}
+
+.pagination-item.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ====================================
+   SEARCH CONTAINERS
+   ==================================== */
+.search-container {
+    padding-left: 0;
+    margin-bottom: 15px;
+}
+
+/* ====================================
+   FORM SPECIFIC STYLES
+   ==================================== */
+#op_table {
+    margin: 0 auto;
+    width: 100%;
+    max-width: 800px;
+}
+
+#view_patient_profile {
+    margin-left: -17px;
+}
+
+/* ====================================
+   UTILITY CLASSES
+   ==================================== */
+.d-none {
+    display: none !important;
+}
+
+.center {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.tr_name {
+    display: contents;
+    width: 100%;
+}
+
+.td_name {
+    display: block;
+}
+
+/* ====================================
+   ODOO OVERRIDES
+   ==================================== */
+html .o_web_client {
+    overflow: auto !important;
+}
+
+html .o_web_client > .o_action_manager {
+    overflow: auto !important;
+}
+
+/* ====================================
+   TRANSITIONS
+   ==================================== */
+.r_dashButton,
+.r_AppointmentBtn,
+.r_RoomWard,
+.o_outpatient_button,
+.o_inpatient_button,
+.o_room_button,
+.o_ward_button,
+input,
+select,
+textarea,
+button {
+    transition: all 0.2s ease;
+}
+
+/* ====================================
+   ACCESSIBILITY
+   ==================================== */
+.r_dashButton:focus,
+.r_AppointmentBtn:focus,
+.r_RoomWard:focus,
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* ====================================
+   RESPONSIVE DESIGN
+   ==================================== */
+
+/* Large Desktop */
+@media (min-width: 1400px) {
+    .container {
+        max-width: 1320px !important;
+    }
+    
+    #ward_search,
+    #room_search {
+        margin-left: 0 !important;
+    }
+}
+
+/* Desktop */
+@media screen and (max-width: 1800px) {
+    #ward_search,
+    #room_search {
+        margin-left: 7px !important;
+    }
+}
+
+@media screen and (max-width: 1398px) {
+    .search-container {
+        padding-left: 48px !important;
+    }
+    
+    .r_dashButton {
+        min-width: 140px;
+    }
+}
+
+/* Tablet Landscape */
+@media screen and (max-width: 1200px) {
+    .PatientContainer {
+        width: 82%;
+        margin: auto;
+    }
+    
+    .r_dashButton {
+        min-width: 113px;
+    }
+    
+    #ward_search,
+    #room_search {
+        margin-left: 7px !important;
+    }
+    
+    .search-container {
+        padding-left: 38px !important;
+    }
+    
+    .o_room_button {
+        float: right;
+        width: 75%;
+    }
+    
+    .o_ward_button {
+        width: 75%;
+    }
+    
+    .r_Profile {
+        box-shadow: 0px 0px 0px 0px #fff;
+    }
+    
+    .hsp_table {
+        width: 100%;
+        margin: auto;
+    }
+    
+    .r_Container .row {
+        margin-left: 0px !important;
+    }
+    
+    .rd_buttons,
+    .r_AppntBtn {
+        margin-left: 0px !important;
+    }
+    
+    .o_outpatient_button {
+        margin-left: 0px !important;
+    }
+}
+
+/* Tablet Portrait */
+@media screen and (max-width: 991px) {
+    .o_inpatient_button,
+    .o_outpatient_button {
+        width: 280px !important;
+    }
+    
+    .PatientContainer {
+        width: 82%;
+    }
+    
+    .r_dashButton {
+        min-width: 113px;
+    }
+    
+    .search-container {
+        padding-left: 15px !important;
+    }
+    
+    .r_Container {
+        margin-left: 0px;
+        padding-left: 0px;
+        max-width: 100% !important;
+    }
+    
+    .r_AppntBtn {
+        margin: auto !important;
+    }
+    
+    .r_AppntBtn .col {
+        padding-left: 0px;
+    }
+    
+    .o_outpatient_button {
+        width: 280px !important;
+    }
+    
+    .o_room_button {
+        min-width: -webkit-fill-available;
+        margin: 8px;
+    }
+    
+    .o_ward_button {
+        min-width: 100%;
+        margin: 8px;
+    }
+}
+
+/* Mobile */
+@media screen and (max-width: 767px) {
+    .r_Container {
+        padding: 10px;
+    }
+    
+    .r_dashButtonContainer {
+        padding: 10px;
+        gap: 10px;
+    }
+    
+    .r_dashButton {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .PatientContainer {
+        width: 97%;
+        margin: auto;
+    }
+    
+    .r_dashButton {
+        width: 184px;
+    }
+    
+    .o_outpatient_button {
+        width: 100%;
+        margin: 0px;
+    }
+    
+    .o_inpatient_button {
+        width: 100% !important;
+        margin: 0px;
+        margin-top: 22px;
+    }
+    
+    .rd_buttons {
+        margin: 0px;
+    }
+    
+    .r_AppntBtn {
+        margin-left: 0px;
+        width: 100%;
+    }
+    
+    #view_main {
+        margin-top: 31px;
+    }
+    
+    #op_table {
+        margin-left: 0px !important;
+    }
+    
+    .hsp_table {
+        width: 100%;
+    }
+    
+    .save {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .save_patient,
+    .saveandnew_patient,
+    .save_out_patient,
+    .saveandnew_out_patient {
+        width: 100%;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .patient-card-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .patient-meta {
+        justify-content: center;
+    }
+    
+    .appointment-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .room-ward-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Small Mobile */
+@media screen and (max-width: 545px) {
+    .hsp_table {
+        width: 100%;
+        margin-left: -25%;
+    }
+    
+    .r_AppntBtn .col {
+        padding-right: 0px;
+    }
+    
+    .r_AppntBtn {
+        width: 95% !important;
+    }
+    
+    .r_dashButton {
+        width: 184px;
+    }
+    
+    .o_ward_button {
+        min-width: -webkit-fill-available;
+    }
+    
+    .saveandnew_out_patient {
+        width: 35%;
+    }
+    
+    .tr_name {
+        display: contents;
+        width: 100%;
+    }
+    
+    .td_name {
+        display: block;
+    }
+    
+    .center {
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+    
+    .r_Profile {
+        padding: 0px;
+    }
+    
+    .o_room_button {
+        max-width: 100%;
+    }
+    
+    .o_ward_button {
+        max-width: 100%;
+    }
+    
+    .r_AppointmentBtn,
+    .r_RoomWard {
+        font-size: 13px;
+        height: 44px;
+    }
+}
+
+/* ====================================
+   PRINT STYLES
+   ==================================== */
+@media print {
+    .r_dashButtonContainer,
+    .rd_buttons,
+    .save {
+        display: none;
+    }
+    
+    .r_Container {
+        background: white;
+    }
+    
+    #view_main {
+        border: none;
+        box-shadow: none;
+    }
+}
+
+/* ====================================
+   BOOTSTRAP OVERRIDES (if needed)
+   ==================================== */
+@media (min-width: 575.98px) {
+    .o_patient_button {
+        font-size: 14px;
+    }
+}

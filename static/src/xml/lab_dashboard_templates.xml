@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Lab dashboard template with modern design and kanban views -->
+<templates id="lab_dashboard" xml:space="preserve">
+    <t t-name="LabDashboard" owl="1">
+        <div class="oh_dashboards lab-dashboard" t-ref="root">
+            <!-- Navbar -->
+            <div class="dashboard-navbar">
+                <div class="navbar-brand">
+                    <div class="logo">🧪</div>
+                    <span>Laboratory Dashboard</span>
+                </div>
+                <div class="navbar-right">
+                    <div class="notification-badge">
+                        🔔
+                        <span class="badge" t-if="state.stats.pending_tests > 0">
+                            <t t-esc="state.stats.pending_tests"/>
+                        </span>
+                    </div>
+                    <div class="user-profile">
+                        <div class="user-avatar">
+                            <t t-esc="state.user_name ? state.user_name.substring(0, 2).toUpperCase() : 'LT'"/>
+                        </div>
+                        <span t-esc="state.user_name || 'Lab Technician'"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lab-container">
+                <!-- Welcome Section -->
+                <div class="welcome-section">
+                    <h1>Welcome, <t t-esc="state.user_name || 'Lab Technician'"/></h1>
+                    <p>Tableau de bord du laboratoire - <t t-esc="state.lab_name || 'Main Laboratory'"/></p>
+                </div>
+
+                <!-- Statistics Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card pending">
+                        <div class="stat-icon">⏳</div>
+                        <div class="stat-content">
+                            <h3 t-esc="state.stats.tests_pending || 0"/>
+                            <p>Tests à Confirmer</p>
+                            <div class="trend warning">
+                                En attente de traitement
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card processing">
+                        <div class="stat-icon">🔬</div>
+                        <div class="stat-content">
+                            <h3 t-esc="state.stats.tests_in_progress || 0"/>
+                            <p>Tests en Cours</p>
+                            <div class="trend up" t-if="state.stats.processing_trend > 0">
+                                ↑ <t t-esc="state.stats.processing_trend"/>% aujourd'hui
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card completed">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-content">
+                            <h3 t-esc="state.stats.tests_completed || 0"/>
+                            <p>Tests Complétés</p>
+                            <div class="trend up">
+                                <t t-esc="state.stats.completed_today || 0"/> aujourd'hui
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card published">
+                        <div class="stat-icon">📄</div>
+                        <div class="stat-content">
+                            <h3 t-esc="state.stats.results_published || 0"/>
+                            <p>Résultats Publiés</p>
+                            <div class="trend">
+                                Disponibles au téléchargement
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content with Sidebar -->
+                <div class="main-content-grid-lab">
+                    <!-- Sidebar Menu -->
+                    <div class="sidebar-menu-lab">
+                        <h2 class="sidebar-title">
+                            <i class="fa fa-flask"/>
+                            Lab
+                        </h2>
+                        <ul class="menu-list">
+                            <li class="menu-item"
+                                t-att-class="{ 'active': state.activeView === 'main' }"
+                                t-on-click="_loadTestData">
+                                <span class="menu-icon">📋</span>
+                                <span class="menu-text">Tests à Confirmer</span>
+                                <span class="menu-badge" t-if="state.stats.tests_pending > 0">
+                                    <t t-esc="state.stats.tests_pending"/>
+                                </span>
+                            </li>
+                            <li class="menu-item"
+                                t-att-class="{ 'active': state.activeView === 'process' }"
+                                t-on-click="_allLabTest">
+                                <span class="menu-icon">🔬</span>
+                                <span class="menu-text">Tests en Cours</span>
+                            </li>
+                            <li class="menu-item"
+                                t-att-class="{ 'active': state.activeView === 'published' }"
+                                t-on-click="_loadPublished">
+                                <span class="menu-icon">📄</span>
+                                <span class="menu-text">Résultats Publiés</span>
+                            </li>
+                            <li class="menu-item"
+                                t-att-class="{ 'active': state.activeView === 'analytics' }"
+                                t-on-click="() => this._setActiveView('analytics')">
+                                <span class="menu-icon">📊</span>
+                                <span class="menu-text">Analytics</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Main Content Area -->
+                    <div class="content-area-lab">
+                        <!-- MAIN VIEW: Tests to Confirm -->
+                        <div t-if="state.activeView === 'main'" class="content-panel">
+                            <div class="panel-header">
+                                <h2>📋 Tests à Confirmer</h2>
+                                <div class="view-toggle">
+                                    <button class="btn-toggle"
+                                            t-att-class="{ 'active': state.viewMode === 'table' }"
+                                            t-on-click="() => this.state.viewMode = 'table'">
+                                        <i class="fa fa-list"/>
+                                    </button>
+                                    <button class="btn-toggle"
+                                            t-att-class="{ 'active': state.viewMode === 'kanban' }"
+                                            t-on-click="() => this.state.viewMode = 'kanban'">
+                                        <i class="fa fa-th"/>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Table View -->
+                            <div t-if="state.viewMode === 'table'" class="table-view">
+                                <div class="tests-table-wrapper">
+                                    <table class="tests-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Séquence</th>
+                                                <th>Patient</th>
+                                                <th>Docteur</th>
+                                                <th>Type</th>
+                                                <th>Date</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-set="index" t-value="-1"/>
+                                            <t t-foreach="state.tests_confirm" t-as="test" t-key="test.id">
+                                                <t t-set="index" t-value="index + 1"/>
+                                                <tr class="test-row" t-on-click="_fetchTestData" t-att-data-index="index">
+                                                    <td class="test-sequence">
+                                                        <t t-esc="test.display_name"/>
+                                                    </td>
+                                                    <td>
+                                                        <t t-esc="test.patient_id[1]"/>
+                                                    </td>
+                                                    <td>
+                                                        <t t-esc="test.doctor_id[1]"/>
+                                                    </td>
+                                                    <td>
+                                                        <span class="type-badge" t-att-class="'type-' + test.patient_type">
+                                                            <t t-esc="test.patient_type"/>
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <t t-esc="test.date"/>
+                                                    </td>
+                                                    <td>
+                                                        <button class="btn-view">Voir</button>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Kanban View -->
+                            <div t-if="state.viewMode === 'kanban'" class="kanban-view">
+                                <div class="kanban-grid">
+                                    <t t-set="index" t-value="-1"/>
+                                    <t t-foreach="state.tests_confirm" t-as="test" t-key="test.id">
+                                        <t t-set="index" t-value="index + 1"/>
+                                        <div class="kanban-card" t-on-click="_fetchTestData" t-att-data-index="index">
+                                            <div class="kanban-header">
+                                                <h4><t t-esc="test.display_name"/></h4>
+                                                <span class="kanban-badge" t-att-class="'badge-' + test.patient_type">
+                                                    <t t-esc="test.patient_type"/>
+                                                </span>
+                                            </div>
+                                            <div class="kanban-body">
+                                                <div class="kanban-info">
+                                                    <i class="fa fa-user"/>
+                                                    <span><t t-esc="test.patient_id[1]"/></span>
+                                                </div>
+                                                <div class="kanban-info">
+                                                    <i class="fa fa-user-md"/>
+                                                    <span><t t-esc="test.doctor_id[1]"/></span>
+                                                </div>
+                                                <div class="kanban-info">
+                                                    <i class="fa fa-calendar"/>
+                                                    <span><t t-esc="test.date"/></span>
+                                                </div>
+                                            </div>
+                                            <div class="kanban-footer">
+                                                <button class="btn-kanban-action">
+                                                    <i class="fa fa-eye"/> Voir Détails
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FORM VIEW: Patient Details -->
+                        <div t-if="state.activeView === 'form'" class="content-panel">
+                            <div class="panel-header">
+                                <button class="btn-back" t-on-click="_loadTestData">
+                                    <i class="fa fa-arrow-left"/> Retour
+                                </button>
+                                <h2>📄 Détails du Test</h2>
+                            </div>
+
+                            <div class="patient-details-card">
+                                <div class="patient-header-section">
+                                    <div class="patient-info-main">
+                                        <h1><t t-esc="state.tests_confirm_data.name"/></h1>
+                                        <p class="patient-code">Code: <t t-esc="state.tests_confirm_data.unique"/></p>
+                                    </div>
+                                    <img t-if="state.tests_confirm_data.image_1920"
+                                         t-att-src="'data:image/png;base64,' + state.tests_confirm_data.image_1920"
+                                         class="patient-avatar-large"/>
+                                </div>
+
+                                <div class="patient-details-grid">
+                                    <div class="detail-item">
+                                        <span class="detail-label">📞 Téléphone:</span>
+                                        <span class="detail-value">
+                                            <t t-esc="state.tests_confirm_data.phone || 'N/A'"/>
+                                        </span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">📧 Email:</span>
+                                        <span class="detail-value">
+                                            <t t-esc="state.tests_confirm_data.email || 'N/A'"/>
+                                        </span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">🎂 Date Naissance:</span>
+                                        <span class="detail-value">
+                                            <t t-esc="state.tests_confirm_data.dob || 'N/A'"/>
+                                        </span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">👤 Genre:</span>
+                                        <span class="detail-value">
+                                            <t t-esc="state.tests_confirm_data.gender || 'N/A'"/>
+                                        </span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">💍 État Civil:</span>
+                                        <span class="detail-value">
+                                            <t t-esc="state.tests_confirm_data.status || 'N/A'"/>
+                                        </span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">🩸 Groupe Sanguin:</span>
+                                        <span class="detail-value">
+                                            <t t-esc="state.tests_confirm_data.blood_group || 'N/A'"/>
+                                        </span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">👨‍⚕️ Docteur:</span>
+                                        <span class="detail-value">
+                                            <t t-esc="state.tests_confirm_data.doctor || 'N/A'"/>
+                                        </span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">🏥 Type Patient:</span>
+                                        <span class="detail-value">
+                                            <t t-esc="state.tests_confirm_data.patient_type || 'N/A'"/>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="tests-section">
+                                    <h3>🧪 Tests Demandés</h3>
+                                    <table class="tests-detail-table">
+                                        <thead>
+                                            <tr>
+                                                <th>N°</th>
+                                                <th>Nom du Test</th>
+                                                <th>Délai (jours)</th>
+                                                <th>Prix</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr t-foreach="state.test_data" t-as="testdata" t-key="testdata.id">
+                                                <td><t t-esc="testdata.id"/></td>
+                                                <td><strong><t t-esc="testdata.name"/></strong></td>
+                                                <td><t t-esc="testdata.patient_lead"/></td>
+                                                <td class="price-cell">
+                                                    <t t-esc="state.currency_symbol"/>
+                                                    <t t-esc="testdata.price"/>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="form-actions-lab">
+                                    <button class="btn-primary-large" t-on-click="confirmLabTest">
+                                        <i class="fa fa-check"/> Confirmer le Test
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PROCESS VIEW: Tests in Progress -->
+                        <div t-if="state.activeView === 'process'" class="content-panel">
+                            <div class="panel-header">
+                                <h2>🔬 Tests en Cours de Traitement</h2>
+                            </div>
+
+                            <div class="process-kanban">
+                                <t t-foreach="state.all_test_data" t-as="testdata" t-key="testdata.id">
+                                    <div class="process-card" t-on-click="fetch_all_test_data" t-att-data-index="testdata.id">
+                                        <div class="process-card-header">
+                                            <h4><t t-esc="testdata.display_name || testdata.test_id[1]"/></h4>
+                                            <span class="state-badge" t-att-class="'state-' + testdata.state">
+                                                <t t-esc="testdata.state"/>
+                                            </span>
+                                        </div>
+                                        <div class="process-card-body">
+                                            <div class="process-info">
+                                                <i class="fa fa-user"/>
+                                                <span><t t-esc="testdata.patient_id[1]"/></span>
+                                            </div>
+                                            <div class="process-info">
+                                                <i class="fa fa-calendar"/>
+                                                <span><t t-esc="testdata.date"/></span>
+                                            </div>
+                                            <div class="process-info">
+                                                <i class="fa fa-dollar"/>
+                                                <span><t t-esc="state.currency_symbol"/><t t-esc="testdata.total_price"/></span>
+                                            </div>
+                                        </div>
+                                        <div class="process-card-footer">
+                                            <button class="btn-process-action">
+                                                <i class="fa fa-edit"/> Traiter
+                                            </button>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+
+                        <!-- PUBLISHED VIEW: Published Results -->
+                        <div t-if="state.activeView === 'published'" class="content-panel">
+                            <div class="panel-header">
+                                <h2>📄 Résultats Publiés</h2>
+                            </div>
+
+                            <div class="published-table-wrapper">
+                                <table class="published-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Séquence</th>
+                                            <th>Patient</th>
+                                            <th>Test</th>
+                                            <th>Valeur Normale</th>
+                                            <th>Résultat</th>
+                                            <th>Unité</th>
+                                            <th>Document</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="state.published_data" t-as="published_data" t-key="published_data.id">
+                                            <td class="sequence-cell">
+                                                <t t-esc="published_data.parent_id"/>
+                                            </td>
+                                            <td>
+                                                <t t-esc="published_data.patient_id[1]"/>
+                                            </td>
+                                            <td class="test-name-cell">
+                                                <t t-esc="published_data.test_id"/>
+                                            </td>
+                                            <td class="normal-value">
+                                                <t t-esc="published_data.normal || 'N/A'"/>
+                                            </td>
+                                            <td class="result-value">
+                                                <strong><t t-esc="published_data.result || 'N/A'"/></strong>
+                                            </td>
+                                            <td>
+                                                <t t-esc="published_data.unit || '-'"/>
+                                            </td>
+                                            <td class="attachment-cell">
+                                                <a t-if="published_data.attachment_id"
+                                                   t-attf-href="/web/content/#{published_data.attachment_id}?download=true"
+                                                   class="btn-download">
+                                                    <i class="fa fa-download"/>
+                                                </a>
+                                                <span t-else="" class="no-attachment">-</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- ANALYTICS VIEW: Charts and Graphs -->
+                        <div t-if="state.activeView === 'analytics'" class="content-panel">
+                            <div class="panel-header">
+                                <h2>📊 Analytiques du Laboratoire</h2>
+                            </div>
+
+                            <div class="charts-grid-lab">
+                                <div class="chart-card">
+                                    <h3>📈 Tests par Type</h3>
+                                    <div class="chart-container">
+                                        <canvas t-ref="testsByTypeChart"/>
+                                    </div>
+                                </div>
+
+                                <div class="chart-card">
+                                    <h3>📊 Tests Complétés (7 jours)</h3>
+                                    <div class="chart-container">
+                                        <canvas t-ref="dailyCompletedChart"/>
+                                    </div>
+                                </div>
+
+                                <div class="chart-card">
+                                    <h3>🔬 État des Résultats</h3>
+                                    <div class="chart-container">
+                                        <canvas t-ref="resultsStatusChart"/>
+                                    </div>
+                                </div>
+
+                                <div class="chart-card">
+                                    <h3>⏱️ Temps Moyen de Traitement</h3>
+                                    <div class="chart-container">
+                                        <canvas t-ref="processingTimeChart"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>
