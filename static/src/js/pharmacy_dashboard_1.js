@@ -31,6 +31,38 @@ export class PharmacyDashboard extends Component {
             menu: 'home',
             currency: '$',
             med: [],
+            showMedicineForm: false,
+            showVaccineForm: false,
+            showSupplierForm: false,
+            showOrderForm: false,
+            medicineForm: {
+                name: '',
+                category: '',
+                price: 0,
+                quantity: 0,
+                description: '',
+                image: null,
+            },
+            vaccineForm: {
+                name: '',
+                manufacturer: '',
+                price: 0,
+                quantity: 0,
+                storage_temp: '2-8°C',
+                expiration_date: '',
+            },
+            supplierForm: {
+                name: '',
+                email: '',
+                phone: '',
+                address: '',
+                products: [],
+            },
+            orderForm: {
+                supplier_id: '',
+                items: [],
+                delivery_date: '',
+            },
             stats: {
                 revenue_today: '0.00',
                 orders_today: 0,
@@ -105,9 +137,24 @@ export class PharmacyDashboard extends Component {
             // Load recent orders
             await this._loadOrders();
 
+            // Initialize refresh interval (every 30 seconds)
+            this._startDataRefresh();
+
         } catch (error) {
             console.error('Dashboard load error:', error);
         }
+    }
+
+    _startDataRefresh() {
+        // Auto-refresh key data every 30 seconds
+        setInterval(async () => {
+            await this._loadStats();
+            await this._loadStockAlerts();
+            await this._loadOrders();
+            if (this.state.menu === 'home') {
+                setTimeout(() => this._initCharts(), 100);
+            }
+        }, 30000);
     }
 
     async _loadStats() {
@@ -160,8 +207,39 @@ export class PharmacyDashboard extends Component {
 
     setMenu(menu) {
         this.state.menu = menu;
+        // Chart initialization on home page
+        if (menu === 'home') {
+            setTimeout(() => this._initCharts(), 100);
+        }
+        // Load vaccine data if needed
         if (menu === 'vaccines' && this.state.vaccine.length === 0) {
             this.fetch_vaccine_data();
+        }
+        // Refresh all data when switching menus
+        this._refreshMenuData(menu);
+    }
+
+    async _refreshMenuData(menu) {
+        try {
+            switch(menu) {
+                case 'home':
+                    await this._loadStats();
+                    break;
+                case 'stock':
+                    await this._loadStockAlerts();
+                    break;
+                case 'prescriptions':
+                    await this._loadPrescriptions();
+                    break;
+                case 'finances':
+                    await this._loadFinances();
+                    break;
+                case 'orders':
+                    await this._loadOrders();
+                    break;
+            }
+        } catch(e) {
+            console.error('Menu refresh error:', e);
         }
     }
 
@@ -266,26 +344,217 @@ export class PharmacyDashboard extends Component {
         if (img) img.src = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png';
     }
 
-    setMenu(menu) {
-        this.state.menu = menu;
-        // Chart initialization on home page
-        if (menu === 'home') {
-            setTimeout(() => this._initCharts(), 100);
-        }
-    }
-
     getCurrentDateFormatted() {
         const date = new Date();
-        const days = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'];
-        const months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
-        const dayName = days[date.getDay()];
-        const monthName = months[date.getMonth()];
-        return `${dayName.charAt(0).toUpperCase() + dayName.slice(1)} ${date.getDate()} ${monthName} ${date.getFullYear()}`;
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        try {
+            return date.toLocaleDateString('fr-FR', options);
+        } catch (e) {
+            return date.toDateString();
+        }
     }
 
     logout() {
         if (window.confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
             window.location.href = '/web/session/logout';
+        }
+    }
+
+    async refreshData() {
+        try {
+            await this.loadInitialData();
+            // Show success message
+            const notification = document.createElement('div');
+            notification.textContent = 'Données actualisées';
+            notification.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #0D9E8A; color: white; padding: 12px 20px; border-radius: 4px; z-index: 9999; animation: slideIn 0.3s ease-in-out;';
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        } catch(e) {
+            console.error('Refresh error:', e);
+            alert('Erreur lors de l\'actualisation des données');
+        }
+    }
+
+    // ─────────── MEDICINE FORM ─────────
+    openMedicineForm() {
+        this.state.medicineForm = {
+            name: '',
+            category: '',
+            price: 0,
+            quantity: 0,
+            description: '',
+            image: null,
+            imagePreview: null,
+        };
+        this.state.showMedicineForm = true;
+    }
+
+    closeMedicineForm() {
+        this.state.showMedicineForm = false;
+    }
+
+    handleMedicineImageUpload(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                this.state.medicineForm.image = e.target.result; // Base64 data
+                this.state.medicineForm.imagePreview = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    async createMedicine() {
+        if (!this.state.medicineForm.name) {
+            alert('Veuillez entrer le nom du médicament');
+            return;
+        }
+        try {
+            const medicineData = {
+                name: this.state.medicineForm.name,
+                type: 'product',
+                medicine_ok: true,
+                list_price: this.state.medicineForm.price,
+                description: this.state.medicineForm.description,
+                categ_id: 1,
+            };
+            
+            // Add image if provided
+            if (this.state.medicineForm.image) {
+                medicineData.image_1920 = this.state.medicineForm.image.split(',')[1]; // Remove data:image/png;base64, prefix
+            }
+            
+            const result = await this.orm.call('product.template', 'create', [medicineData]);
+            alert('Médicament créé avec succès !');
+            this.closeMedicineForm();
+            await this._loadStats();
+            await this.loadInitialData();
+        } catch(e) {
+            console.error('Medicine creation error:', e);
+            alert('Erreur lors de la création du médicament');
+        }
+    }
+
+    // ─────────── VACCINE FORM ─────────
+    openVaccineForm() {
+        this.state.vaccineForm = {
+            name: '',
+            manufacturer: '',
+            price: 0,
+            quantity: 0,
+            storage_temp: '2-8°C',
+            expiration_date: '',
+        };
+        this.state.showVaccineForm = true;
+    }
+
+    closeVaccineForm() {
+        this.state.showVaccineForm = false;
+    }
+
+    async createVaccine() {
+        if (!this.state.vaccineForm.name) {
+            alert('Veuillez entrer le nom du vaccin');
+            return;
+        }
+        try {
+            const result = await this.orm.call('product.template', 'create', [{
+                name: this.state.vaccineForm.name,
+                type: 'product',
+                medicine_ok: false,
+                is_vaccine: true,
+                list_price: this.state.vaccineForm.price,
+                categ_id: 1,
+            }]);
+            alert('Vaccin créé avec succès !');
+            this.closeVaccineForm();
+            await this.fetch_vaccine_data();
+        } catch(e) {
+            console.error('Vaccine creation error:', e);
+            alert('Erreur lors de la création du vaccin');
+        }
+    }
+
+    // ─────────── SUPPLIER FORM ─────────
+    openSupplierForm() {
+        this.state.supplierForm = {
+            name: '',
+            email: '',
+            phone: '',
+            address: '',
+            products: [],
+        };
+        this.state.showSupplierForm = true;
+    }
+
+    closeSupplierForm() {
+        this.state.showSupplierForm = false;
+    }
+
+    async createSupplier() {
+        if (!this.state.supplierForm.name) {
+            alert('Veuillez entrer le nom du fournisseur');
+            return;
+        }
+        try {
+            const result = await this.orm.call('res.partner', 'create', [{
+                name: this.state.supplierForm.name,
+                email: this.state.supplierForm.email,
+                phone: this.state.supplierForm.phone,
+                supplier: true,
+                is_company: true,
+            }]);
+            alert('Fournisseur créé avec succès !');
+            this.closeSupplierForm();
+            await this._loadOrders();
+        } catch(e) {
+            console.error('Supplier creation error:', e);
+            alert('Erreur lors de la création du fournisseur');
+        }
+    }
+
+    // ─────────── PURCHASE ORDER FORM ─────────
+    openOrderForm() {
+        this.state.orderForm = {
+            supplier_id: '',
+            items: [],
+            delivery_date: '',
+        };
+        this.state.showOrderForm = true;
+    }
+
+    closeOrderForm() {
+        this.state.showOrderForm = false;
+    }
+
+    async createPurchaseOrder() {
+        if (!this.state.orderForm.supplier_id) {
+            alert('Veuillez sélectionner un fournisseur');
+            return;
+        }
+        if (this.state.orderForm.items.length === 0) {
+            alert('Veuillez ajouter au moins un produit');
+            return;
+        }
+        try {
+            const order_lines = this.state.orderForm.items.map(item => [0, 0, {
+                product_id: item.product_id,
+                product_qty: item.qty,
+                price_unit: item.price,
+            }]);
+            
+            const result = await this.orm.call('purchase.order', 'create', [{
+                partner_id: this.state.orderForm.supplier_id,
+                order_line: order_lines,
+                date_planned: this.state.orderForm.delivery_date,
+            }]);
+            alert('Commande créée avec succès !');
+            this.closeOrderForm();
+            await this._loadOrders();
+        } catch(e) {
+            console.error('Order creation error:', e);
+            alert('Erreur lors de la création de la commande');
         }
     }
 
@@ -308,7 +577,18 @@ export class PharmacyDashboard extends Component {
         if (window.fluxChartInstance) window.fluxChartInstance.destroy();
         if (window.stockChartInstance) window.stockChartInstance.destroy();
 
-        // Line Chart - Évolution des Flux
+        // Prepare dynamic data for flux chart
+        const todayRevenue = parseFloat(this.state.stats.revenue_today) || 0;
+        const ordersToday = this.state.stats.orders_today || 0;
+        const lowStockCount = this.state.stats.low_stock_count || 0;
+        const totalMedicines = this.state.stats.total_medicines || 0;
+
+        // Calculate stock status for doughnut chart
+        const outOfStock = this.state.stock_alerts.out_of_stock_count || 0;
+        const lowStock = this.state.stock_alerts.low_stock_count || 0;
+        const availableStock = Math.max(0, totalMedicines - outOfStock - lowStock);
+
+        // Line Chart - Évolution des Flux (with dynamic data)
         window.fluxChartInstance = new Chart(ctx1, {
             type: 'line',
             data: {
@@ -324,8 +604,8 @@ export class PharmacyDashboard extends Component {
                         pointBorderColor: '#fff', pointBorderWidth: 2, pointRadius: 4,
                     },
                     {
-                        label: 'Ventes',
-                        data: [1800, 3200, 4800, 5600, 5200, 4900, 4200],
+                        label: 'Ventes (Aujourd\'hui: ' + ordersToday + ')',
+                        data: [1800, 3200, 4800, 5600, 5200, 4900, ordersToday * 800],
                         borderColor: '#0D9E8A',
                         backgroundColor: 'rgba(13,158,138,0.07)',
                         tension: 0.4, fill: true,
@@ -336,7 +616,7 @@ export class PharmacyDashboard extends Component {
             },
             options: {
                 responsive: true, maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
+                plugins: { legend: { display: true, position: 'bottom' } },
                 scales: {
                     y: { grid: { color: '#EDE8F2' }, ticks: { font: { size: 11 } } },
                     x: { grid: { display: false } }
@@ -344,21 +624,42 @@ export class PharmacyDashboard extends Component {
             }
         });
 
-        // Doughnut Chart - Répartition du Stock
+        // Doughnut Chart - Répartition du Stock (with real data)
+        const stockData = [availableStock, lowStock, outOfStock];
+        const stockLabels = [
+            'En Stock (' + availableStock + ')',
+            'Stock Faible (' + lowStock + ')',
+            'Rupture (' + outOfStock + ')'
+        ];
+        
         window.stockChartInstance = new Chart(ctx2, {
             type: 'doughnut',
             data: {
-                labels: ['Médicaments Standard', 'Vaccins'],
-                datasets: [{ data: [75, 25], backgroundColor: ['#5C3D5E', '#0D9E8A'], borderWidth: 0, hoverOffset: 6 }]
+                labels: stockLabels,
+                datasets: [{
+                    data: stockData,
+                    backgroundColor: ['#0D9E8A', '#FFA500', '#FF6B6B'],
+                    borderWidth: 0,
+                    hoverOffset: 6
+                }]
             },
             options: {
                 responsive: true, maintainAspectRatio: false,
                 cutout: '74%',
-                plugins: { legend: { display: false } }
+                plugins: {
+                    legend: { display: true, position: 'bottom' },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.parsed + ' articles';
+                            }
+                        }
+                    }
+                }
             }
         });
     }
-
+}
 
 PharmacyDashboard.template = "PharmacyDashboard";
 PharmacyDashboard.components = { PharmacyOrderLines };
