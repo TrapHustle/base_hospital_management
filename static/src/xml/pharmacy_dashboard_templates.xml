@@ -2,535 +2,437 @@
 <templates xml:space="preserve">
 
 <t t-name="PharmacyDashboard">
-    <div class="pf-dashboard" t-ref="root">
+    <div class="pf-dashboard">
         
-        <!-- HARMAFLOW NAVBAR -->
-        <div class="pf-navbar">
-            <div class="pf-navbar-left">
-                <div class="pf-logo">⚕ <strong>PharmaFlow</strong></div>
-                <div class="pf-navbar-date">
-                    <i class="fa fa-calendar"></i>
-                    <span t-out="new Date().toLocaleDateString('fr-FR')"/>
-                </div>
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <div class="logo-mark">Pf</div>
+                <span class="logo-text">PharmaFlow</span>
             </div>
-            <div class="pf-navbar-center">
-                <div class="pf-search">
-                    <i class="fa fa-search"></i>
+            <nav class="sidebar-nav">
+                <a class="nav-item active" t-on-click="() => this.setMenu('home')">
+                    <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6"/><rect x="9" y="1" width="6" height="6"/><rect x="1" y="9" width="6" height="6"/><rect x="9" y="9" width="6" height="6"/></svg>
+                    Tableau de bord
+                    <span class="nav-arrow">›</span>
+                </a>
+                <a class="nav-item" t-on-click="() => this.setMenu('medicines')">
+                    <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="6" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>
+                    Médicaments
+                </a>
+                <a class="nav-item" t-on-click="() => this.setMenu('vaccines')">
+                    <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l2 5h5l-4 3 1.5 5L8 11l-4.5 3L5 9 1 6h5z"/></svg>
+                    Vaccins
+                </a>
+                <a class="nav-item" t-on-click="() => this.setMenu('suppliers')">
+                    <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M1 3h14v2H1zm1 3h12l-1 9H3z"/></svg>
+                    Commandes Fournisseurs
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a class="nav-item" t-on-click="() => this.setMenu('settings')">
+                    <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2"/></svg>
+                    Paramètres
+                </a>
+                <a class="nav-item danger" t-on-click="logout">
+                    <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M10 8H3m0 0l3-3M3 8l3 3M13 2v12"/></svg>
+                    Déconnexion
+                </a>
+            </div>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="main">
+
+            <!-- TOPBAR -->
+            <header class="topbar">
+                <div class="topbar-date">
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="3" width="14" height="12" rx="0" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5 1v4M11 1v4M1 7h14" stroke="currentColor" stroke-width="1.5"/></svg>
+                    <span t-out="new Date().toLocaleDateString('fr-FR', {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})"/>
+                </div>
+                <div class="topbar-search">
+                    <svg class="search-icon" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/></svg>
                     <input type="text" placeholder="Rechercher..."/>
                 </div>
-            </div>
-            <div class="pf-navbar-right">
-                <button class="pf-icon-btn">
-                    <i class="fa fa-bell"></i>
-                    <span class="pf-badge">3</span>
-                </button>
-                <div class="pf-user">
-                    <div class="pf-avatar" t-out="user.name ? user.name.substring(0, 2).toUpperCase() : 'U'"/>
-                    <span>Dr. Smith</span>
-                    <span class="pf-role">Pharmacien Chef</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- MAIN LAYOUT -->
-        <div class="pf-main">
-            
-            <!-- SIDEBAR -->
-            <div class="pf-sidebar">
-                <nav class="pf-menu">
-                    <div class="pf-menu-item active" t-on-click="() => this.setMenu('home')">
-                        <i class="fa fa-th-large"></i>
-                        <span>Tableau de bord</span>
+                <div class="topbar-right">
+                    <div class="notif-btn">
+                        <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a5 5 0 00-5 5v3l-2 2v1h14v-1l-2-2V6a5 5 0 00-5-5zM6 13a2 2 0 004 0z"/></svg>
+                        <span class="notif-badge" t-out="state.stock_alerts.out_of_stock_count + state.stock_alerts.low_stock_count"/>
                     </div>
-                    <div class="pf-menu-item" t-on-click="() => this.setMenu('medicines')">
-                        <i class="fa fa-pills"></i>
-                        <span>Médicaments</span>
-                    </div>
-                    <div class="pf-menu-item" t-on-click="() => this.setMenu('vaccines')">
-                        <i class="fa fa-syringe"></i>
-                        <span>Vaccins</span>
-                    </div>
-                    <div class="pf-menu-item" t-on-click="() => this.setMenu('suppliers')">
-                        <i class="fa fa-shopping-cart"></i>
-                        <span>Commandes Fournisseurs</span>
-                    </div>
-                    <div class="pf-menu-item" t-on-click="() => this.setMenu('orders')">
-                        <i class="fa fa-receipt"></i>
-                        <span>Commandes</span>
-                    </div>
-                </nav>
-            </div>
-
-            <!-- CONTENT -->
-            <div class="pf-content">
-                
-                <!-- ===== TABLEAU DE BORD ===== -->
-                <t t-if="state.menu === 'home'">
-                    <div class="pf-header">
+                    <div class="user-chip">
+                        <div class="user-avatar" t-out="user.name ? user.name.substring(0, 2).toUpperCase() : 'U'"/>
                         <div>
-                            <h1>Tableau de bord</h1>
-                            <p>Bienvenue, Dr. Jean Dupont. Voici l'état actuel de votre pharmacie.</p>
+                            <div class="user-name" t-out="user.name or 'Utilisateur'"/>
+                            <div class="user-role">Pharmacien Chef</div>
                         </div>
-                        <button class="pf-btn pf-btn-primary" t-on-click="() => this.setMenu('new_order')">
-                            <i class="fa fa-plus"></i> Nouvelle commande
-                        </button>
                     </div>
+                </div>
+            </header>
 
-                    <!-- KPI CARDS -->
-                    <div class="pf-kpi-grid">
-                        <div class="pf-kpi pf-kpi-purple">
-                            <div class="pf-kpi-icon">📥</div>
-                            <div class="pf-kpi-body">
-                                <div class="pf-kpi-label">Entrées de stock</div>
-                                <div class="pf-kpi-value" t-out="state.stats.total_medicines"/>
-                                <div class="pf-kpi-trend">+12.5% ce mois</div>
-                            </div>
+            <div class="content">
+
+                <!-- PAGE HEADER (HOME) -->
+                <t t-if="state.menu === 'home'">
+                    <div class="page-header">
+                        <div>
+                            <div class="page-title">Tableau de Bord</div>
+                            <div class="page-subtitle">Bienvenue, <strong t-out="user.name or 'Pharmacien'"/>. Voici l'état actuel de votre pharmacie.</div>
                         </div>
-                        <div class="pf-kpi pf-kpi-pink">
-                            <div class="pf-kpi-icon">🛒</div>
-                            <div class="pf-kpi-body">
-                                <div class="pf-kpi-label">Commandes Fournisseurs</div>
-                                <div class="pf-kpi-value">28</div>
-                                <div class="pf-kpi-trend"><span t-out="state.currency"/>45,200 total</div>
-                            </div>
-                        </div>
-                        <div class="pf-kpi pf-kpi-teal">
-                            <div class="pf-kpi-icon">💰</div>
-                            <div class="pf-kpi-body">
-                                <div class="pf-kpi-label">Ventes du jour</div>
-                                <div class="pf-kpi-value"><span t-out="state.currency"/><span t-out="state.stats.revenue_today"/></div>
-                                <div class="pf-kpi-trend"><span t-out="state.stats.orders_today"/> transactions</div>
-                            </div>
-                        </div>
-                        <div class="pf-kpi pf-kpi-red">
-                            <div class="pf-kpi-icon">⚠️</div>
-                            <div class="pf-kpi-body">
-                                <div class="pf-kpi-label">Produits en Alerte</div>
-                                <div class="pf-kpi-value" t-out="state.stock_alerts.out_of_stock_count + state.stock_alerts.low_stock_count"/>
-                                <div class="pf-kpi-trend">articles</div>
-                            </div>
+                        <div class="header-actions">
+                            <button class="btn btn-outline">Rapports PDF</button>
+                            <button class="btn btn-primary" t-on-click="() => this.setMenu('new_order')">+ Nouvelle Commande</button>
                         </div>
                     </div>
 
-                    <!-- ALERTES -->
-                    <t t-if="state.stock_alerts.out_of_stock_count > 0 or state.stock_alerts.expiring_count > 0">
-                        <div class="pf-section">
-                            <h2><i class="fa fa-exclamation-circle"></i> Alertes Critiques</h2>
-                            <div class="pf-alerts">
-                                <t t-if="state.stock_alerts.out_of_stock_count > 0">
-                                    <div class="pf-alert pf-alert-error">
-                                        <i class="fa fa-times-circle"></i>
-                                        <div class="pf-alert-text">
-                                            <strong>🔴 Rupture de stock immédiate</strong>
-                                            <p>
-                                                <t t-foreach="state.stock_alerts.out_of_stock.slice(0, 3)" t-as="item" t-key="item.name">
-                                                    <span class="pf-tag"><t t-out="item.name"/></span>
-                                                </t>
-                                                <t t-if="state.stock_alerts.out_of_stock_count > 3">
-                                                    +<t t-out="state.stock_alerts.out_of_stock_count - 3"/> autres
-                                                </t>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </t>
-                                <t t-if="state.stock_alerts.expiring_count > 0">
-                                    <div class="pf-alert pf-alert-warning">
-                                        <i class="fa fa-clock"></i>
-                                        <div class="pf-alert-text">
-                                            <strong>⏰ Expiration proche</strong>
-                                            <p>
-                                                <t t-foreach="state.stock_alerts.expiring_soon.slice(0, 2)" t-as="item" t-key="item.name">
-                                                    <strong><span t-out="item.name"/></strong> - <span t-out="item.date"/>
-                                                </t>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </t>
+                    <!-- KPI GRID -->
+                    <div class="kpi-grid">
+                        <div class="kpi-card">
+                            <div class="kpi-top">
+                                <div class="kpi-icon-box purple">
+                                    <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor"><path d="M1 1h14v3H1zm1 4h12l-1 9H3z"/></svg>
+                                </div>
+                                <span class="kpi-trend up">+12.5%</span>
+                            </div>
+                            <div>
+                                <div class="kpi-label">Entrées de stock — Ce mois</div>
+                                <div class="kpi-value" t-out="state.stats.total_medicines"/>
+                            </div>
+                            <div class="kpi-sub">
+                                <div class="kpi-sub-item"><span class="kpi-sub-label">Articles</span><span class="kpi-sub-val">852</span></div>
+                                <div class="kpi-sub-item"><span class="kpi-sub-label">Valeur</span><span class="kpi-sub-val">45 200 €</span></div>
                             </div>
                         </div>
-                    </t>
 
-                    <!-- TOP PRODUITS & FINANCES -->
-                    <div class="pf-grid-2">
-                        <div class="pf-section">
-                            <h3>Top Produits Commandés</h3>
-                            <table class="pf-table">
+                        <div class="kpi-card">
+                            <div class="kpi-top">
+                                <div class="kpi-icon-box teal">
+                                    <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="5" width="14" height="9" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5 5V3a3 3 0 016 0v2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+                                </div>
+                                <span class="kpi-trend up">+5.2%</span>
+                            </div>
+                            <div>
+                                <div class="kpi-label">Commandes Fournisseurs</div>
+                                <div class="kpi-value">28</div>
+                            </div>
+                            <div class="kpi-sub">
+                                <div class="kpi-sub-item"><span class="kpi-sub-label">En attente</span><span class="kpi-sub-val">12</span></div>
+                                <div class="kpi-sub-item"><span class="kpi-sub-label">Reçues</span><span class="kpi-sub-val">16</span></div>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card">
+                            <div class="kpi-top">
+                                <div class="kpi-icon-box green">
+                                    <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 4v4l3 2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+                                </div>
+                                <span class="kpi-trend up">+5.2%</span>
+                            </div>
+                            <div>
+                                <div class="kpi-label">Ventes du Jour</div>
+                                <div class="kpi-value">
+                                    <span t-out="state.currency"/><span t-out="state.stats.revenue_today"/>
+                                </div>
+                            </div>
+                            <div class="kpi-sub">
+                                <div class="kpi-sub-item"><span class="kpi-sub-label">Transactions</span><span class="kpi-sub-val" t-out="state.stats.orders_today"/></div>
+                                <div class="kpi-sub-item"><span class="kpi-sub-label">Panier moy.</span><span class="kpi-sub-val">24.30 €</span></div>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card">
+                            <div class="kpi-top">
+                                <div class="kpi-icon-box red">
+                                    <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1L1 14h14L8 1zm0 4v4m0 2v1"/><rect x="7.25" y="9" width="1.5" height="1.5" rx="0"/></svg>
+                                </div>
+                                <span class="kpi-trend down" t-out="'-' + (state.stock_alerts.out_of_stock_count + state.stock_alerts.low_stock_count)"/>
+                            </div>
+                            <div>
+                                <div class="kpi-label">Produits en Alerte</div>
+                                <div class="kpi-value" t-out="state.stock_alerts.out_of_stock_count + state.stock_alerts.low_stock_count"/>
+                            </div>
+                            <div class="kpi-sub">
+                                <div class="kpi-sub-item"><span class="kpi-sub-label">Rupture</span><span class="kpi-sub-val" t-out="state.stock_alerts.out_of_stock_count"/></div>
+                                <div class="kpi-sub-item"><span class="kpi-sub-label">Exp. proche</span><span class="kpi-sub-val" t-out="state.stock_alerts.expiring_count"/></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CHARTS GRID -->
+                    <div class="dash-grid">
+                        <div class="card">
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-title">Évolution des Flux</div>
+                                    <div class="card-subtitle">Entrées de stock vs ventes — 7 derniers jours</div>
+                                </div>
+                                <button class="btn btn-outline" style="padding:5px 12px;font-size:12px;">Hebdomadaire</button>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-wrap"><canvas id="fluxChart"/></div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-title">Répartition du Stock</div>
+                                    <div class="card-subtitle">Volume par catégorie</div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="doughnut-wrap">
+                                    <div class="doughnut-chart-wrap"><canvas id="stockChart"/></div>
+                                    <div class="legend-list">
+                                        <div class="legend-item">
+                                            <span class="legend-label">
+                                                <span class="legend-dot" style="background:#5C3D5E;"/>
+                                                Médicaments Standard
+                                            </span>
+                                            <span class="legend-pct">75%</span>
+                                        </div>
+                                        <div class="legend-item">
+                                            <span class="legend-label">
+                                                <span class="legend-dot" style="background:#0D9E8A;"/>
+                                                Vaccins
+                                            </span>
+                                            <span class="legend-pct">25%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BOTTOM GRID: ALERTS & PRODUCTS -->
+                    <div class="dash-grid-bottom">
+                        <div class="card">
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-title">Alertes Critiques</div>
+                                    <div class="card-subtitle">Éléments nécessitant une attention immédiate</div>
+                                </div>
+                                <button class="card-action" t-on-click="() => this.setMenu('medicines')">Voir tout ›</button>
+                            </div>
+                            <div class="alert-list">
+                                <t t-if="state.stock_alerts.out_of_stock.length > 0">
+                                    <t t-foreach="state.stock_alerts.out_of_stock.slice(0, 2)" t-as="item" t-key="item.id">
+                                        <div class="alert-item">
+                                            <div class="alert-bar red"/>
+                                            <div class="alert-icon-box" style="background:var(--red-pale);color:var(--red);">
+                                                <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1L1 14h14L8 1zm0 5v4"/><circle cx="8" cy="12" r="0.8"/></svg>
+                                            </div>
+                                            <div class="alert-body">
+                                                <div class="alert-text urgent"><t t-out="item.name"/> — Rupture de stock imminente</div>
+                                                <div class="alert-when">AUJOURD'HUI</div>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </t>
+                                <t t-if="state.stock_alerts.expiring_soon.length > 0">
+                                    <t t-foreach="state.stock_alerts.expiring_soon.slice(0, 1)" t-as="item" t-key="item.id">
+                                        <div class="alert-item">
+                                            <div class="alert-bar orange"/>
+                                            <div class="alert-icon-box" style="background:var(--orange-pale);color:var(--orange);">
+                                                <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 4v4l2.5 2.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+                                            </div>
+                                            <div class="alert-body">
+                                                <div class="alert-text"><t t-out="item.name"/> — Expire bientôt</div>
+                                                <div class="alert-when">DANS 12J</div>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </t>
+                                <div class="alert-item">
+                                    <div class="alert-bar muted"/>
+                                    <div class="alert-icon-box" style="background:var(--surface);color:var(--muted);">
+                                        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 7v4M8 5v1" stroke="currentColor" stroke-width="1.5"/></svg>
+                                    </div>
+                                    <div class="alert-body">
+                                        <div class="alert-text">Stock critique — Article à vérifier</div>
+                                        <div class="alert-when">AUJOURD'HUI</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-title">Top Produits Commandés</div>
+                                    <div class="card-subtitle">Articles les plus sollicités ce mois-ci</div>
+                                </div>
+                            </div>
+                            <table class="data-table">
                                 <thead>
                                     <tr>
                                         <th>Produit</th>
                                         <th>Catégorie</th>
-                                        <th class="pf-ar">Stock</th>
-                                        <th class="pf-ar">Cmd</th>
+                                        <th>Stock</th>
+                                        <th>Commandes</th>
+                                        <th/>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td><strong>Paracétamol 500mg</strong></td>
-                                        <td>Analgésique</td>
-                                        <td class="pf-ar">1240</td>
-                                        <td class="pf-ar pf-text-accent">450</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Amoxicilline 1g</strong></td>
-                                        <td>Antibiotique</td>
-                                        <td class="pf-ar">850</td>
-                                        <td class="pf-ar pf-text-accent">320</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Ibuprofène 400mg</strong></td>
-                                        <td>Anti-inflammatoire</td>
-                                        <td class="pf-ar">820</td>
-                                        <td class="pf-ar pf-text-accent">280</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="pf-section">
-                            <h3>Récapitulatif Financier</h3>
-                            <div class="pf-finance">
-                                <div class="pf-finance-row">
-                                    <span>Sous-total HT</span>
-                                    <span class="pf-text-bold"><span t-out="state.currency"/>300.00</span>
-                                </div>
-                                <div class="pf-finance-row">
-                                    <span>TVA (20%)</span>
-                                    <span class="pf-text-bold"><span t-out="state.currency"/>60.00</span>
-                                </div>
-                                <div class="pf-finance-row">
-                                    <span>Frais de port</span>
-                                    <span class="pf-text-bold">Gratuit</span>
-                                </div>
-                                <div class="pf-finance-row pf-finance-total">
-                                    <span><strong>TOTAL TTC</strong></span>
-                                    <span class="pf-text-bold"><strong><span t-out="state.currency"/>360.00</strong></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </t>
-
-                <!-- ===== GESTION DES MÉDICAMENTS ===== -->
-                <t t-if="state.menu === 'medicines'">
-                    <div class="pf-header">
-                        <div>
-                            <h1>Gestion des Médicaments</h1>
-                            <p>Gérez votre inventaire et surveillez les stocks.</p>
-                        </div>
-                        <div class="pf-header-btns">
-                            <button class="pf-btn pf-btn-secondary"><i class="fa fa-download"></i> CSV</button>
-                            <button class="pf-btn pf-btn-primary"><i class="fa fa-plus"></i> Ajouter</button>
-                        </div>
-                    </div>
-
-                    <div class="pf-mini-stats">
-                        <div class="pf-mini-stat">
-                            <span class="pf-label">Total Références</span>
-                            <span class="pf-value" t-out="state.product_lst.length"/>
-                        </div>
-                        <div class="pf-mini-stat">
-                            <span class="pf-label">Stocks Faibles</span>
-                            <span class="pf-value pf-warning" t-out="state.stock_alerts.low_stock_count"/>
-                        </div>
-                        <div class="pf-mini-stat">
-                            <span class="pf-label">Ruptures</span>
-                            <span class="pf-value pf-error" t-out="state.stock_alerts.out_of_stock_count"/>
-                        </div>
-                    </div>
-
-                    <table class="pf-table pf-table-full">
-                        <thead>
-                            <tr>
-                                <th>Code</th>
-                                <th>Nom du Médicament</th>
-                                <th>Catégorie</th>
-                                <th class="pf-ar">Stock</th>
-                                <th>Unité</th>
-                                <th>Expiration</th>
-                                <th>Statut</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <t t-foreach="state.product_lst.slice(0, 8)" t-as="med" t-key="med.id">
-                                <tr>
-                                    <td class="pf-code" t-out="med.name.substring(0, 6).toUpperCase()"/>
-                                    <td><strong t-out="med.name"></strong></td>
-                                    <td>Analgésique</td>
-                                    <td class="pf-ar pf-bold" t-out="(med.qty_available || 0).toFixed(0)"/>
-                                    <td>Boîtes</td>
-                                    <td>12/06/2025</td>
-                                    <td>
-                                        <t t-if="(med.qty_available || 0) === 0">
-                                            <span class="pf-badge pf-badge-danger">Rupture</span>
-                                        </t>
-                                        <t t-elif="(med.qty_available || 0) &lt; 10">
-                                            <span class="pf-badge pf-badge-warning">Faible</span>
-                                        </t>
-                                        <t t-else="">
-                                            <span class="pf-badge pf-badge-success">Disponible</span>
-                                        </t>
-                                    </td>
-                                </tr>
-                            </t>
-                        </tbody>
-                    </table>
-                </t>
-
-                <!-- ===== MODULE VACCINS ===== -->
-                <t t-if="state.menu === 'vaccines'">
-                    <div class="pf-header">
-                        <div>
-                            <h1>Module Vaccins</h1>
-                            <p>Gestion des stocks sensibles et chaîne du froid.</p>
-                        </div>
-                        <button class="pf-btn pf-btn-primary"><i class="fa fa-plus"></i> Admin</button>
-                    </div>
-
-                    <div class="pf-kpi-grid pf-kpi-4">
-                        <div class="pf-kpi pf-kpi-sm pf-kpi-purple">
-                            <span class="pf-kpi-lbl">Doses Stock</span>
-                            <span class="pf-kpi-val">1,245</span>
-                            <span class="pf-kpi-sub">+123 ce mois</span>
-                        </div>
-                        <div class="pf-kpi pf-kpi-sm pf-kpi-pink">
-                            <span class="pf-kpi-lbl">Alertes Expiration</span>
-                            <span class="pf-kpi-val">08</span>
-                            <span class="pf-kpi-sub">À renouveler</span>
-                        </div>
-                        <div class="pf-kpi pf-kpi-sm pf-kpi-teal">
-                            <span class="pf-kpi-lbl">Chaîne Froid</span>
-                            <span class="pf-kpi-val">Stable</span>
-                            <span class="pf-kpi-sub">↓ 23°C - OK</span>
-                        </div>
-                        <div class="pf-kpi pf-kpi-sm pf-kpi-green">
-                            <span class="pf-kpi-lbl">Administrés</span>
-                            <span class="pf-kpi-val">3</span>
-                            <span class="pf-kpi-sub">7 derniers jours</span>
-                        </div>
-                    </div>
-
-                    <h3>Inventaire par Lot</h3>
-                    <table class="pf-table pf-table-full">
-                        <thead>
-                            <tr>
-                                <th>Vaccin</th>
-                                <th>N° Lot</th>
-                                <th>Doses</th>
-                                <th class="pf-ar">Stock</th>
-                                <th>Conservation</th>
-                                <th>Expiration</th>
-                                <th>Statut</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>BCG Vaccine</strong></td>
-                                <td class="pf-code">BCG-2024-001</td>
-                                <td>10 doses</td>
-                                <td class="pf-ar pf-bold">450</td>
-                                <td>🌡️ 2-8°C</td>
-                                <td>15/12/2025</td>
-                                <td><span class="pf-badge pf-badge-success">Disponible</span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>VaxigripTetra</strong></td>
-                                <td class="pf-code">FLU-2542-X</td>
-                                <td>1 dose</td>
-                                <td class="pf-ar pf-bold">0</td>
-                                <td>🌡️ 2-8°C</td>
-                                <td>10/03/2024</td>
-                                <td><span class="pf-badge pf-badge-danger">Expiré</span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Prevenar 13</strong></td>
-                                <td class="pf-code">PRV-13-082</td>
-                                <td>1 dose</td>
-                                <td class="pf-ar pf-bold">85</td>
-                                <td>🌡️ 2-8°C</td>
-                                <td>20/11/2024</td>
-                                <td><span class="pf-badge pf-badge-warning">Alerte</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </t>
-
-                <!-- ===== COMMANDS FOURNISSEURS ===== -->
-                <t t-if="state.menu === 'suppliers'">
-                    <div class="pf-header">
-                        <div>
-                            <h1>Commandes Fournisseurs</h1>
-                            <p>Suiv les approvisionnements en temps réel.</p>
-                        </div>
-                        <div class="pf-header-btns">
-                            <button class="pf-btn pf-btn-secondary"><i class="fa fa-download"></i> Export CSV</button>
-                            <button class="pf-btn pf-btn-primary"><i class="fa fa-plus"></i> Voir Liste</button>
-                        </div>
-                    </div>
-
-                    <div class="pf-mini-stats">
-                        <div class="pf-mini-stat">
-                            <span class="pf-label">TOTAL CMD</span>
-                            <span class="pf-value">24</span>
-                            <span class="pf-detail">> 3 cette semaine</span>
-                        </div>
-                        <div class="pf-mini-stat">
-                            <span class="pf-label">EN ATTENTE</span>
-                            <span class="pf-value">08</span>
-                            <span class="pf-detail">4,250 €</span>
-                        </div>
-                        <div class="pf-mini-stat">
-                            <span class="pf-label">REÇUES (MOIS)</span>
-                            <span class="pf-value">14</span>
-                            <span class="pf-detail">98% conforme</span>
-                        </div>
-                        <div class="pf-mini-stat">
-                            <span class="pf-label">BUDGET ENGAGÉ</span>
-                            <span class="pf-value" style="color: #f59e0b;">12,480 €</span>
-                            <span class="pf-detail">Disponible: 5,000 €</span>
-                        </div>
-                    </div>
-
-                    <table class="pf-table pf-table-full">
-                        <thead>
-                            <tr>
-                                <th>Fournisseur</th>
-                                <th>Date Prévue</th>
-                                <th>Statut</th>
-                                <th class="pf-ar">Montant</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>Pharmacie Centrale</strong></td>
-                                <td>2026-02-28</td>
-                                <td><span class="pf-badge pf-badge-primary">Confirmé</span></td>
-                                <td class="pf-ar pf-bold">1,250.00 €</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Grossiste Pharma</strong></td>
-                                <td>2026-02-25</td>
-                                <td><span class="pf-badge pf-badge-secondary">En cours</span></td>
-                                <td class="pf-ar pf-bold">890.50 €</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </t>
-
-                <!-- ===== COMMANDES ===== -->
-                <t t-if="state.menu === 'orders'">
-                    <div class="pf-header">
-                        <h1>Toutes les Commandes</h1>
-                    </div>
-                    <table class="pf-table pf-table-full">
-                        <thead>
-                            <tr>
-                                <th>Référence</th>
-                                <th>Patient</th>
-                                <th>Date</th>
-                                <th class="pf-ar">Montant</th>
-                                <th>Statut</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <t t-foreach="state.order_data" t-as="order" t-key="order.id">
-                                <tr>
-                                    <td class="pf-code" t-out="order.name"/>
-                                    <td t-out="order.partner_id ? order.partner_id[1] : '-'"/>
-                                    <td t-out="order.create_date ? order.create_date.substring(0, 10) : '-'"/>
-                                    <td class="pf-ar pf-bold"><span t-out="state.currency"/><span t-out="order.amount_total"/></td>
-                                    <td>
-                                        <t t-if="order.state === 'sale'">
-                                            <span class="pf-badge pf-badge-success">Confirmée</span>
-                                        </t>
-                                        <t t-elif="order.state === 'draft'">
-                                            <span class="pf-badge pf-badge-warning">Brouillon</span>
-                                        </t>
-                                        <t t-else="">
-                                            <span class="pf-badge pf-badge-secondary"><t t-out="order.state"/></span>
-                                        </t>
-                                    </td>
-                                </tr>
-                            </t>
-                        </tbody>
-                    </table>
-                </t>
-
-                <!-- ===== NOUVELLE COMMANDE ===== -->
-                <t t-if="state.menu === 'new_order'">
-                    <div class="pf-header">
-                        <h1>Nouvelle Commande</h1>
-                    </div>
-                    <div class="pf-form">
-                        <div class="pf-form-section">
-                            <h3>Informations Patient</h3>
-                            <div class="pf-form-grid">
-                                <input type="text" placeholder="Nom" t-ref="PatientName" class="pf-input"/>
-                                <input type="email" placeholder="Email" t-ref="Email" class="pf-input"/>
-                                <input type="tel" placeholder="Téléphone" t-ref="Phone" class="pf-input"/>
-                                <input type="date" t-ref="Dob" class="pf-input"/> 
-                            </div>
-                        </div>
-                        <div class="pf-form-section">
-                            <h3>Médicaments</h3>
-                            <table class="pf-table">
-                                <thead>
-                                    <tr>
-                                        <th>Médicament</th>
-                                        <th>Quantité</th>
-                                        <th>Prix</th>
-                                        <th>Sous-total</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <t t-foreach="state.order_line" t-as="line" t-key="line.id">
-                                        <PharmacyOrderLines line="line" state="state" updateOrderLine="(l, id) => this.updateOrderLine(l, id)" removeLine="(id) => this.removeLine(id)"/>
+                                    <t t-foreach="state.product_lst.slice(0, 5)" t-as="prod" t-key="prod.id">
+                                        <tr>
+                                            <td><span class="prod-name" t-out="prod.name.substring(0, 20)"/></td>
+                                            <td><span class="cat-badge">Médicament</span></td>
+                                            <td><span class="mono" t-out="(prod.qty_available or 0).toFixed(0)"/></td>
+                                            <td><span class="mono">120</span></td>
+                                            <td><button class="row-action">···</button></td>
+                                        </tr>
+                                    </t>
+                                    <t t-if="state.product_lst.length === 0">
+                                        <tr>
+                                            <td colspan="5" style="text-align:center;padding:20px;color:var(--muted);">Aucun produit disponible</td>
+                                        </tr>
                                     </t>
                                 </tbody>
                             </table>
-                            <button class="pf-btn pf-btn-secondary" t-on-click="addRow">+ Ajouter ligne</button>
                         </div>
-                        <div class="pf-form-actions">
-                            <button class="pf-btn pf-btn-ghost" t-on-click="() => this.setMenu('home')">Annuler</button>
-                            <button class="pf-btn pf-btn-primary" t-on-click="create_sale_order">✓ Créer</button>
+                    </div>
+
+                    <div class="footer-bar">
+                        <span class="status-live"><span class="live-dot"/> Serveur Opérationnel</span>
+                        <span>Support Technique</span>
+                        <span>Confidentialité</span>
+                        <span>© 2026 PharmaFlow</span>
+                    </div>
+                </t>
+
+                <!-- PAGE MEDICINES -->
+                <t t-if="state.menu === 'medicines'">
+                    <div class="page-header">
+                        <div>
+                            <div class="page-title">Gestion des Médicaments</div>
+                            <div class="page-subtitle">Gérez votre inventaire et surveillez les stocks.</div>
                         </div>
+                        <div class="header-actions">
+                            <button class="btn btn-outline">Exporter CSV</button>
+                            <button class="btn btn-primary">+ Ajouter Médicament</button>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <div class="card-title">Inventaire Complet</div>
+                                <div class="card-subtitle" t-out="'Nombre total: ' + state.product_lst.length + ' articles'"/>
+                            </div>
+                        </div>
+                        <table class="data-table" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>Produit</th>
+                                    <th>Stock</th>
+                                    <th>Prix</th>
+                                    <th>Catégorie</th>
+                                    <th>Statut</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="state.product_lst.slice(0, 10)" t-as="prod" t-key="prod.id">
+                                    <tr>
+                                        <td><span class="prod-name" t-out="prod.name"/></td>
+                                        <td><span class="mono" t-out="(prod.qty_available or 0).toFixed(0)"/></td>
+                                        <td><span class="mono" t-out="(prod.list_price or 0).toFixed(2)"/> €</td>
+                                        <td><span class="cat-badge">Médicament</span></td>
+                                        <td>
+                                            <t t-if="(prod.qty_available or 0) === 0">
+                                                <span class="cat-badge" style="background:var(--red-pale);color:var(--red);border-color:var(--red);">Rupture</span>
+                                            </t>
+                                            <t t-elif="(prod.qty_available or 0) &lt; 10">
+                                                <span class="cat-badge" style="background:var(--orange-pale);color:var(--orange);border-color:var(--orange);">Faible</span>
+                                            </t>
+                                            <t t-else="">
+                                                <span class="cat-badge" style="background:#EAF5EA;color:#2E7D32;border-color:#2E7D32;">OK</span>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+
+                <!-- PAGE VACCINES -->
+                <t t-if="state.menu === 'vaccines'">
+                    <div class="page-header">
+                        <div>
+                            <div class="page-title">Module Vaccins</div>
+                            <div class="page-subtitle">Gestion des stocks sensibles et chaîne du froid.</div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Inventaire Vaccins</div>
+                        </div>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Vaccin</th>
+                                    <th>Stock</th>
+                                    <th>Conservation</th>
+                                    <th>Expiration</th>
+                                    <th>Statut</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="state.vaccine.slice(0, 5)" t-as="vacc" t-key="vacc.id">
+                                    <tr>
+                                        <td><span class="prod-name" t-out="vacc.name"/></td>
+                                        <td><span class="mono" t-out="(vacc.qty_available or 0).toFixed(0)"/></td>
+                                        <td>🌡️ 2-8°C</td>
+                                        <td>Active</td>
+                                        <td><span class="cat-badge" style="background:#EAF5EA;color:#2E7D32;border-color:#2E7D32;">Disponible</span></td>
+                                    </tr>
+                                </t>
+                                <t t-if="state.vaccine.length === 0">
+                                    <tr><td colspan="5" style="text-align:center;padding:20px;color:var(--muted);">Aucun vaccin</td></tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+
+                <!-- PAGE SUPPLIERS -->
+                <t t-if="state.menu === 'suppliers'">
+                    <div class="page-header">
+                        <div>
+                            <div class="page-title">Commandes Fournisseurs</div>
+                            <div class="page-subtitle">Suivi des approvisionnements en temps réel.</div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Commandes en cours</div>
+                        </div>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Fournisseur</th>
+                                    <th>Date Prévue</th>
+                                    <th>Montant</th>
+                                    <th>Statut</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="state.order_data.slice(0, 5)" t-as="order" t-key="order.id">
+                                    <tr>
+                                        <td><span class="prod-name" t-out="order.partner_id ? order.partner_id[1] : '-'"/></td>
+                                        <td><t t-out="order.create_date ? order.create_date.substring(0, 10) : '-'"/></td>
+                                        <td><span class="mono"><t t-out="state.currency"/><t t-out="(order.amount_total or 0).toFixed(2)"/></span></td>
+                                        <td><span class="cat-badge">Confirmé</span></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
                     </div>
                 </t>
 
             </div>
-
-        </div>
+        </main>
 
     </div>
-    </t>
+</t>
 
-    <!-- PHARMACY ORDER LINES COMPONENT -->
-    <t t-name="PharmacyOrderLines">
-        <tr>
-            <td>
-                <select class="pf-input" t-on-change="(e) => this.props.updateOrderLine(Object.assign({}, this.props.line, {product_id: e.target.value}), this.props.line.id)">
-                    <option value="">-- Sélectionner --</option>
-                    <t t-foreach="this.props.state.product_lst" t-as="prod" t-key="prod.id">
-                        <option t-att-value="prod.id" t-att-selected="prod.id == this.props.line.product_id">
-                            <t t-out="prod.name"/>
-                        </option>
-                    </t>
-                </select>
-            </td>
-            <td>
-                <input type="number" min="0" class="pf-input" t-att-value="this.props.line.qty" t-on-change="(e) => this.props.updateOrderLine(Object.assign({}, this.props.line, {qty: parseInt(e.target.value) || 0}), this.props.line.id)"/>
-            </td>
-            <td>
-                <input type="number" min="0" class="pf-input" t-att-value="this.props.line.price" t-on-change="(e) => this.props.updateOrderLine(Object.assign({}, this.props.line, {price: parseFloat(e.target.value) || 0}), this.props.line.id)"/>
-            </td>
-            <td class="pf-ar pf-bold">
-                <t t-out="((this.props.line.qty || 0) * (this.props.line.price || 0)).toFixed(2)"/>
-            </td>
-            <td>
-                <button class="pf-btn pf-btn-danger pf-btn-sm" t-on-click="() => this.props.removeLine(this.props.line.id)">
-                    <i class="fa fa-trash"></i>
-                </button>
-            </td>
-        </tr>
-    </t>
-    
 </templates>

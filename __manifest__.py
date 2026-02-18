@@ -90,10 +90,12 @@
         ],
         "web.assets_backend": [
             "https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js",
+            "https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Epilogue:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap",
             "base_hospital_management/static/src/css/doctor_dashboard.css",
             "base_hospital_management/static/src/css/reception_dashboard.css",
             "base_hospital_management/static/src/css/lab_dashboard.css",
             "base_hospital_management/static/src/css/pharmacy_dashboard.css",
+            "base_hospital_management/static/src/css/pharmacy_dashboard_modern.css",
             
      
             "base_hospital_management/static/src/xml/lab_dashboard_templates.xml",

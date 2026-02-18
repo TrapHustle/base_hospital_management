@@ -265,7 +265,82 @@ export class PharmacyDashboard extends Component {
         const img = document.getElementById('patient-image');
         if (img) img.src = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png';
     }
-}
+
+    setMenu(menu) {
+        this.state.menu = menu;
+        // Chart initialization on home page
+        if (menu === 'home') {
+            setTimeout(() => this._initCharts(), 100);
+        }
+    }
+
+    logout() {
+        if (window.confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+            window.location.href = '/web/session/logout';
+        }
+    }
+
+    _initCharts() {
+        const ctx1 = document.getElementById('fluxChart');
+        const ctx2 = document.getElementById('stockChart');
+        
+        if (!ctx1) return; // Charts not ready yet
+        
+        // Destroy existing charts if any
+        if (window.fluxChartInstance) window.fluxChartInstance.destroy();
+        if (window.stockChartInstance) window.stockChartInstance.destroy();
+
+        // Line Chart - Évolution des Flux
+        window.fluxChartInstance = new Chart(ctx1, {
+            type: 'line',
+            data: {
+                labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
+                datasets: [
+                    {
+                        label: 'Entrées Stock',
+                        data: [3200, 5800, 9200, 4100, 5500, 3800, 4600],
+                        borderColor: '#5C3D5E',
+                        backgroundColor: 'rgba(92,61,94,0.07)',
+                        tension: 0.4, fill: true,
+                        pointBackgroundColor: '#5C3D5E',
+                        pointBorderColor: '#fff', pointBorderWidth: 2, pointRadius: 4,
+                    },
+                    {
+                        label: 'Ventes',
+                        data: [1800, 3200, 4800, 5600, 5200, 4900, 4200],
+                        borderColor: '#0D9E8A',
+                        backgroundColor: 'rgba(13,158,138,0.07)',
+                        tension: 0.4, fill: true,
+                        pointBackgroundColor: '#0D9E8A',
+                        pointBorderColor: '#fff', pointBorderWidth: 2, pointRadius: 4,
+                    }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { grid: { color: '#EDE8F2' }, ticks: { font: { size: 11 } } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // Doughnut Chart - Répartition du Stock
+        window.stockChartInstance = new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: ['Médicaments Standard', 'Vaccins'],
+                datasets: [{ data: [75, 25], backgroundColor: ['#5C3D5E', '#0D9E8A'], borderWidth: 0, hoverOffset: 6 }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                cutout: '74%',
+                plugins: { legend: { display: false } }
+            }
+        });
+    }
+
 
 PharmacyDashboard.template = "PharmacyDashboard";
 PharmacyDashboard.components = { PharmacyOrderLines };
