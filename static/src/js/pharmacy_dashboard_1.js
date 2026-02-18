@@ -274,6 +274,15 @@ export class PharmacyDashboard extends Component {
         }
     }
 
+    getCurrentDateFormatted() {
+        const date = new Date();
+        const days = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'];
+        const months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+        const dayName = days[date.getDay()];
+        const monthName = months[date.getMonth()];
+        return `${dayName.charAt(0).toUpperCase() + dayName.slice(1)} ${date.getDate()} ${monthName} ${date.getFullYear()}`;
+    }
+
     logout() {
         if (window.confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
             window.location.href = '/web/session/logout';
@@ -281,10 +290,19 @@ export class PharmacyDashboard extends Component {
     }
 
     _initCharts() {
+        // Verify Chart.js is available
+        if (typeof Chart === 'undefined') {
+            console.warn('Chart.js not loaded, skipping chart initialization');
+            return;
+        }
+
         const ctx1 = document.getElementById('fluxChart');
         const ctx2 = document.getElementById('stockChart');
         
-        if (!ctx1) return; // Charts not ready yet
+        if (!ctx1 || !ctx2) {
+            console.warn('Chart containers not found');
+            return;
+        }
         
         // Destroy existing charts if any
         if (window.fluxChartInstance) window.fluxChartInstance.destroy();
