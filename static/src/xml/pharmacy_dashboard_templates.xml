@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<templates id="pharmacy_dashboard" xml:space="preserve">
+    <t t-name="PharmacyDashboard" owl="1">
+        <div class="pha-glass-bg" t-ref="root">
+            <!-- Animated gradient orbs -->
+            <div class="pha-orb pha-orb-1"></div>
+            <div class="pha-orb pha-orb-2"></div>
+            <div class="pha-orb pha-orb-3"></div>
+
+            <div class="pha-layout">
+                <!-- Glass Sidebar -->
+                <aside class="pha-sidebar">
+                    <div class="pha-sidebar-top">
+                        <div class="pha-logo">
+                            <div class="pha-logo-icon">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                                </svg>
+                            </div>
+                            <div class="pha-logo-info">
+                                <span class="pha-logo-name">MedPharm</span>
+                                <span class="pha-logo-role">Pharmacie</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <nav class="pha-nav">
+                        <span class="pha-nav-label">NAVIGATION</span>
+                        <ul class="pha-nav-menu">
+                            <li>
+                                <a href="#" class="pha-nav-link"
+                                   t-att-class="{ 'active': state.menu === 'home' }"
+                                   t-on-click="() => this.create_order('home')">
+                                    <span class="pha-nav-icon">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                                    </span>
+                                    <span class="pha-nav-text">Accueil</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="pha-nav-link"
+                                   t-att-class="{ 'active': state.menu === 'medicines' }"
+                                   t-on-click="() => this.fetch_medicine_data('medicines')">
+                                    <span class="pha-nav-icon">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 1.5H8A6.5 6.5 0 0 0 1.5 8v8A6.5 6.5 0 0 0 8 22.5h8a6.5 6.5 0 0 0 6.5-6.5v-2.5"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                                    </span>
+                                    <span class="pha-nav-text">Médicaments</span>
+                                    <span class="pha-nav-badge"><t t-out="state.medicinesCount"/></span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="pha-nav-link"
+                                   t-att-class="{ 'active': state.menu === 'vaccines' }"
+                                   t-on-click="() => this.fetch_vaccine_data('vaccines')">
+                                    <span class="pha-nav-icon">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m14.5 2-8.46 8.46a2 2 0 0 0 0 2.83l4.67 4.67a2 2 0 0 0 2.83 0L22 9.5"/><path d="M9 7 4 12"/><path d="m16 2 6 6"/></svg>
+                                    </span>
+                                    <span class="pha-nav-text">Vaccins</span>
+                                    <span class="pha-nav-badge"><t t-out="state.vaccinesCount"/></span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="pha-nav-link"
+                                   t-att-class="{ 'active': state.menu === 'orders' }"
+                                   t-on-click="() => this.fetch_sale_orders('orders')">
+                                    <span class="pha-nav-icon">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                                    </span>
+                                    <span class="pha-nav-text">Commandes</span>
+                                    <span class="pha-nav-badge"><t t-out="state.pendingOrdersCount"/></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+
+                    <div class="pha-sidebar-footer">
+                        <div class="pha-notif-card">
+                            <div class="pha-notif-icon">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                            </div>
+                            <div class="pha-notif-info">
+                                <span class="pha-notif-count"><t t-out="state.lowStockCount"/> alertes stock</span>
+                                <span class="pha-notif-text">à commander</span>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Main Content -->
+                <main class="pha-main">
+                    <!-- Date Header -->
+                    <div class="pha-date-bar">
+                        <span class="pha-date-text"><t t-out="state.currentDate"/></span>
+                    </div>
+
+                    <!-- Stats Grid -->
+                    <div class="pha-stats-grid">
+                        <div class="pha-stat-card pha-stat-emerald">
+                            <div class="pha-stat-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 1.5H8A6.5 6.5 0 0 0 1.5 8v8A6.5 6.5 0 0 0 8 22.5h8a6.5 6.5 0 0 0 6.5-6.5v-2.5"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                            </div>
+                            <div class="pha-stat-info">
+                                <span class="pha-stat-value"><t t-out="state.medicinesCount"/></span>
+                                <span class="pha-stat-label">Médicaments</span>
+                                <span class="pha-stat-sub"><t t-out="state.medicinesSubtitle"/></span>
+                            </div>
+                        </div>
+
+                        <div class="pha-stat-card pha-stat-teal">
+                            <div class="pha-stat-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m14.5 2-8.46 8.46a2 2 0 0 0 0 2.83l4.67 4.67a2 2 0 0 0 2.83 0L22 9.5"/><path d="M9 7 4 12"/><path d="m16 2 6 6"/></svg>
+                            </div>
+                            <div class="pha-stat-info">
+                                <span class="pha-stat-value"><t t-out="state.vaccinesCount"/></span>
+                                <span class="pha-stat-label">Vaccins</span>
+                                <span class="pha-stat-sub"><t t-out="state.vaccinesSubtitle"/></span>
+                            </div>
+                        </div>
+
+                        <div class="pha-stat-card pha-stat-blue">
+                            <div class="pha-stat-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                            </div>
+                            <div class="pha-stat-info">
+                                <span class="pha-stat-value"><t t-out="state.pendingOrdersCount"/></span>
+                                <span class="pha-stat-label">Commandes</span>
+                                <span class="pha-stat-sub"><t t-out="state.ordersSubtitle"/></span>
+                            </div>
+                        </div>
+
+                        <div class="pha-stat-card pha-stat-rose">
+                            <div class="pha-stat-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                            </div>
+                            <div class="pha-stat-info">
+                                <span class="pha-stat-value"><t t-out="state.lowStockCount"/></span>
+                                <span class="pha-stat-label">Stock faible</span>
+                                <span class="pha-stat-sub"><t t-out="state.stockSubtitle"/></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Grid -->
+                    <div class="pha-bottom-grid">
+                        <!-- Recent Orders -->
+                        <div class="pha-glass-card">
+                            <h3 class="pha-card-title">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                                Commandes récentes
+                            </h3>
+                            <div class="pha-list">
+                                <t t-foreach="state.recent_orders" t-as="order" t-key="order_index">
+                                    <div class="pha-list-row">
+                                        <div class="pha-list-date"><t t-out="order.date"/></div>
+                                        <div class="pha-list-bar" t-att-class="{ 'urgent': order.urgent }"/>
+                                        <div class="pha-list-details">
+                                            <span class="pha-list-name"><t t-out="order.name"/></span>
+                                            <span class="pha-list-sub"><t t-out="order.product_qty"/> article(s)</span>
+                                        </div>
+                                        <span class="pha-list-amount"><t t-out="order.total_amount"/></span>
+                                    </div>
+                                </t>
+                                <div t-if="!state.recent_orders.length" class="pha-empty">
+                                    Aucune commande récente
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Low Stock Items -->
+                        <div class="pha-glass-card">
+                            <h3 class="pha-card-title">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                                Articles en rupture
+                            </h3>
+                            <div class="pha-list">
+                                <t t-foreach="state.low_stock_items" t-as="item" t-key="item_index">
+                                    <div class="pha-stock-row">
+                                        <span class="pha-stock-name"><t t-out="item.name"/></span>
+                                        <div class="pha-stock-info">
+                                            <span class="pha-stock-qty">Stock: <t t-out="item.quantity"/></span>
+                                            <span class="pha-stock-min">Min: <t t-out="item.threshold"/></span>
+                                        </div>
+                                        <span class="pha-stock-badge" t-att-class="'pha-status-' + item.status">
+                                            <t t-out="item.status_label"/>
+                                        </span>
+                                    </div>
+                                </t>
+                                <div t-if="!state.low_stock_items.length" class="pha-empty">
+                                    Aucun article en rupture
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </t>
+</templates>

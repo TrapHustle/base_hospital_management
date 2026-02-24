@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<templates>
+    <t t-name="LabDashboard">
+        <div class="lab-glass-bg" t-ref="root">
+            <!-- Animated gradient orbs -->
+            <div class="lab-orb lab-orb-1"></div>
+            <div class="lab-orb lab-orb-2"></div>
+            <div class="lab-orb lab-orb-3"></div>
+
+            <div class="lab-layout">
+                <!-- Glass Sidebar -->
+                <aside class="lab-sidebar">
+                    <div class="lab-sidebar-top">
+                        <div class="lab-logo">
+                            <div class="lab-logo-icon">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M9 3h6v11l3 3H6l3-3V3z"/><path d="M6 17l-2 4h16l-2-4"/>
+                                </svg>
+                            </div>
+                            <div class="lab-logo-info">
+                                <span class="lab-logo-name">MedLab</span>
+                                <span class="lab-logo-role">Laboratoire</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <nav class="lab-nav">
+                        <span class="lab-nav-label">NAVIGATION</span>
+                        <ul class="lab-nav-menu">
+                            <li>
+                                <a href="#" class="lab-nav-link"
+                                   t-att-class="{ 'active': state.activeView === 'main' || state.activeView === 'form' }"
+                                   t-on-click="_loadTestData">
+                                    <span class="lab-nav-icon">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                    </span>
+                                    <span class="lab-nav-text">À confirmer</span>
+                                    <span class="lab-nav-badge"><t t-out="state.tests_confirm.length"/></span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="lab-nav-link"
+                                   t-att-class="{ 'active': state.activeView === 'process' }"
+                                   t-on-click="_allLabTest">
+                                    <span class="lab-nav-icon">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6v11l3 3H6l3-3V3z"/><path d="M6 17l-2 4h16l-2-4"/></svg>
+                                    </span>
+                                    <span class="lab-nav-text">En traitement</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="lab-nav-link"
+                                   t-att-class="{ 'active': state.activeView === 'published' }"
+                                   t-on-click="_loadPublished">
+                                    <span class="lab-nav-icon">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                                    </span>
+                                    <span class="lab-nav-text">Publiés</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </aside>
+
+                <!-- Main Content -->
+                <main class="lab-main">
+                    <!-- Header -->
+                    <div class="lab-header">
+                        <div class="lab-header-left">
+                            <h1 class="lab-header-title">
+                                <t t-if="state.activeView === 'main'">Tests à confirmer</t>
+                                <t t-elif="state.activeView === 'form'">Détail du test</t>
+                                <t t-elif="state.activeView === 'process'">Tests en traitement</t>
+                                <t t-elif="state.activeView === 'published'">Résultats publiés</t>
+                            </h1>
+                            <span class="lab-header-sub">Tableau de bord laboratoire</span>
+                        </div>
+                    </div>
+
+                    <!-- Tests to Confirm view -->
+                    <div t-if="state.activeView === 'main'" class="lab-content">
+                        <div class="lab-glass-card">
+                            <div class="lab-card-header">
+                                <h3 class="lab-card-title">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                    Tests en attente de confirmation
+                                </h3>
+                                <span class="lab-count-badge"><t t-out="state.tests_confirm.length"/> tests</span>
+                            </div>
+                            <div class="lab-table-wrapper">
+                                <table class="lab-table">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Référence</th>
+                                            <th>Patient</th>
+                                            <th>Médecin</th>
+                                            <th>Type</th>
+                                            <th>Date</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-set="index" t-value="-1"/>
+                                        <t t-foreach="state.tests_confirm" t-as="test" t-key="test.id">
+                                            <t t-set="index" t-value="index + 1"/>
+                                            <tr class="lab-table-row"
+                                                t-on-click="_fetchTestData"
+                                                t-att-data-index="index">
+                                                <td><span class="lab-row-num"><t t-out="index + 1"/></span></td>
+                                                <td><span class="lab-ref-badge"><t t-esc="test.display_name"/></span></td>
+                                                <td><t t-esc="test.patient_id[1]"/></td>
+                                                <td><t t-esc="test.doctor_id[1]"/></td>
+                                                <td><span class="lab-type-badge"><t t-esc="test.patient_type"/></span></td>
+                                                <td><t t-esc="test.date"/></td>
+                                                <td><button class="lab-btn-view">Voir</button></td>
+                                            </tr>
+                                        </t>
+                                        <tr t-if="state.tests_confirm.length === 0">
+                                            <td colspan="7" class="lab-empty">Aucun test en attente</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form / Detail view -->
+                    <div t-if="state.activeView === 'form'" class="lab-content">
+                        <button class="lab-back-btn" t-on-click="_loadTestData">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                            Retour à la liste
+                        </button>
+                        <div class="lab-form-grid">
+                            <!-- Patient Info Card -->
+                            <div class="lab-glass-card">
+                                <div class="lab-patient-header">
+                                    <div t-if="state.tests_confirm_data.image_1920" class="lab-patient-avatar">
+                                        <img t-att-src="'data:image/png;base64,' + state.tests_confirm_data.image_1920"/>
+                                    </div>
+                                    <div t-else="" class="lab-patient-avatar-placeholder">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                    </div>
+                                    <div>
+                                        <h2 class="lab-patient-name"><t t-esc="state.tests_confirm_data.name"/></h2>
+                                        <span class="lab-type-badge" t-if="state.tests_confirm_data.patient_type">
+                                            <t t-esc="state.tests_confirm_data.patient_type"/>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="lab-info-grid">
+                                    <div class="lab-info-item" t-if="state.tests_confirm_data.phone">
+                                        <span class="lab-info-label">Téléphone</span>
+                                        <span class="lab-info-value"><t t-esc="state.tests_confirm_data.phone"/></span>
+                                    </div>
+                                    <div class="lab-info-item" t-if="state.tests_confirm_data.email">
+                                        <span class="lab-info-label">Email</span>
+                                        <span class="lab-info-value"><t t-esc="state.tests_confirm_data.email"/></span>
+                                    </div>
+                                    <div class="lab-info-item" t-if="state.tests_confirm_data.dob">
+                                        <span class="lab-info-label">Date de naissance</span>
+                                        <span class="lab-info-value"><t t-esc="state.tests_confirm_data.dob"/></span>
+                                    </div>
+                                    <div class="lab-info-item" t-if="state.tests_confirm_data.gender">
+                                        <span class="lab-info-label">Genre</span>
+                                        <span class="lab-info-value"><t t-esc="state.tests_confirm_data.gender"/></span>
+                                    </div>
+                                    <div class="lab-info-item" t-if="state.tests_confirm_data.status">
+                                        <span class="lab-info-label">Statut marital</span>
+                                        <span class="lab-info-value"><t t-esc="state.tests_confirm_data.status"/></span>
+                                    </div>
+                                    <div class="lab-info-item" t-if="state.tests_confirm_data.blood_group">
+                                        <span class="lab-info-label">Groupe sanguin</span>
+                                        <span class="lab-info-value lab-blood"><t t-esc="state.tests_confirm_data.blood_group"/></span>
+                                    </div>
+                                    <div class="lab-info-item" t-if="state.tests_confirm_data.doctor">
+                                        <span class="lab-info-label">Médecin</span>
+                                        <span class="lab-info-value"><t t-esc="state.tests_confirm_data.doctor"/></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Test Details Card -->
+                            <div class="lab-glass-card">
+                                <h3 class="lab-card-title">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3h6v11l3 3H6l3-3V3z"/><path d="M6 17l-2 4h16l-2-4"/></svg>
+                                    Détails des analyses
+                                </h3>
+                                <div class="lab-table-wrapper">
+                                    <table class="lab-table">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Analyse</th>
+                                                <th>Délai</th>
+                                                <th>Prix</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr t-foreach="state.test_data" t-as="testdata" t-key="testdata.id" class="lab-table-row">
+                                                <td><t t-esc="testdata.id"/></td>
+                                                <td><strong><t t-esc="testdata.name"/></strong></td>
+                                                <td><t t-esc="testdata.patient_lead"/></td>
+                                                <td class="lab-price"><t t-esc="testdata.price"/></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="lab-action-bar">
+                                    <button class="lab-btn-confirm" t-on-click="confirmLabTest">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                        Confirmer les tests
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Process test view -->
+                    <div t-if="state.activeView === 'process'" class="lab-content">
+                        <div class="lab-glass-card">
+                            <div class="lab-card-header">
+                                <h3 class="lab-card-title">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3h6v11l3 3H6l3-3V3z"/><path d="M6 17l-2 4h16l-2-4"/></svg>
+                                    Tests en cours de traitement
+                                </h3>
+                                <span class="lab-count-badge"><t t-out="state.all_test_data.length"/> tests</span>
+                            </div>
+                            <div class="lab-table-wrapper">
+                                <table class="lab-table">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Référence</th>
+                                            <th>Patient</th>
+                                            <th>Date</th>
+                                            <th>Prix total</th>
+                                            <th>Statut</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-set="index" t-value="0"/>
+                                        <t t-foreach="state.all_test_data" t-as="testdata" t-key="testdata.id">
+                                            <t t-set="index" t-value="index + 1"/>
+                                            <tr class="lab-table-row"
+                                                t-on-click="fetch_all_test_data"
+                                                t-att-data-index="index">
+                                                <td><span class="lab-row-num"><t t-out="index"/></span></td>
+                                                <td><span class="lab-ref-badge"><t t-esc="testdata.display_name"/></span></td>
+                                                <td><t t-esc="testdata.patient_id[1]"/></td>
+                                                <td><t t-esc="testdata.date"/></td>
+                                                <td class="lab-price"><t t-esc="testdata.total_price"/></td>
+                                                <td>
+                                                    <span class="lab-status-badge" t-att-class="'lab-status-' + testdata.state">
+                                                        <t t-esc="testdata.state"/>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Published data view -->
+                    <div t-if="state.activeView === 'published'" class="lab-content">
+                        <div class="lab-glass-card">
+                            <div class="lab-card-header">
+                                <h3 class="lab-card-title">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                                    Résultats publiés
+                                </h3>
+                                <span class="lab-count-badge"><t t-out="state.published_data.length"/> résultats</span>
+                            </div>
+                            <div class="lab-table-wrapper">
+                                <table class="lab-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Référence</th>
+                                            <th>Patient</th>
+                                            <th>Test</th>
+                                            <th>Valeur normale</th>
+                                            <th>Résultat</th>
+                                            <th>Unité</th>
+                                            <th>Fichier</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="state.published_data" t-as="published_data" t-key="published_data.id">
+                                            <tr class="lab-table-row">
+                                                <td><span class="lab-ref-badge"><t t-esc="published_data.parent_id"/></span></td>
+                                                <td><t t-esc="published_data.patient_id[1]"/></td>
+                                                <td><t t-esc="published_data.test_id"/></td>
+                                                <td>
+                                                    <t t-if="published_data.normal"><t t-esc="published_data.normal"/></t>
+                                                    <span t-else="" class="lab-no-data">—</span>
+                                                </td>
+                                                <td>
+                                                    <strong t-if="published_data.result" class="lab-result"><t t-esc="published_data.result"/></strong>
+                                                    <span t-else="" class="lab-no-data">—</span>
+                                                </td>
+                                                <td>
+                                                    <t t-if="published_data.unit"><t t-esc="published_data.unit"/></t>
+                                                </td>
+                                                <td>
+                                                    <t t-if="published_data.attachment_id">
+                                                        <a t-attf-href="/web/content/#{published_data.attachment_id}?download=true&amp;access_token="
+                                                           class="lab-download-btn">
+                                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                                        </a>
+                                                    </t>
+                                                    <span t-else="" class="lab-no-data">—</span>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </t>
+</templates>

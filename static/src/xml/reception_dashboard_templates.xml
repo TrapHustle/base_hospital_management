@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<templates id="reception_dashboard" xml:space="preserve">
+    <t t-name="ReceptionDashboard" owl="1">
+        <div class="rec-glass-bg" t-ref="root">
+            <!-- Animated gradient orbs -->
+            <div class="rec-orb rec-orb-1"></div>
+            <div class="rec-orb rec-orb-2"></div>
+            <div class="rec-orb rec-orb-3"></div>
+
+            <div class="rec-layout">
+                <!-- Glass Sidebar -->
+                <aside class="rec-sidebar">
+                    <div class="rec-sidebar-top">
+                        <div class="rec-logo">
+                            <div class="rec-logo-icon">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+                                </svg>
+                            </div>
+                            <div class="rec-logo-info">
+                                <span class="rec-logo-name">Accueil</span>
+                                <span class="rec-logo-role">Réception</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <nav class="rec-nav">
+                        <span class="rec-nav-label">NAVIGATION</span>
+                        <ul class="rec-nav-menu">
+                            <li>
+                                <a href="#" class="rec-nav-link o_patient_button" t-on-click="createPatient">
+                                    <span class="rec-nav-icon">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+                                    </span>
+                                    <span class="rec-nav-text">Nouveau patient</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="rec-nav-link o_appointment_button" t-on-click="fetchAppointmentData">
+                                    <span class="rec-nav-icon">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                    </span>
+                                    <span class="rec-nav-text">Rendez-vous</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="rec-nav-link o_room_ward_button" t-on-click="fetchRoomWard">
+                                    <span class="rec-nav-icon">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>
+                                    </span>
+                                    <span class="rec-nav-text">Chambres / Salles</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+
+                    <div class="rec-sidebar-footer">
+                        <div class="rec-date-card">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            <span class="rec-date-text"><t t-out="state.currentDate"/></span>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Main Content -->
+                <main class="rec-main" style="overflow: scroll; height: 100vh;">
+
+                    <!-- Appointment sub-buttons -->
+                    <div class="rec-sub-nav d-none" t-ref="rd_buttons">
+                        <button class="rec-sub-btn o_outpatient_button" t-on-click="fetchAppointmentData">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                            <span>Consultation externe</span>
+                        </button>
+                        <button class="rec-sub-btn o_inpatient_button" t-on-click="createInPatient">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>
+                            <span>Hospitalisation</span>
+                        </button>
+                    </div>
+
+                    <!-- ===== Create Patient Form ===== -->
+                    <div class="rec-glass-card d-none" t-ref="patient_creation">
+                        <div class="rec-form-header">
+                            <h2>Créer un patient</h2>
+                            <p>Remplissez les informations du nouveau patient</p>
+                        </div>
+                        <div class="rec-form-body">
+                            <div class="rec-form-row">
+                                <div class="rec-form-group">
+                                    <label class="rec-label" for="patient-name">Nom complet *</label>
+                                    <input type="text" id="patient-name" class="rec-input" placeholder="Nom du patient"/>
+                                </div>
+                                <div class="rec-form-group">
+                                    <label class="rec-label" for="patient-img">Photo</label>
+                                    <input type="file" name="image" id="patient-img" class="rec-input" accept="image/png, image/gif, image/jpeg"/>
+                                </div>
+                            </div>
+                            <div class="rec-form-row">
+                                <div class="rec-form-group">
+                                    <label class="rec-label" for="patient-phone">Téléphone *</label>
+                                    <input type="tel" id="patient-phone" placeholder="Numéro de téléphone" class="rec-input"/>
+                                </div>
+                                <div class="rec-form-group">
+                                    <label class="rec-label" for="patient-mail">Email</label>
+                                    <input type="email" class="rec-input" id="patient-mail" placeholder="Adresse email"/>
+                                </div>
+                            </div>
+                            <div class="rec-form-row">
+                                <div class="rec-form-group">
+                                    <label class="rec-label" for="patient-dob">Date de naissance</label>
+                                    <input type="date" class="rec-input" id="patient-dob"/>
+                                </div>
+                                <div class="rec-form-group">
+                                    <label class="rec-label">Groupe sanguin</label>
+                                    <div class="rec-blood-row">
+                                        <select id="patient-bloodgroup" class="rec-select" name="group">
+                                            <option value="a">A</option>
+                                            <option value="b">B</option>
+                                            <option value="ab">AB</option>
+                                            <option value="o">O</option>
+                                        </select>
+                                        <label class="rec-radio-label">
+                                            <input type="radio" id="rhtype" class="rec-radio" checked="true" name="rhtype" value="+"/>
+                                            <span>+ve</span>
+                                        </label>
+                                        <label class="rec-radio-label">
+                                            <input type="radio" id="rhtype" class="rec-radio" name="rhtype" value="-"/>
+                                            <span>-ve</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="rec-form-row">
+                                <div class="rec-form-group">
+                                    <label class="rec-label">Genre</label>
+                                    <div class="rec-radio-group" id="p_radio">
+                                        <label class="rec-radio-label">
+                                            <input type="radio" class="rec-radio" checked="true" id="patient-gender" name="gender" value="male"/>
+                                            <span>Homme</span>
+                                        </label>
+                                        <label class="rec-radio-label">
+                                            <input type="radio" class="rec-radio" id="patient-gender" name="gender" value="female"/>
+                                            <span>Femme</span>
+                                        </label>
+                                        <label class="rec-radio-label">
+                                            <input type="radio" class="rec-radio" id="patient-gender" name="gender" value="other"/>
+                                            <span>Autre</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="rec-form-group">
+                                    <label class="rec-label" for="patient-m-status">Statut marital</label>
+                                    <select id="patient-m-status" class="rec-select" name="status">
+                                        <option value="married">Marié(e)</option>
+                                        <option value="unmarried">Célibataire</option>
+                                        <option value="widow">Veuve</option>
+                                        <option value="widower">Veuf</option>
+                                        <option value="divorcee">Divorcé(e)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="rec-form-footer">
+                            <button class="rec-btn-primary save_patient" t-on-click="savePatient">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                Enregistrer le patient
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ===== Create Outpatient Form ===== -->
+                    <div class="rec-glass-card d-none" t-ref="out-patient">
+                        <div class="rec-form-header">
+                            <h2>Créer une consultation externe</h2>
+                            <p>Enregistrement d'une nouvelle consultation</p>
+                        </div>
+                        <div class="rec-form-body" id="op_table">
+                            <div class="rec-form-row">
+                                <div class="rec-form-group">
+                                    <label class="rec-label" for="select_type">Carte patient</label>
+                                    <select id="select_type" class="rec-select select_type" name="group" t-on-click="patient_card">
+                                        <option value="have_card">A une carte patient</option>
+                                        <option value="dont_have_card">N'a pas de carte patient</option>
+                                    </select>
+                                </div>
+                                <div class="rec-form-group">
+                                    <label class="rec-label" id="patient_label" for="sl_patient">ID Patient *</label>
+                                    <select type="text" id="sl_patient" class="rec-select select_patient"
+                                            autofocus="autofocus" placeholder="Sélectionner le patient"
+                                            t-on-change="fetch_patient_id">
+                                        <t t-foreach="state.patient_lst" t-as="patient" t-key="patient.id">
+                                            <option t-att-value="patient.id">
+                                                <t t-esc="patient['name']"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="rec-form-row">
+                                <div class="rec-form-group">
+                                    <label class="rec-label" for="o_patient-name">Nom du patient *</label>
+                                    <input type="text" id="o_patient-name" class="rec-input" placeholder="Nom du patient"/>
+                                </div>
+                                <div class="rec-form-group">
+                                    <label class="rec-label" for="o_patient-phone">Téléphone</label>
+                                    <input type="tel" id="o_patient-phone" placeholder="Numéro de téléphone" class="rec-input"/>
+                                </div>
+                            </div>
+                            <div class="rec-form-row">
+                                <div class="rec-form-group">
+                                    <label class="rec-label" for="o_patient-dob">Date de naissance</label>
+                                    <input type="date" class="rec-input" id="o_patient-dob"/>
+                                </div>
+                                <div class="rec-form-group">
+                                    <label class="rec-label" for="o_patient_bloodgroup">Groupe sanguin</label>
+                                    <select id="o_patient_bloodgroup" class="rec-select o_bloodgroup" name="group">
+                                        <option value="a">A</option>
+                                        <option value="b">B</option>
+                                        <option value="ab">AB</option>
+                                        <option value="o">O</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="rec-form-row">
+                                <div class="rec-form-group">
+                                    <label class="rec-label">Genre</label>
+                                    <div class="rec-radio-group">
+                                        <label class="rec-radio-label">
+                                            <input type="radio" class="rec-radio" id="o_patient-gender" checked="true" name="gender" value="male"/>
+                                            <span>Homme</span>
+                                        </label>
+                                        <label class="rec-radio-label">
+                                            <input type="radio" class="rec-radio" id="o_patient-gender" name="gender" value="female"/>
+                                            <span>Femme</span>
+                                        </label>
+                                        <label class="rec-radio-label">
+                                            <input type="radio" class="rec-radio" id="o_patient-gender" name="gender" value="other"/>
+                                            <span>Autre</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="rec-form-group">
+                                    <label class="rec-label" for="op_date">Date de consultation *</label>
+                                    <input type="date" class="rec-input" required="1" id="op_date"/>
+                                </div>
+                            </div>
+                            <div class="rec-form-row">
+                                <div class="rec-form-group">
+                                    <label class="rec-label" for="reason">Motif</label>
+                                    <input type="text" id="reason" class="rec-input reason" name="group" placeholder="Motif de la consultation"/>
+                                </div>
+                                <div class="rec-form-group">
+                                    <label class="rec-label" for="slot">Créneau horaire</label>
+                                    <input type="text" id="slot" class="rec-input slot" name="group" placeholder="ex: 09:00"/>
+                                </div>
+                            </div>
+                            <div class="rec-form-row">
+                                <div class="rec-form-group">
+                                    <label class="rec-label" for="sl_dr">Médecin</label>
+                                    <select id="sl_dr" class="rec-select select_dr" name="group"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="rec-form-footer">
+                            <button class="rec-btn-primary save_out_patient" t-on-click="save_out_patient_data">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                Enregistrer la consultation
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ===== Create Inpatient Form ===== -->
+                    <div class="rec-glass-card d-none" t-ref="inpatient">
+                        <div class="rec-form-header">
+                            <h2>Créer une hospitalisation</h2>
+                            <p>Enregistrement d'une admission</p>
+                        </div>
+                        <div class="rec-form-body">
+                            <div class="rec-form-row">
+                                <div class="rec-form-group">
+                                    <label class="rec-label" for="sl_patient_id">Patient *</label>
+                                    <select id="sl_patient_id" class="rec-select select_patient_id" name="group"/>
+                                </div>
+                                <div class="rec-form-group">
+                                    <label class="rec-label" for="reason_of_admission">Motif d'admission</label>
+                                    <input type="text" class="rec-input reason_of_admission"
+                                           id="reason_of_admission" placeholder="Motif de l'hospitalisation"/>
+                                </div>
+                            </div>
+                            <div class="rec-form-row">
+                                <div class="rec-form-group">
+                                    <label class="rec-label" for="admission_type">Type d'admission</label>
+                                    <select id="admission_type" class="rec-select admission_type" name="group">
+                                        <option value="emergency">Urgence</option>
+                                        <option value="routine">Routine</option>
+                                    </select>
+                                </div>
+                                <div class="rec-form-group">
+                                    <label class="rec-label" for="attending_doctor_id">Médecin référent *</label>
+                                    <select id="attending_doctor_id" class="rec-select attending_doctor_id" name="group"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="rec-form-footer">
+                            <button class="rec-btn-primary save_in_patient" t-on-click="save_in_patient_data">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                Enregistrer l'admission
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ===== Room / Ward selector ===== -->
+                    <div class="rec-room-ward-section d-none" style="display:none;" t-ref="room_ward">
+                        <div class="rec-action-grid">
+                            <button class="rec-action-card o_room_button" t-on-click="fetchRoom">
+                                <div class="rec-action-icon-wrap">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                                </div>
+                                <span class="rec-action-label">Chambres</span>
+                            </button>
+                            <button class="rec-action-card o_ward_button" t-on-click="fetchWard">
+                                <div class="rec-action-icon-wrap">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>
+                                </div>
+                                <span class="rec-action-label">Salles</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ===== Ward Table ===== -->
+                    <div class="d-none" t-ref="ward">
+                        <div class="rec-glass-card">
+                            <div class="rec-table-head">
+                                <h3 class="rec-card-title">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>
+                                    Liste des salles
+                                </h3>
+                                <span class="rec-count-badge"><t t-out="state.ward_data.length"/> salles</span>
+                            </div>
+                            <div class="rec-table-wrapper">
+                                <table class="rec-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Nom de la salle</th>
+                                            <th>Bloc</th>
+                                            <th>Étage</th>
+                                            <th>Lits disponibles</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="state.ward_data" t-as="ward_data" t-key="ward_data.id">
+                                            <tr class="rec-table-row">
+                                                <td><strong><t t-esc="ward_data.display_name"/></strong></td>
+                                                <td><t t-esc="ward_data.building_id[1]"/></td>
+                                                <td><t t-esc="ward_data.floor_no"/></td>
+                                                <td><span class="rec-beds-badge"><t t-esc="ward_data.bed_count"/> lits</span></td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ===== Room Table ===== -->
+                    <div class="d-none" t-ref="room">
+                        <div class="rec-glass-card">
+                            <div class="rec-table-head">
+                                <h3 class="rec-card-title">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                                    Liste des chambres
+                                </h3>
+                                <span class="rec-count-badge"><t t-out="state.room_data.length"/> chambres</span>
+                            </div>
+                            <div class="rec-table-wrapper">
+                                <table class="rec-table">
+                                    <thead>
+                                        <tr>
+                                            <th>N° chambre</th>
+                                            <th>Type de lit</th>
+                                            <th>Tarif / nuit</th>
+                                            <th>Statut</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="state.room_data" t-as="room_data" t-key="room_data.id">
+                                            <tr class="rec-table-row">
+                                                <td><strong><t t-esc="room_data.display_name"/></strong></td>
+                                                <td><t t-esc="room_data.bed_type"/></td>
+                                                <td class="rec-price"><t t-esc="room_data.rent"/></td>
+                                                <td>
+                                                    <span class="rec-status-badge" t-att-class="'rec-status-' + room_data.state">
+                                                        <t t-esc="room_data.state"/>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </main>
+            </div>
+        </div>
+    </t>
+</templates>

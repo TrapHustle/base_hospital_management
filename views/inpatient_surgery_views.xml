@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!--    Inpatient surgery calendar view-->
+    <record id="inpatient_surgery_view_calendar" model="ir.ui.view">
+        <field name="name">inpatient.surgery.view.calendar</field>
+        <field name="model">inpatient.surgery</field>
+        <field eval="2" name="priority"/>
+        <field name="arch" type="xml">
+            <calendar date_start="planned_date" string="Surgery Schedule">
+                <field name="doctor_id"/>
+                <field name="inpatient_id"/>
+                <field name="operation_theater_id"/>
+            </calendar>
+        </field>
+    </record>
+    <!--    Inpatient surgery tree view-->
+    <record id="inpatient_surgery_view_tree" model="ir.ui.view">
+        <field name="name">inpatient.surgery.view.tree</field>
+        <field name="model">inpatient.surgery</field>
+        <field eval="2" name="priority"/>
+        <field name="arch" type="xml">
+            <list>
+                <field name="planned_date"/>
+                <field name="operation_theater_id"/>
+                <field name="doctor_id"/>
+                <field name="inpatient_id"/>
+                <field name="hours_to_take" widget="float_time"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+    <!--    Inpatient surgery kanban view-->
+    <record id="inpatient_surgery_view_kanban" model="ir.ui.view">
+        <field name="name">inpatient.surgery.view.kanban</field>
+        <field name="model">inpatient.surgery</field>
+        <field eval="2" name="priority"/>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state">
+                <field name="name"/>
+                <field name="doctor_id"/>
+                <field name="inpatient_id"/>
+                <field name="planned_date"/>
+                <field name="operation_theater_id"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <strong><field name="name"/></strong>
+                            <div>
+                                <field name="planned_date"/>
+                            </div>
+                            <div>
+                                <field name="operation_theater_id"/>
+                            </div>
+                            <div>
+                                <field name="doctor_id"/>
+                            </div>
+                            <div>
+                                <field name="inpatient_id"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <!--    Inpatient surgery form view-->
+    <record id="inpatient_surgery_view_form" model="ir.ui.view">
+        <field name="name">inpatient.surgery.view.form</field>
+        <field name="model">inpatient.surgery</field>
+        <field eval="2" name="priority"/>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,confirmed,done"/>
+                    <button name="action_confirm" type="object"
+                            string="Confirmer" class="btn-primary"
+                            invisible="state in ['confirmed', 'done']"/>
+                    <button name="action_cancel" type="object"
+                            string="Annuler" class="btn-secondary"
+                            invisible="state in ['confirmed', 'done']"/>
+                    <button name="action_done" type="object" string="Terminé"
+                            invisible="state != 'confirmed'"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="inpatient_id"
+                                   options="{'no_create': True, 'no_edit': True}"/>
+                            <field name="doctor_id"
+                                   options="{'no_create': True, 'no_edit': True}"/>
+                            <field name="anesthetist_id"
+                                   options="{'no_create': True, 'no_edit': True}"/>
+                        </group>
+                        <group>
+                            <field name="operation_theater_id"/>
+                            <field name="date"/>
+                            <field name="planned_date"/>
+                            <field name="hours_to_take" widget="float_time"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Pré-opératoire">
+                            <group>
+                                <group>
+                                    <field name="preop_identity_ok"/>
+                                    <field name="preop_site_ok"/>
+                                    <field name="preop_allergy_ok"/>
+                                    <field name="preop_consent_ok"/>
+                                    <field name="preop_checklist_complete" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="asa_score"/>
+                                    <field name="fasting_hours"/>
+                                    <field name="anesthesia_risks"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Per-opératoire">
+                            <group>
+                                <group>
+                                    <field name="protocol"/>
+                                    <field name="anesthesia_sheet"/>
+                                </group>
+                                <group>
+                                    <field name="team_line_ids"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Consommables">
+                            <group>
+                                <field name="consumable_line_ids"/>
+                            </group>
+                        </page>
+                        <page string="Post-opératoire">
+                            <group>
+                                <group>
+                                    <field name="sspi_score"/>
+                                </group>
+                                <group>
+                                    <field name="postop_note"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Facturation">
+                            <group>
+                                <field name="surgery_product_id"/>
+                                <field name="ccam_code"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <!--    Inpatient surgery search view-->
+    <record id="inpatient_surgery_view_search" model="ir.ui.view">
+        <field name="name">inpatient.surgery.view.search</field>
+        <field name="model">inpatient.surgery</field>
+        <field name="arch" type="xml">
+            <search string="Surgery">
+                <field name="name"/>
+                <field name="inpatient_id"/>
+                <field name="doctor_id"/>
+                <field name="operation_theater_id"/>
+                <filter name="to_operate" string="À opérer"
+                        domain="[('state','in',('draft','confirmed'))]"/>
+                <filter name="operated" string="Opérés"
+                        domain="[('state','=','done')]"/>
+                <group expand="0" string="Grouper par">
+                    <filter name="group_doctor" string="Chirurgien"
+                            context="{'group_by':'doctor_id'}"/>
+                    <filter name="group_theater" string="Salle opératoire"
+                            context="{'group_by':'operation_theater_id'}"/>
+                    <filter name="group_date" string="Date"
+                            context="{'group_by':'planned_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <!--    Inpatient surgery menu action-->
+    <record id="inpatient_surgery_action" model="ir.actions.act_window">
+        <field name="name">Surgery</field>
+        <field name="res_model">inpatient.surgery</field>
+        <field name="view_mode">calendar,kanban,list,form</field>
+        <field name="view_id" ref="inpatient_surgery_view_calendar"/>
+        <field name="search_view_id" ref="inpatient_surgery_view_search"/>
+    </record>
+    <!--    Doctor menu-->
+    <menuitem id="appointment_menu_doctor"
+              name="Doctor"
+              parent="hospital_menu_appointment"
+              sequence="8">
+    </menuitem>
+    <!--    Doctor surgery menu-->
+    <menuitem id="inpatient_surgery_menu"
+              name="Surgery"
+              parent="appointment_menu_doctor"
+              action="inpatient_surgery_action"
+              sequence="10">
+    </menuitem>
+    <!--    Operation theater views-->
+    <record id="hospital_operation_theater_view_tree" model="ir.ui.view">
+        <field name="name">hospital.operation.theater.view.tree</field>
+        <field name="model">hospital.operation.theater</field>
+        <field eval="2" name="priority"/>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="building_id"/>
+                <field name="ward_id"/>
+                <field name="capacity"/>
+                <field name="state"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+    <record id="hospital_operation_theater_view_form" model="ir.ui.view">
+        <field name="name">hospital.operation.theater.view.form</field>
+        <field name="model">hospital.operation.theater</field>
+        <field eval="2" name="priority"/>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="state"/>
+                        </group>
+                        <group>
+                            <field name="building_id"/>
+                            <field name="ward_id"/>
+                            <field name="capacity"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <group string="Surgeries">
+                        <field name="surgery_ids" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="hospital_operation_theater_action" model="ir.actions.act_window">
+        <field name="name">Operation Theaters</field>
+        <field name="res_model">hospital.operation.theater</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="hospital_menu_operation_theater"
+              name="Bloc opératoire"
+              parent="hospital_menu_root"
+              sequence="5"/>
+    <menuitem id="hospital_operation_theater_menu"
+              name="Salles opératoires"
+              parent="hospital_menu_operation_theater"
+              action="hospital_operation_theater_action"
+              sequence="1"/>
+    <menuitem id="hospital_operation_theater_schedule_menu"
+              name="Planning des interventions"
+              parent="hospital_menu_operation_theater"
+              action="inpatient_surgery_action"
+              sequence="2"/>
+</odoo>
