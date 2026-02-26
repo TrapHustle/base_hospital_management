@@ -1,121 +1,116 @@
 /* ====================================
    HOSPITAL PORTAL - PROFESSIONAL CSS
-   Style Odoo - Design Humain
+   CORRIGÉ - Scoped pour ne pas impacter Odoo
    ==================================== */
 
 /* ====================================
-   COLOR VARIABLES
+   VARIABLES - Scopées au portal
    ==================================== */
-:root {
-    --primary-color: #017E84;
-    --primary-dark: #015a5f;
-    --secondary-color: #00A09D;
-    --accent-color: #875A7B;
-    --text-dark: #2C2C2C;
-    --text-light: #6c757d;
-    --border-color: #dee2e6;
-    --bg-light: #f8f9fa;
-    --bg-white: #ffffff;
-    --success-color: #28a745;
-    --warning-color: #ffc107;
-    --danger-color: #dc3545;
-    --info-color: #17a2b8;
+.hospital-portal {
+    --hp-primary: #017E84;
+    --hp-primary-dark: #015a5f;
+    --hp-secondary: #00A09D;
+    --hp-accent: #875A7B;
+    --hp-text-dark: #2C2C2C;
+    --hp-text-light: #6c757d;
+    --hp-border: #dee2e6;
+    --hp-bg-light: #f8f9fa;
+    --hp-bg-white: #ffffff;
+    --hp-success: #28a745;
+    --hp-warning: #ffc107;
+    --hp-danger: #dc3545;
+    --hp-info: #17a2b8;
 }
 
 /* ====================================
-   PORTAL LAYOUT IMPROVEMENTS
+   PORTAL LAYOUT - Scopé
    ==================================== */
-#wrap {
-    background-color: var(--bg-light);
+.hospital-portal #wrap {
+    background-color: var(--hp-bg-light);
 }
 
-.o_portal {
-    background-color: var(--bg-light);
+.hospital-portal .o_portal {
+    background-color: var(--hp-bg-light);
 }
 
-.o_portal_my_home {
+.hospital-portal .o_portal_my_home {
     padding: 40px 0;
 }
 
 /* ====================================
-   PORTAL CARDS (Home Page)
+   PORTAL CARDS
    ==================================== */
-.o_portal_docs {
+.hospital-portal .o_portal_docs {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 24px;
     margin-top: 30px;
 }
 
-.o_portal_docs .col-lg-6,
-.o_portal_docs .col-12 {
-    width: 100% !important;
-    max-width: 100% !important;
-    padding: 0 !important;
+.hospital-portal .o_portal_docs .col-lg-6,
+.hospital-portal .o_portal_docs .col-12 {
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
 }
 
-.o_portal_docs a {
+.hospital-portal .o_portal_docs a {
     display: block;
-    background: var(--bg-white);
-    border: 1px solid var(--border-color);
+    background: var(--hp-bg-white);
+    border: 1px solid var(--hp-border);
     padding: 24px;
     text-decoration: none;
-    color: var(--text-dark);
+    color: var(--hp-text-dark);
     transition: all 0.2s ease;
     height: 100%;
 }
 
-.o_portal_docs a:hover {
-    border-color: var(--primary-color);
+.hospital-portal .o_portal_docs a:hover {
+    border-color: var(--hp-primary);
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     transform: translateY(-2px);
 }
 
-.o_portal_docs .row {
+.hospital-portal .o_portal_docs .row {
     display: flex;
     align-items: center;
     margin: 0;
 }
 
-.o_portal_docs .col-3 {
+.hospital-portal .o_portal_docs .col-3 {
     flex: 0 0 80px;
     max-width: 80px;
 }
 
-.o_portal_docs .col-9 {
+.hospital-portal .o_portal_docs .col-9 {
     flex: 1;
     padding-left: 20px;
 }
 
-/* Portal Card Icon */
-.o_portal_docs img {
-    width: 56px;
-    height: 56px;
+.hospital-portal .o_portal_docs img {
+    width: 56px; height: 56px;
     object-fit: contain;
 }
 
-/* Portal Card Title */
-.o_portal_docs h3 {
+.hospital-portal .o_portal_docs h3 {
     font-size: 18px;
     font-weight: 600;
-    color: var(--text-dark);
+    color: var(--hp-text-dark);
     margin: 0 0 8px 0;
 }
 
-/* Portal Card Description */
-.o_portal_docs .text-muted {
+.hospital-portal .o_portal_docs .text-muted {
     font-size: 14px;
-    color: var(--text-light) !important;
+    color: var(--hp-text-light);
     margin: 0 0 12px 0;
     line-height: 1.5;
 }
 
-/* Portal Card Count Badge */
-.o_portal_docs .badge {
+.hospital-portal .o_portal_docs .badge {
     display: inline-block;
     padding: 4px 12px;
-    background: var(--primary-color);
-    color: var(--bg-white);
+    background: var(--hp-primary);
+    color: var(--hp-bg-white);
     font-size: 13px;
     font-weight: 500;
 }
@@ -123,85 +118,48 @@
 /* ====================================
    PAGE HEADER
    ==================================== */
-.o_portal_my_doc_table {
-    margin-top: 0;
-}
-
-.page-header {
-    background: var(--bg-white);
-    border: 1px solid var(--border-color);
+.hospital-portal .page-header {
+    background: var(--hp-bg-white);
+    border: 1px solid var(--hp-border);
     padding: 24px 30px;
     margin-bottom: 24px;
 }
 
-.page-header h3 {
+.hospital-portal .page-header h3 {
     font-size: 24px;
     font-weight: 600;
-    color: var(--text-dark);
+    color: var(--hp-text-dark);
     margin: 0;
-}
-
-/* ====================================
-   BREADCRUMBS
-   ==================================== */
-.breadcrumb {
-    background: transparent;
-    padding: 16px 0;
-    margin: 0;
-    font-size: 14px;
-}
-
-.breadcrumb-item {
-    color: var(--text-light);
-}
-
-.breadcrumb-item.active {
-    color: var(--text-dark);
-    font-weight: 500;
-}
-
-.breadcrumb-item a {
-    color: var(--primary-color);
-    text-decoration: none;
-}
-
-.breadcrumb-item a:hover {
-    color: var(--primary-dark);
-    text-decoration: underline;
 }
 
 /* ====================================
    SEARCHBAR
    ==================================== */
-.o_portal_searchbar {
-    background: var(--bg-white);
-    border: 1px solid var(--border-color);
+.hospital-portal .o_portal_searchbar {
+    background: var(--hp-bg-white);
+    border: 1px solid var(--hp-border);
     padding: 20px 30px;
     margin-bottom: 24px;
 }
 
-.o_portal_searchbar h3 {
+.hospital-portal .o_portal_searchbar h3 {
     font-size: 22px;
     font-weight: 600;
-    color: var(--text-dark);
+    color: var(--hp-text-dark);
     margin: 0;
 }
 
-.o_portal_searchbar form {
-    margin-top: 16px;
-}
-
-.o_portal_searchbar input[type="text"],
-.o_portal_searchbar input[type="search"] {
+.hospital-portal .o_portal_searchbar input[type="text"],
+.hospital-portal .o_portal_searchbar input[type="search"] {
     height: 42px;
     padding: 0 16px;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--hp-border);
     font-size: 14px;
 }
 
-.o_portal_searchbar input[type="text"]:focus,
-.o_portal_searchbar input[type="search"]:focus {
-    border-color: var(--primary-color);
+.hospital-portal .o_portal_searchbar input[type="text"]:focus,
+.hospital-portal .o_portal_searchbar input[type="search"]:focus {
+    border-color: var(--hp-primary);
     box-shadow: 0 0 0 2px rgba(1, 126, 132, 0.1);
     outline: none;
 }
@@ -209,63 +167,51 @@
 /* ====================================
    DATA TABLES
    ==================================== */
-.table_wrapper {
-    background: var(--bg-white);
-    border: 1px solid var(--border-color);
+.hospital-portal .table_wrapper {
+    background: var(--hp-bg-white);
+    border: 1px solid var(--hp-border);
     overflow: hidden;
 }
 
-.table {
-    margin: 0;
-    border-collapse: collapse;
-}
+.hospital-portal .table { margin: 0; border-collapse: collapse; }
+.hospital-portal .table thead { background: var(--hp-bg-light); }
 
-.table thead {
-    background: var(--bg-light);
-}
-
-.table thead th {
+.hospital-portal .table thead th {
     padding: 16px 20px;
     font-size: 13px;
     font-weight: 600;
-    color: var(--text-dark);
+    color: var(--hp-text-dark);
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    border-bottom: 2px solid var(--border-color);
+    border-bottom: 2px solid var(--hp-border);
 }
 
-.table tbody td {
+.hospital-portal .table tbody td {
     padding: 16px 20px;
     font-size: 14px;
-    color: var(--text-dark);
-    border-bottom: 1px solid var(--border-color);
+    color: var(--hp-text-dark);
+    border-bottom: 1px solid var(--hp-border);
     vertical-align: middle;
 }
 
-.table tbody tr:hover {
-    background-color: var(--bg-light);
-}
+.hospital-portal .table tbody tr:hover { background-color: var(--hp-bg-light); }
+.hospital-portal .table tbody tr:last-child td { border-bottom: none; }
 
-.table tbody tr:last-child td {
-    border-bottom: none;
-}
-
-/* Table Links */
-.table a {
-    color: var(--primary-color);
+.hospital-portal .table a {
+    color: var(--hp-primary);
     text-decoration: none;
     font-weight: 500;
 }
 
-.table a:hover {
-    color: var(--primary-dark);
+.hospital-portal .table a:hover {
+    color: var(--hp-primary-dark);
     text-decoration: underline;
 }
 
 /* ====================================
-   BUTTONS
+   BUTTONS - Scopés
    ==================================== */
-.btn {
+.hospital-portal .btn {
     height: 40px;
     padding: 0 20px;
     border: none;
@@ -278,129 +224,77 @@
     justify-content: center;
 }
 
-.btn-primary {
-    background-color: var(--primary-color);
-    color: var(--bg-white);
+.hospital-portal .btn-primary {
+    background-color: var(--hp-primary);
+    color: var(--hp-bg-white);
 }
 
-.btn-primary:hover {
-    background-color: var(--primary-dark);
-}
+.hospital-portal .btn-primary:hover { background-color: var(--hp-primary-dark); }
 
-.btn-outline-info {
+.hospital-portal .btn-outline-info {
     background: transparent;
-    border: 1px solid var(--info-color);
-    color: var(--info-color);
+    border: 1px solid var(--hp-info);
+    color: var(--hp-info);
 }
 
-.btn-outline-info:hover {
-    background-color: var(--info-color);
-    color: var(--bg-white);
-}
-
-.btn i {
-    font-size: 16px;
-}
-
-/* Download Button Specific */
-.btn-outline-info a {
-    color: inherit;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
+.hospital-portal .btn-outline-info:hover {
+    background-color: var(--hp-info);
+    color: var(--hp-bg-white);
 }
 
 /* ====================================
    EMPTY STATE
    ==================================== */
-.o_portal_my_doc_table p {
-    background: var(--bg-white);
-    border: 1px solid var(--border-color);
+.hospital-portal .o_portal_my_doc_table p {
+    background: var(--hp-bg-white);
+    border: 1px solid var(--hp-border);
     padding: 40px;
     text-align: center;
     font-size: 15px;
-    color: var(--text-light);
+    color: var(--hp-text-light);
     margin: 0;
 }
 
 /* ====================================
-   PRESCRIPTIONS SECTION
+   PRESCRIPTIONS
    ==================================== */
-#my_prescriptions {
-    min-height: 50vh;
-}
+.hospital-portal #my_prescriptions { min-height: 50vh; }
 
-.pr_download {
-    cursor: pointer;
-}
-
-.pr_download:hover {
-    transform: scale(1.05);
-}
+.hospital-portal .pr_download { cursor: pointer; }
+.hospital-portal .pr_download:hover { transform: scale(1.05); }
 
 /* ====================================
-   VACCINATION CARDS (Alternative)
+   VACCINATION CARDS
    ==================================== */
-.vaccination-card,
-.test-card,
-.op-card {
-    background: var(--bg-white);
-    border: 1px solid var(--border-color);
+.hospital-portal .vaccination-card,
+.hospital-portal .test-card,
+.hospital-portal .op-card {
+    background: var(--hp-bg-white);
+    border: 1px solid var(--hp-border);
     padding: 20px;
     margin-bottom: 16px;
     transition: all 0.2s ease;
 }
 
-.vaccination-card:hover,
-.test-card:hover,
-.op-card:hover {
+.hospital-portal .vaccination-card:hover,
+.hospital-portal .test-card:hover,
+.hospital-portal .op-card:hover {
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
-.vaccination-card h4,
-.test-card h4,
-.op-card h4 {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--text-dark);
-    margin: 0 0 12px 0;
-}
-
-.vaccination-card .info-row,
-.test-card .info-row,
-.op-card .info-row {
+.hospital-portal .vaccination-card .info-row,
+.hospital-portal .test-card .info-row,
+.hospital-portal .op-card .info-row {
     display: flex;
     justify-content: space-between;
     padding: 8px 0;
-    border-bottom: 1px solid var(--bg-light);
-}
-
-.vaccination-card .info-row:last-child,
-.test-card .info-row:last-child,
-.op-card .info-row:last-child {
-    border-bottom: none;
-}
-
-.vaccination-card .info-label,
-.test-card .info-label,
-.op-card .info-label {
-    font-size: 13px;
-    color: var(--text-light);
-    font-weight: 500;
-}
-
-.vaccination-card .info-value,
-.test-card .info-value,
-.op-card .info-value {
-    font-size: 14px;
-    color: var(--text-dark);
-    font-weight: 500;
+    border-bottom: 1px solid var(--hp-bg-light);
 }
 
 /* ====================================
    STATUS BADGES
    ==================================== */
-.badge-status {
+.hospital-portal .badge-status {
     display: inline-block;
     padding: 4px 10px;
     font-size: 12px;
@@ -409,220 +303,83 @@
     letter-spacing: 0.5px;
 }
 
-.badge-success {
-    background: #e8f5e9;
-    color: #2e7d32;
-}
-
-.badge-warning {
-    background: #fff3e0;
-    color: #f57c00;
-}
-
-.badge-danger {
-    background: #ffebee;
-    color: #c62828;
-}
-
-.badge-info {
-    background: #e3f2fd;
-    color: #1565c0;
-}
+.hospital-portal .badge-success { background: #e8f5e9; color: #2e7d32; }
+.hospital-portal .badge-warning { background: #fff3e0; color: #f57c00; }
+.hospital-portal .badge-danger  { background: #ffebee; color: #c62828; }
+.hospital-portal .badge-info    { background: #e3f2fd; color: #1565c0; }
 
 /* ====================================
    PORTAL SIDEBAR
    ==================================== */
-.o_portal_sidebar {
-    background: var(--bg-white);
-    border: 1px solid var(--border-color);
+.hospital-portal .o_portal_sidebar {
+    background: var(--hp-bg-white);
+    border: 1px solid var(--hp-border);
     padding: 20px;
 }
 
-.o_portal_sidebar h4 {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--text-dark);
-    margin: 0 0 16px 0;
-}
-
-.o_portal_sidebar .list-group-item {
-    border: none;
-    border-bottom: 1px solid var(--bg-light);
-    padding: 12px 0;
-    background: transparent;
-}
-
-.o_portal_sidebar .list-group-item:last-child {
-    border-bottom: none;
-}
-
 /* ====================================
-   RESPONSIVE
+   PORTAL OVERRIDES - Scopés
    ==================================== */
-@media (max-width: 991px) {
-    .o_portal_docs {
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 16px;
-    }
-    
-    .o_portal_docs .col-3 {
-        flex: 0 0 60px;
-        max-width: 60px;
-    }
-    
-    .o_portal_docs img {
-        width: 48px;
-        height: 48px;
-    }
-    
-    .o_portal_docs h3 {
-        font-size: 16px;
-    }
-    
-    .page-header {
-        padding: 20px;
-    }
-    
-    .o_portal_searchbar {
-        padding: 16px 20px;
-    }
-}
-
-@media (max-width: 767px) {
-    .o_portal_docs {
-        grid-template-columns: 1fr;
-    }
-    
-    .page-header h3 {
-        font-size: 20px;
-    }
-    
-    .o_portal_searchbar h3 {
-        font-size: 18px;
-    }
-    
-    .table thead th,
-    .table tbody td {
-        padding: 12px 16px;
-        font-size: 13px;
-    }
-    
-    /* Make tables scrollable on mobile */
-    .table_wrapper {
-        overflow-x: auto;
-    }
-    
-    .table {
-        min-width: 600px;
-    }
-}
-
-@media (max-width: 575px) {
-    .o_portal_docs a {
-        padding: 20px;
-    }
-    
-    .o_portal_docs .col-9 {
-        padding-left: 16px;
-    }
-    
-    .page-header {
-        padding: 16px;
-    }
-    
-    .o_portal_searchbar {
-        padding: 16px;
-    }
-    
-    .table thead th,
-    .table tbody td {
-        padding: 10px 12px;
-    }
-}
-
-/* ====================================
-   ODOO PORTAL OVERRIDES
-   ==================================== */
-.o_portal_wrap {
+.hospital-portal .o_portal_wrap {
     min-height: calc(100vh - 200px);
 }
 
-.oe_structure {
-    padding: 0;
-}
-
-/* Remove default Odoo spacing */
-.o_portal .container {
+.hospital-portal .o_portal .container {
     max-width: 1200px;
-}
-
-/* ====================================
-   PRINT STYLES
-   ==================================== */
-@media print {
-    .o_portal_docs,
-    .o_portal_searchbar,
-    .breadcrumb {
-        display: none;
-    }
-    
-    .table_wrapper {
-        border: none;
-        box-shadow: none;
-    }
-    
-    .btn {
-        display: none;
-    }
-}
-
-/* ====================================
-   ACCESSIBILITY
-   ==================================== */
-.table a:focus,
-.btn:focus,
-.o_portal_docs a:focus {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
 }
 
 /* ====================================
    ANIMATIONS
    ==================================== */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+@keyframes hp_fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
-.o_portal_docs a,
-.table tbody tr,
-.vaccination-card,
-.test-card,
-.op-card {
-    animation: fadeIn 0.3s ease;
+.hospital-portal .o_portal_docs a,
+.hospital-portal .table tbody tr,
+.hospital-portal .vaccination-card,
+.hospital-portal .test-card,
+.hospital-portal .op-card {
+    animation: hp_fadeIn 0.3s ease;
 }
 
 /* ====================================
-   CUSTOM SCROLLBAR
+   SCROLLBAR
    ==================================== */
-.table_wrapper::-webkit-scrollbar {
-    height: 8px;
+.hospital-portal .table_wrapper::-webkit-scrollbar        { height: 8px; }
+.hospital-portal .table_wrapper::-webkit-scrollbar-track  { background: var(--hp-bg-light); }
+.hospital-portal .table_wrapper::-webkit-scrollbar-thumb  { background: var(--hp-border); }
+
+/* ====================================
+   RESPONSIVE
+   ==================================== */
+@media (max-width: 991px) {
+    .hospital-portal .o_portal_docs { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
 }
 
-.table_wrapper::-webkit-scrollbar-track {
-    background: var(--bg-light);
+@media (max-width: 767px) {
+    .hospital-portal .o_portal_docs  { grid-template-columns: 1fr; }
+    .hospital-portal .table_wrapper  { overflow-x: auto; }
+    .hospital-portal .table          { min-width: 600px; }
 }
 
-.table_wrapper::-webkit-scrollbar-thumb {
-    background: var(--border-color);
+/* ====================================
+   PRINT
+   ==================================== */
+@media print {
+    .hospital-portal .o_portal_docs,
+    .hospital-portal .o_portal_searchbar,
+    .hospital-portal .btn { display: none; }
+    .hospital-portal .table_wrapper { border: none; box-shadow: none; }
 }
 
-.table_wrapper::-webkit-scrollbar-thumb:hover {
-    background: var(--text-light);
+/* ====================================
+   ACCESSIBILITY
+   ==================================== */
+.hospital-portal .table a:focus,
+.hospital-portal .btn:focus,
+.hospital-portal .o_portal_docs a:focus {
+    outline: 2px solid var(--hp-primary);
+    outline-offset: 2px;
 }
