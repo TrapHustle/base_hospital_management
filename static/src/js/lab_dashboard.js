@@ -33,7 +33,7 @@ export class LabDashBoard extends Component {
             process_data: [],
             process_test_data: [],
             published_data: [],
-            activeView: 'main',
+            activeView: 'analytics',
             viewMode: 'table', // table or kanban
             currentRecordId: null,
             user_name: '',
@@ -48,10 +48,33 @@ export class LabDashBoard extends Component {
                 processing_trend: 0,
             },
             chart_data: {
-                tests_by_type: {},
-                daily_completed: [],
-                results_status: {},
-                processing_time: [],
+                tests_by_type: {
+                    'Blood Test': 45,
+                    'Urine Test': 25,
+                    'X-Ray': 15,
+                    'ECG': 10,
+                    'Other': 5
+                },
+                daily_completed: [
+                    { date: 'Lun', count: 12 },
+                    { date: 'Mar', count: 15 },
+                    { date: 'Mer', count: 18 },
+                    { date: 'Jeu', count: 14 },
+                    { date: 'Ven', count: 20 },
+                    { date: 'Sam', count: 8 },
+                    { date: 'Dim', count: 5 }
+                ],
+                results_status: {
+                    processing: 15,
+                    published: 85
+                },
+                processing_time: [
+                    { test_type: 'Blood', avg_hours: 2 },
+                    { test_type: 'Urine', avg_hours: 1.5 },
+                    { test_type: 'X-Ray', avg_hours: 0.5 },
+                    { test_type: 'ECG', avg_hours: 0.3 },
+                    { test_type: 'CT Scan', avg_hours: 4 }
+                ],
             },
         });
 
@@ -66,6 +89,11 @@ export class LabDashBoard extends Component {
         onMounted(async () => {
             await this.loadDashboardData();
             await this._loadTestData();
+            
+            // Initialize charts with simulated data
+            setTimeout(() => {
+                this.initializeCharts();
+            }, 300);
         });
 
         onWillUnmount(() => {
@@ -177,6 +205,14 @@ export class LabDashBoard extends Component {
                     ...this.state.chart_data,
                     ...chartData
                 };
+                
+                // Re-initialize charts if currently on analytics view
+                if (this.state.activeView === 'analytics') {
+                    setTimeout(() => {
+                        this.destroyCharts();
+                        this.initializeCharts();
+                    }, 100);
+                }
             }
         } catch (error) {
             console.error('Error loading chart data:', error);
@@ -552,7 +588,7 @@ export class LabDashBoard extends Component {
             setTimeout(() => {
                 this.destroyCharts();
                 this.initializeCharts();
-            }, 100);
+            }, 200);
         }
     }
 }

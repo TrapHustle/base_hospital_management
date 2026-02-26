@@ -67,54 +67,6 @@
                 <!-- CONTENU PRINCIPAL -->
                 <main class="lab-main">
 
-                    <!-- KPI STATS -->
-                    <div class="stats-grid">
-                        <div class="stat-card pending">
-                            <div class="stat-card-top">
-                                <div class="stat-icon">⏳</div>
-                                <span class="stat-trend warning">En attente</span>
-                            </div>
-                            <div class="stat-content">
-                                <div class="stat-label">Tests à Confirmer</div>
-                                <h3 t-esc="state.stats.tests_pending || 0"/>
-                            </div>
-                        </div>
-
-                        <div class="stat-card processing">
-                            <div class="stat-card-top">
-                                <div class="stat-icon">🔬</div>
-                                <span class="stat-trend up" t-if="state.stats.processing_trend > 0">
-                                    +<t t-esc="state.stats.processing_trend"/>%
-                                </span>
-                            </div>
-                            <div class="stat-content">
-                                <div class="stat-label">Tests en Cours</div>
-                                <h3 t-esc="state.stats.tests_in_progress || 0"/>
-                            </div>
-                        </div>
-
-                        <div class="stat-card completed">
-                            <div class="stat-card-top">
-                                <div class="stat-icon">✅</div>
-                                <span class="stat-trend up">Aujourd'hui: <t t-esc="state.stats.completed_today || 0"/></span>
-                            </div>
-                            <div class="stat-content">
-                                <div class="stat-label">Tests Complétés</div>
-                                <h3 t-esc="state.stats.tests_completed || 0"/>
-                            </div>
-                        </div>
-
-                        <div class="stat-card published">
-                            <div class="stat-card-top">
-                                <div class="stat-icon">📄</div>
-                            </div>
-                            <div class="stat-content">
-                                <div class="stat-label">Résultats Publiés</div>
-                                <h3 t-esc="state.stats.results_published || 0"/>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- ── VUE : TESTS À CONFIRMER ── -->
                     <t t-if="state.activeView === 'main'">
                         <div class="panel-card">
