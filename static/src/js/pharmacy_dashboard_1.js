@@ -515,6 +515,82 @@ export class PharmacyDashboard extends Component {
             window.location.href = '/web/session/logout';
         }
     }
+
+    // Redirections des boutons d'action
+    addVaccine() {
+        this.actionService.doAction({
+            name: 'Nouvelle Vaccination',
+            type: 'ir.actions.act_window',
+            res_model: 'hospital.vaccination',
+            view_mode: 'form',
+            views: [[false, 'form']],
+            target: 'current',
+        });
+    }
+
+    addMedicine() {
+        // Ouvrir le formulaire de création d'un nouveau médicament
+        this.actionService.doAction({
+            name: 'Nouveau Médicament',
+            type: 'ir.actions.act_window',
+            res_model: 'product.template',
+            view_mode: 'form',
+            views: [[false, 'form']],
+            context: { default_medicine_ok: true },
+            target: 'current',
+        });
+    }
+
+    async createOrder() {
+        // Créer une commande via le backend
+        const validLines = this.state.order_line.filter(l => l.product);
+        if (validLines.length === 0) {
+            if (this.env && this.env.services && this.env.services.notification) {
+                this.env.services.notification.add(
+                    "Veuillez ajouter au moins un médicament à la commande.",
+                    { type: 'warning' }
+                );
+            }
+            return;
+        }
+        try {
+            const orderLines = validLines.map(l => ({
+                product: l.product,
+                qty: l.qty || 1,
+                price: l.price || 0,
+            }));
+            const result = await this.orm.call('hospital.pharmacy', 'create_sale_order', [{
+                name: 'Commande Pharmacie',
+                email: 'pharmacie@hopital.com',
+                products: orderLines,
+            }]);
+            this.state.order_line = [];
+            this.state.sub_total = 0;
+            // Ouvrir la commande créée
+            if (result && result.invoice_id) {
+                this.actionService.doAction({
+                    name: result.invoice || 'Commande',
+                    type: 'ir.actions.act_window',
+                    res_model: 'sale.order',
+                    res_id: result.invoice_id,
+                    view_mode: 'form',
+                    views: [[false, 'form']],
+                    target: 'current',
+                });
+            } else {
+                this.setMenu('suppliers');
+                await this._loadOrders();
+            }
+        } catch (error) {
+            console.error('Erreur création commande:', error);
+            if (this.env && this.env.services && this.env.services.notification) {
+                this.env.services.notification.add(
+                    "Erreur lors de la création de la commande.",
+                    { type: 'danger' }
+                );
+            }
+        }
+    }
 }
 
 PharmacyDashboard.template = "PharmacyDashboard";

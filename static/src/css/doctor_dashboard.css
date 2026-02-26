@@ -34,8 +34,11 @@
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background: linear-gradient(135deg, var(--bg-light) 0%, var(--odoo-light) 100%);
     color: var(--text-dark);
-    min-height: 100vh;
     width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 /* ============ NAVBAR ============ */
@@ -46,8 +49,6 @@
     justify-content: space-between;
     align-items: center;
     box-shadow: var(--shadow-lg);
-    position: sticky;
-    top: 0;
     z-index: 10;
 }
 
@@ -106,6 +107,10 @@
     max-width: 1400px;
     margin: 0 auto;
     padding: 2rem;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    width: 100%;
 }
 
 /* ============ WELCOME ============ */
@@ -366,14 +371,14 @@
 .oh_dashboards .n_Container {
     width: 681px;
     padding: 2rem;
-    max-height: 90vh;
-    min-height: 90vh;
+    max-height: none;
+    min-height: auto;
     margin-right: 21px;
     margin-left: 60px;
     margin-top: 10px;
     margin-bottom: 10px;
-    overflow-x: scroll;
-    overflow-y: scroll;
+    overflow-x: auto;
+    overflow-y: auto;
     border-radius: 5px;
     box-shadow: 0px 1px 3px 3px #c9c9c9;
 }
@@ -382,4 +387,9 @@
 .oh_dashboards .n_active1,
 .oh_dashboards .n_active2 {
     background-color: rgb(215, 215, 215);
+}
+
+/* ============ CORRECTION SCROLL ODOO 18 ============ */
+.oh_dashboards .dashboard-container {
+    height: auto;
 }

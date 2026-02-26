@@ -170,7 +170,8 @@
 .hospital-portal .table_wrapper {
     background: var(--hp-bg-white);
     border: 1px solid var(--hp-border);
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: auto;
 }
 
 .hospital-portal .table { margin: 0; border-collapse: collapse; }
@@ -321,7 +322,8 @@
    PORTAL OVERRIDES - Scopés
    ==================================== */
 .hospital-portal .o_portal_wrap {
-    min-height: calc(100vh - 200px);
+    min-height: auto;
+    overflow-y: auto;
 }
 
 .hospital-portal .o_portal .container {

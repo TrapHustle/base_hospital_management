@@ -407,7 +407,7 @@
                             </div>
                             <div class="header-actions">
                                 <button class="btn btn-outline">Exporter CSV</button>
-                                <button class="btn btn-primary" t-on-click="() => this.setShowAddMedicineForm(true)">+ Ajouter Médicament</button>
+                                <button class="btn btn-primary" t-on-click="() => this.addMedicine()">+ Ajouter Médicament</button>
                             </div>
                         </div>
                         <div class="card">
@@ -459,6 +459,9 @@
                         <div>
                             <div class="page-title">Module Vaccins</div>
                             <div class="page-subtitle">Gestion des stocks sensibles et chaîne du froid.</div>
+                        </div>
+                        <div class="header-actions">
+                            <button class="btn btn-primary" t-on-click="() => this.addVaccine()">+ Ajouter Vaccin</button>
                         </div>
                     </div>
                     <div class="card">
@@ -582,7 +585,7 @@
                                 </table>
                                 
                                 <div class="save">
-                                    <button class="save_order" t-on-click="saveOrder">Créer la Commande</button>
+                                    <button class="save_order" t-on-click="() => this.createOrder()">Créer la Commande</button>
                                     <button class="cancel_order" t-on-click="() => this.setMenu('home')">Annuler</button>
                                 </div>
                             </div>
