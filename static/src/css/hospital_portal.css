@@ -1,0 +1,628 @@
+/* ====================================
+   HOSPITAL PORTAL - PROFESSIONAL CSS
+   Style Odoo - Design Humain
+   ==================================== */
+
+/* ====================================
+   COLOR VARIABLES
+   ==================================== */
+:root {
+    --primary-color: #017E84;
+    --primary-dark: #015a5f;
+    --secondary-color: #00A09D;
+    --accent-color: #875A7B;
+    --text-dark: #2C2C2C;
+    --text-light: #6c757d;
+    --border-color: #dee2e6;
+    --bg-light: #f8f9fa;
+    --bg-white: #ffffff;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --info-color: #17a2b8;
+}
+
+/* ====================================
+   PORTAL LAYOUT IMPROVEMENTS
+   ==================================== */
+#wrap {
+    background-color: var(--bg-light);
+}
+
+.o_portal {
+    background-color: var(--bg-light);
+}
+
+.o_portal_my_home {
+    padding: 40px 0;
+}
+
+/* ====================================
+   PORTAL CARDS (Home Page)
+   ==================================== */
+.o_portal_docs {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+    margin-top: 30px;
+}
+
+.o_portal_docs .col-lg-6,
+.o_portal_docs .col-12 {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+}
+
+.o_portal_docs a {
+    display: block;
+    background: var(--bg-white);
+    border: 1px solid var(--border-color);
+    padding: 24px;
+    text-decoration: none;
+    color: var(--text-dark);
+    transition: all 0.2s ease;
+    height: 100%;
+}
+
+.o_portal_docs a:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+}
+
+.o_portal_docs .row {
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+
+.o_portal_docs .col-3 {
+    flex: 0 0 80px;
+    max-width: 80px;
+}
+
+.o_portal_docs .col-9 {
+    flex: 1;
+    padding-left: 20px;
+}
+
+/* Portal Card Icon */
+.o_portal_docs img {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+}
+
+/* Portal Card Title */
+.o_portal_docs h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin: 0 0 8px 0;
+}
+
+/* Portal Card Description */
+.o_portal_docs .text-muted {
+    font-size: 14px;
+    color: var(--text-light) !important;
+    margin: 0 0 12px 0;
+    line-height: 1.5;
+}
+
+/* Portal Card Count Badge */
+.o_portal_docs .badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: var(--primary-color);
+    color: var(--bg-white);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* ====================================
+   PAGE HEADER
+   ==================================== */
+.o_portal_my_doc_table {
+    margin-top: 0;
+}
+
+.page-header {
+    background: var(--bg-white);
+    border: 1px solid var(--border-color);
+    padding: 24px 30px;
+    margin-bottom: 24px;
+}
+
+.page-header h3 {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin: 0;
+}
+
+/* ====================================
+   BREADCRUMBS
+   ==================================== */
+.breadcrumb {
+    background: transparent;
+    padding: 16px 0;
+    margin: 0;
+    font-size: 14px;
+}
+
+.breadcrumb-item {
+    color: var(--text-light);
+}
+
+.breadcrumb-item.active {
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
+.breadcrumb-item a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+/* ====================================
+   SEARCHBAR
+   ==================================== */
+.o_portal_searchbar {
+    background: var(--bg-white);
+    border: 1px solid var(--border-color);
+    padding: 20px 30px;
+    margin-bottom: 24px;
+}
+
+.o_portal_searchbar h3 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin: 0;
+}
+
+.o_portal_searchbar form {
+    margin-top: 16px;
+}
+
+.o_portal_searchbar input[type="text"],
+.o_portal_searchbar input[type="search"] {
+    height: 42px;
+    padding: 0 16px;
+    border: 1px solid var(--border-color);
+    font-size: 14px;
+}
+
+.o_portal_searchbar input[type="text"]:focus,
+.o_portal_searchbar input[type="search"]:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(1, 126, 132, 0.1);
+    outline: none;
+}
+
+/* ====================================
+   DATA TABLES
+   ==================================== */
+.table_wrapper {
+    background: var(--bg-white);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.table {
+    margin: 0;
+    border-collapse: collapse;
+}
+
+.table thead {
+    background: var(--bg-light);
+}
+
+.table thead th {
+    padding: 16px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.table tbody td {
+    padding: 16px 20px;
+    font-size: 14px;
+    color: var(--text-dark);
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: middle;
+}
+
+.table tbody tr:hover {
+    background-color: var(--bg-light);
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Table Links */
+.table a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.table a:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+/* ====================================
+   BUTTONS
+   ==================================== */
+.btn {
+    height: 40px;
+    padding: 0 20px;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: var(--bg-white);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+}
+
+.btn-outline-info {
+    background: transparent;
+    border: 1px solid var(--info-color);
+    color: var(--info-color);
+}
+
+.btn-outline-info:hover {
+    background-color: var(--info-color);
+    color: var(--bg-white);
+}
+
+.btn i {
+    font-size: 16px;
+}
+
+/* Download Button Specific */
+.btn-outline-info a {
+    color: inherit;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+/* ====================================
+   EMPTY STATE
+   ==================================== */
+.o_portal_my_doc_table p {
+    background: var(--bg-white);
+    border: 1px solid var(--border-color);
+    padding: 40px;
+    text-align: center;
+    font-size: 15px;
+    color: var(--text-light);
+    margin: 0;
+}
+
+/* ====================================
+   PRESCRIPTIONS SECTION
+   ==================================== */
+#my_prescriptions {
+    min-height: 50vh;
+}
+
+.pr_download {
+    cursor: pointer;
+}
+
+.pr_download:hover {
+    transform: scale(1.05);
+}
+
+/* ====================================
+   VACCINATION CARDS (Alternative)
+   ==================================== */
+.vaccination-card,
+.test-card,
+.op-card {
+    background: var(--bg-white);
+    border: 1px solid var(--border-color);
+    padding: 20px;
+    margin-bottom: 16px;
+    transition: all 0.2s ease;
+}
+
+.vaccination-card:hover,
+.test-card:hover,
+.op-card:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.vaccination-card h4,
+.test-card h4,
+.op-card h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin: 0 0 12px 0;
+}
+
+.vaccination-card .info-row,
+.test-card .info-row,
+.op-card .info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--bg-light);
+}
+
+.vaccination-card .info-row:last-child,
+.test-card .info-row:last-child,
+.op-card .info-row:last-child {
+    border-bottom: none;
+}
+
+.vaccination-card .info-label,
+.test-card .info-label,
+.op-card .info-label {
+    font-size: 13px;
+    color: var(--text-light);
+    font-weight: 500;
+}
+
+.vaccination-card .info-value,
+.test-card .info-value,
+.op-card .info-value {
+    font-size: 14px;
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
+/* ====================================
+   STATUS BADGES
+   ==================================== */
+.badge-status {
+    display: inline-block;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-success {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.badge-warning {
+    background: #fff3e0;
+    color: #f57c00;
+}
+
+.badge-danger {
+    background: #ffebee;
+    color: #c62828;
+}
+
+.badge-info {
+    background: #e3f2fd;
+    color: #1565c0;
+}
+
+/* ====================================
+   PORTAL SIDEBAR
+   ==================================== */
+.o_portal_sidebar {
+    background: var(--bg-white);
+    border: 1px solid var(--border-color);
+    padding: 20px;
+}
+
+.o_portal_sidebar h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin: 0 0 16px 0;
+}
+
+.o_portal_sidebar .list-group-item {
+    border: none;
+    border-bottom: 1px solid var(--bg-light);
+    padding: 12px 0;
+    background: transparent;
+}
+
+.o_portal_sidebar .list-group-item:last-child {
+    border-bottom: none;
+}
+
+/* ====================================
+   RESPONSIVE
+   ==================================== */
+@media (max-width: 991px) {
+    .o_portal_docs {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 16px;
+    }
+    
+    .o_portal_docs .col-3 {
+        flex: 0 0 60px;
+        max-width: 60px;
+    }
+    
+    .o_portal_docs img {
+        width: 48px;
+        height: 48px;
+    }
+    
+    .o_portal_docs h3 {
+        font-size: 16px;
+    }
+    
+    .page-header {
+        padding: 20px;
+    }
+    
+    .o_portal_searchbar {
+        padding: 16px 20px;
+    }
+}
+
+@media (max-width: 767px) {
+    .o_portal_docs {
+        grid-template-columns: 1fr;
+    }
+    
+    .page-header h3 {
+        font-size: 20px;
+    }
+    
+    .o_portal_searchbar h3 {
+        font-size: 18px;
+    }
+    
+    .table thead th,
+    .table tbody td {
+        padding: 12px 16px;
+        font-size: 13px;
+    }
+    
+    /* Make tables scrollable on mobile */
+    .table_wrapper {
+        overflow-x: auto;
+    }
+    
+    .table {
+        min-width: 600px;
+    }
+}
+
+@media (max-width: 575px) {
+    .o_portal_docs a {
+        padding: 20px;
+    }
+    
+    .o_portal_docs .col-9 {
+        padding-left: 16px;
+    }
+    
+    .page-header {
+        padding: 16px;
+    }
+    
+    .o_portal_searchbar {
+        padding: 16px;
+    }
+    
+    .table thead th,
+    .table tbody td {
+        padding: 10px 12px;
+    }
+}
+
+/* ====================================
+   ODOO PORTAL OVERRIDES
+   ==================================== */
+.o_portal_wrap {
+    min-height: calc(100vh - 200px);
+}
+
+.oe_structure {
+    padding: 0;
+}
+
+/* Remove default Odoo spacing */
+.o_portal .container {
+    max-width: 1200px;
+}
+
+/* ====================================
+   PRINT STYLES
+   ==================================== */
+@media print {
+    .o_portal_docs,
+    .o_portal_searchbar,
+    .breadcrumb {
+        display: none;
+    }
+    
+    .table_wrapper {
+        border: none;
+        box-shadow: none;
+    }
+    
+    .btn {
+        display: none;
+    }
+}
+
+/* ====================================
+   ACCESSIBILITY
+   ==================================== */
+.table a:focus,
+.btn:focus,
+.o_portal_docs a:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* ====================================
+   ANIMATIONS
+   ==================================== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.o_portal_docs a,
+.table tbody tr,
+.vaccination-card,
+.test-card,
+.op-card {
+    animation: fadeIn 0.3s ease;
+}
+
+/* ====================================
+   CUSTOM SCROLLBAR
+   ==================================== */
+.table_wrapper::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table_wrapper::-webkit-scrollbar-track {
+    background: var(--bg-light);
+}
+
+.table_wrapper::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+}
+
+.table_wrapper::-webkit-scrollbar-thumb:hover {
+    background: var(--text-light);
+}

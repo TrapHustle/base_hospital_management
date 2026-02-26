@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- ====================================
+         PORTAL HOME - CARDS AMÉLIORÉES
+         ==================================== -->
+    
+    <!-- Vaccination Card -->
+    <template id="portal_my_home_vaccine_improved"
+              name="Vaccinations Card"
+              inherit_id="portal.portal_my_home" 
+              priority="10">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" 
+                   t-value="'/base_hospital_management/static/src/img/vaccination.svg'"/>
+                <t t-set="title">Vaccinations</t>
+                <t t-set="url" t-value="'/my/vaccinations'"/>
+                <t t-set="text">Mesures préventives pour vous protéger contre les maladies infectieuses.</t>
+                <t t-set="placeholder_count" t-value="'vaccination_count'"/>
+            </t>
+        </xpath>
+    </template>
+    
+    <!-- Lab Tests Card -->
+    <template id="portal_my_test_results_improved"
+              name="Lab Tests Card"
+              inherit_id="portal.portal_my_home" 
+              priority="30">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon"
+                   t-value="'/base_hospital_management/static/src/img/lab_test.svg'"/>
+                <t t-set="title">Analyses de Laboratoire</t>
+                <t t-set="url" t-value="'/my/tests'"/>
+                <t t-set="text">Consultez vos résultats d'analyses et téléchargez vos rapports médicaux.</t>
+                <t t-set="placeholder_count" t-value="'lab_test_count'"/>
+            </t>
+        </xpath>
+    </template>
+    
+    <!-- OP Card -->
+    <template id="portal_my_home_op_improved"
+              name="OP Card"
+              inherit_id="portal.portal_my_home" 
+              priority="30">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon"
+                   t-value="'/base_hospital_management/static/src/img/op_ticket.svg'"/>
+                <t t-set="title">Consultations Externes</t>
+                <t t-set="url" t-value="'/my/op'"/>
+                <t t-set="text">Gérez vos rendez-vous médicaux et consultez vos prescriptions.</t>
+                <t t-set="placeholder_count" t-value="'op_count'"/>
+            </t>
+        </xpath>
+    </template>
+
+    <!-- ====================================
+         VACCINATIONS PAGE - AMÉLIORÉE
+         ==================================== -->
+    <template id="portal_my_vaccines_improved" name="My Vaccinations">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            
+            <div class="page-header">
+                <h3>Mes Vaccinations</h3>
+            </div>
+            
+            <!-- Empty State -->
+            <t t-if="not vaccinations">
+                <div class="alert alert-info" role="alert" style="margin: 20px 0;">
+                    <h4 class="alert-heading">Aucune vaccination enregistrée</h4>
+                    <p class="mb-0">Il n'y a actuellement aucune vaccination associée à votre compte.</p>
+                </div>
+            </t>
+            
+            <!-- Vaccinations Table -->
+            <t t-if="vaccinations">
+                <div class="table_wrapper">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Référence</th>
+                                <th>Vaccin</th>
+                                <th class="text-center">Dose</th>
+                                <th>Date</th>
+                                <th class="text-right">Prix</th>
+                                <th class="text-center">Certificat</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="vaccinations" t-as="vaccine">
+                                <tr>
+                                    <td>
+                                        <strong t-esc="vaccine['name']"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="vaccine.get('vaccine_product_id', 'N/A')"/>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge badge-info" t-esc="vaccine.get('dose', '1')"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="vaccine.get('vaccine_date', 'N/A')"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <strong t-esc="vaccine.get('vaccine_price', '0') + ' MAD'"/>
+                                    </td>
+                                    <td class="text-center">
+                                        <t t-if="vaccine.get('attachment_id')">
+                                            <a t-attf-href="/web/content/{{vaccine['attachment_id']}}?download=true" 
+                                               class="btn btn-sm btn-outline-info" 
+                                               title="Télécharger le certificat">
+                                                <i class="fa fa-download"/> Télécharger
+                                            </a>
+                                        </t>
+                                        <t t-else="">
+                                            <span class="text-muted">-</span>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- ====================================
+         LAB TESTS PAGE - AMÉLIORÉE
+         ==================================== -->
+    <template id="portal_my_tests_improved" name="My Lab Tests">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            
+            <div class="page-header">
+                <h3>Mes Analyses de Laboratoire</h3>
+            </div>
+            
+            <!-- Empty State -->
+            <t t-if="not tests">
+                <div class="alert alert-info" role="alert" style="margin: 20px 0;">
+                    <h4 class="alert-heading">Aucune analyse enregistrée</h4>
+                    <p class="mb-0">Il n'y a actuellement aucune analyse de laboratoire associée à votre compte.</p>
+                </div>
+            </t>
+            
+            <!-- Tests Table -->
+            <t t-if="tests">
+                <div class="table_wrapper">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Analyse</th>
+                                <th>Date de prescription</th>
+                                <th class="text-center">Statut</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="tests" t-as="test">
+                                <tr>
+                                    <td>
+                                        <a t-attf-href="/my/tests/{{test['id']}}">
+                                            <strong t-esc="test.get('name', 'Test')"/>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <span t-esc="test.get('date', 'N/A')"/>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge badge-success">Complété</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <a t-attf-href="/my/tests/{{test['id']}}" 
+                                           class="btn btn-sm btn-primary">
+                                            Voir résultats
+                                        </a>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- ====================================
+         LAB TEST RESULTS PAGE - AMÉLIORÉE
+         ==================================== -->
+    <template id="portal_my_tests_results_improved" name="My Lab Test Results">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            
+            <div class="page-header">
+                <h3>Résultats d'Analyses</h3>
+            </div>
+            
+            <!-- Empty State -->
+            <t t-if="not results">
+                <div class="alert alert-warning" role="alert" style="margin: 20px 0;">
+                    <h4 class="alert-heading">Résultats en attente</h4>
+                    <p class="mb-0">Les résultats de vos analyses n'ont pas encore été ajoutés. Veuillez nous excuser pour ce désagrément.</p>
+                </div>
+            </t>
+            
+            <!-- Results Table -->
+            <t t-if="results">
+                <div class="table_wrapper">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Test</th>
+                                <th>Résultat</th>
+                                <th class="text-right">Prix</th>
+                                <th class="text-center">Télécharger</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="results" t-as="result">
+                                <tr>
+                                    <td>
+                                        <strong t-esc="result.get('name', 'Résultat')"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="result.get('result', 'N/A')"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <strong t-esc="result.get('price', '0') + ' MAD'"/>
+                                    </td>
+                                    <td class="text-center">
+                                        <t t-if="result.get('attachment_id')">
+                                            <a t-attf-href="/web/content/{{result['attachment_id']}}?download=true" 
+                                               class="btn btn-sm btn-outline-info"
+                                               title="Télécharger le rapport">
+                                                <i class="fa fa-download"/> Télécharger
+                                            </a>
+                                        </t>
+                                        <t t-else="">
+                                            <span class="text-muted">Non disponible</span>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- ====================================
+         OP (CONSULTATIONS) PAGE - AMÉLIORÉE
+         ==================================== -->
+    <template id="portal_my_op_improved" name="My OP">
+        <t t-call="portal.portal_layout">
+            <div id="my_prescriptions">
+                <div class="page-header">
+                    <h3>Mes Consultations Externes</h3>
+                </div>
+                
+                <!-- Empty State -->
+                <t t-if="not op">
+                    <div class="alert alert-info" role="alert" style="margin: 20px 0;">
+                        <h4 class="alert-heading">Aucune consultation enregistrée</h4>
+                        <p class="mb-0">Il n'y a actuellement aucune consultation externe associée à votre compte.</p>
+                    </div>
+                </t>
+                
+                <!-- OP Table -->
+                <t t-if="op">
+                    <div class="table_wrapper">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Référence</th>
+                                    <th>Date</th>
+                                    <th>Médecin</th>
+                                    <th class="text-center">Heure</th>
+                                    <th class="text-center">Statut</th>
+                                    <th class="text-center">Prescription</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="op" t-as="data">
+                                    <tr>
+                                        <td>
+                                            <strong t-esc="data.get('op_reference', 'N/A')"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="data.get('op_date', 'N/A')"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="data.get('doctor_name', 'Non assigné')"/>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge badge-info" t-esc="data.get('slot', 'N/A')"/>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge badge-success">Complété</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <t t-if="data.get('prescription_ids')">
+                                                <button class="btn btn-sm btn-outline-info pr_download" 
+                                                        t-att-data-id="data['id']"
+                                                        title="Télécharger la prescription">
+                                                    <i class="fa fa-download"/> Télécharger
+                                                </button>
+                                            </t>
+                                            <t t-else="">
+                                                <span class="text-muted">Aucune</span>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+
+</odoo>
