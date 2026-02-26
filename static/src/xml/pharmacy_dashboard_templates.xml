@@ -493,6 +493,103 @@
                     </div>
                 </t>
 
+                <!-- PAGE NEW ORDER -->
+                <t t-if="state.menu === 'new_order'">
+                    <div class="form-section">
+                        <div class="form-section-header">
+                            <h2 class="form-section-title">Créer une Nouvelle Commande</h2>
+                            <p class="form-section-subtitle">Remplissez les détails de votre commande fournisseur</p>
+                        </div>
+                        
+                        <div class="order-form">
+                            <div class="hsp_table">
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <div class="form-group form-group-required">
+                                                    <label for="order-supplier">Fournisseur</label>
+                                                    <select id="order-supplier">
+                                                        <option value="">Sélectionner un fournisseur</option>
+                                                        <option value="pharmaplus">PharmaPLUS</option>
+                                                        <option value="medtech">MedTech Supplies</option>
+                                                        <option value="globalhealth">Global Health Solutions</option>
+                                                        <option value="lifepharma">LifePharma Distribution</option>
+                                                    </select>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group form-group-required">
+                                                    <label for="order-date">Date de Commande</label>
+                                                    <input type="date" id="order-date"/>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="form-group form-group-required">
+                                                    <label for="order-product">Médicament / Produit</label>
+                                                    <select id="order-product">
+                                                        <option value="">Sélectionner un produit</option>
+                                                        <t t-foreach="state.product_lst.slice(0, 10)" t-as="prod" t-key="prod.id">
+                                                            <option t-att-value="prod.id">
+                                                                <t t-esc="prod.name"/>
+                                                            </option>
+                                                        </t>
+                                                    </select>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group form-group-required">
+                                                    <label for="order-qty">Quantité</label>
+                                                    <input type="number" id="order-qty" placeholder="0" min="1" t-on-input="updateOrderTotal"/>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="form-group form-group-required">
+                                                    <label for="order-price">Prix Unitaire (€)</label>
+                                                    <input type="number" id="order-price" placeholder="0.00" step="0.01" t-on-input="updateOrderTotal"/>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group">
+                                                    <label for="order-date-delivery">Date de Livraison Prévue</label>
+                                                    <input type="date" id="order-date-delivery"/>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <div class="form-group">
+                                                    <label for="order-notes">Notes / Observations</label>
+                                                    <textarea id="order-notes" rows="3" placeholder="Informations supplémentaires sur la commande..."></textarea>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <div class="order-summary">
+                                                    <div class="summary-item">
+                                                        <span class="summary-label">Montant Total (€):</span>
+                                                        <span class="summary-value" id="order-total">0.00</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                
+                                <div class="save">
+                                    <button class="save_order" t-on-click="saveOrder">Créer la Commande</button>
+                                    <button class="cancel_order" t-on-click="() => this.setMenu('home')">Annuler</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+
                 <!-- PAGE SUPPLIERS -->
                 <t t-if="state.menu === 'suppliers'">
                     <div class="page-header">
