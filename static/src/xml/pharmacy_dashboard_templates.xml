@@ -11,20 +11,20 @@
                 <span class="logo-text">PharmaFlow</span>
             </div>
             <nav class="sidebar-nav">
-                <a class="nav-item active" t-on-click="() => this.setMenu('home')">
+                <a class="nav-item" t-att-class="{'active': state.menu === 'home'}" t-on-click="() => this.setMenu('home')">
                     <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6"/><rect x="9" y="1" width="6" height="6"/><rect x="1" y="9" width="6" height="6"/><rect x="9" y="9" width="6" height="6"/></svg>
                     Tableau de bord
                     <span class="nav-arrow">›</span>
                 </a>
-                <a class="nav-item" t-on-click="() => this.setMenu('medicines')">
+                <a class="nav-item" t-att-class="{'active': state.menu === 'medicines'}" t-on-click="() => this.setMenu('medicines')">
                     <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="6" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>
                     Médicaments
                 </a>
-                <a class="nav-item" t-on-click="() => this.setMenu('vaccines')">
+                <a class="nav-item" t-att-class="{'active': state.menu === 'vaccines'}" t-on-click="() => this.setMenu('vaccines')">
                     <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l2 5h5l-4 3 1.5 5L8 11l-4.5 3L5 9 1 6h5z"/></svg>
                     Vaccins
                 </a>
-                <a class="nav-item" t-on-click="() => this.setMenu('suppliers')">
+                <a class="nav-item" t-att-class="{'active': state.menu === 'suppliers'}" t-on-click="() => this.setMenu('suppliers')">
                     <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M1 3h14v2H1zm1 3h12l-1 9H3z"/></svg>
                     Commandes Fournisseurs
                 </a>
@@ -592,37 +592,164 @@
 
                 <!-- PAGE SUPPLIERS -->
                 <t t-if="state.menu === 'suppliers'">
-                    <div class="page-header">
-                        <div>
-                            <div class="page-title">Commandes Fournisseurs</div>
-                            <div class="page-subtitle">Suivi des approvisionnements en temps réel.</div>
+                    <!-- ADD SUPPLIER ORDER FORM -->
+                    <t t-if="state.show_add_order_form">
+                        <div class="form-section">
+                            <div class="form-section-header">
+                                <h2 class="form-section-title">Créer une Nouvelle Commande Fournisseur</h2>
+                                <p class="form-section-subtitle">Remplissez les informations de la commande</p>
+                            </div>
+                            
+                            <div class="medicine-form">
+                                <div class="hsp_table">
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <div class="form-group form-group-required">
+                                                        <label for="order-supplier">Fournisseur</label>
+                                                        <input type="text" id="order-supplier" placeholder="Sélectionner un fournisseur"/>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="form-group form-group-required">
+                                                        <label for="order-type">Type de Produit</label>
+                                                        <select id="order-type">
+                                                            <option value="">Sélectionner</option>
+                                                            <option value="medicine">Médicament</option>
+                                                            <option value="vaccine">Vaccin</option>
+                                                            <option value="other">Autre</option>
+                                                        </select>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="form-group form-group-required">
+                                                        <label for="order-product">Produit</label>
+                                                        <input type="text" id="order-product" placeholder="Nom du produit"/>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="form-group form-group-required">
+                                                        <label for="order-quantity">Quantité</label>
+                                                        <input type="number" id="order-quantity" placeholder="0" min="1"/>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="form-group form-group-required">
+                                                        <label for="order-unitprice">Prix Unitaire (€)</label>
+                                                        <input type="number" id="order-unitprice" placeholder="0.00" step="0.01"/>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="form-group">
+                                                        <label for="order-total">Montant Total (€)</label>
+                                                        <input type="number" id="order-total" placeholder="0.00" step="0.01" readonly="readonly"/>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="form-group">
+                                                        <label for="order-date">Date de Livraison Prévue</label>
+                                                        <input type="date" id="order-date"/>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="form-group">
+                                                        <label for="order-status">Statut</label>
+                                                        <select id="order-status">
+                                                            <option value="draft">Brouillon</option>
+                                                            <option value="confirmed">Confirmé</option>
+                                                            <option value="pending">En attente</option>
+                                                        </select>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2">
+                                                    <div class="form-group">
+                                                        <label for="order-notes">Notes / Observations</label>
+                                                        <textarea id="order-notes" rows="3" placeholder="Informations supplémentaires..."></textarea>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    
+                                    <div class="save">
+                                        <button class="save_medicine" t-on-click="saveSupplierOrder">Enregistrer Commande</button>
+                                        <button class="cancel_medicine" t-on-click="() => this.setShowAddOrderForm(false)">Annuler</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-title">Commandes en cours</div>
+                    </t>
+
+                    <!-- SUPPLIER ORDERS LIST -->
+                    <t t-if="!state.show_add_order_form">
+                        <div class="page-header">
+                            <div>
+                                <div class="page-title">Commandes Fournisseurs</div>
+                                <div class="page-subtitle">Suivi des approvisionnements en temps réel.</div>
+                            </div>
+                            <div class="header-actions">
+                                <button class="btn btn-outline">Exporter CSV</button>
+                                <button class="btn btn-primary" t-on-click="() => this.setShowAddOrderForm(true)">+ Nouvelle Commande</button>
+                            </div>
                         </div>
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Fournisseur</th>
-                                    <th>Date Prévue</th>
-                                    <th>Montant</th>
-                                    <th>Statut</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <t t-foreach="state.order_data.slice(0, 5)" t-as="order" t-key="order.id">
+                        <div class="card">
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-title">Commandes en cours</div>
+                                    <div class="card-subtitle" t-out="'Total: ' + state.order_data.length + ' commandes'"/>
+                                </div>
+                            </div>
+                            <table class="data-table">
+                                <thead>
                                     <tr>
-                                        <td><span class="prod-name" t-out="order.partner_id ? order.partner_id[1] : '-'"/></td>
-                                        <td><t t-out="order.create_date ? order.create_date.substring(0, 10) : '-'"/></td>
-                                        <td><span class="mono"><t t-out="state.currency"/><t t-out="(order.amount_total or 0).toFixed(2)"/></span></td>
-                                        <td><span class="cat-badge">Confirmé</span></td>
+                                        <th>Fournisseur</th>
+                                        <th>Produit</th>
+                                        <th>Quantité</th>
+                                        <th>Montant</th>
+                                        <th>Date Prévue</th>
+                                        <th>Statut</th>
                                     </tr>
-                                </t>
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="state.order_data.slice(0, 10)" t-as="order" t-key="order.id">
+                                        <tr>
+                                            <td><span class="prod-name" t-out="order.partner_id ? order.partner_id[1] : '-'"/></td>
+                                            <td><span t-out="order.order_line ? (order.order_line[0] ? order.order_line[0].name : '-') : '-'"/></td>
+                                            <td><span class="mono" t-out="order.order_line ? (order.order_line[0] ? order.order_line[0].product_qty : 0) : 0"/></td>
+                                            <td><span class="mono"><t t-out="state.currency"/><t t-out="(order.amount_total or 0).toFixed(2)"/></span></td>
+                                            <td><t t-out="order.create_date ? order.create_date.substring(0, 10) : '-'"/></td>
+                                            <td>
+                                                <t t-if="order.state === 'draft'">
+                                                    <span class="cat-badge" style="background:#F3F4F6;color:#374151;border-color:#D1D5DB;">Brouillon</span>
+                                                </t>
+                                                <t t-elif="order.state === 'sent'">
+                                                    <span class="cat-badge" style="background:#FEF3C7;color:#92400E;border-color:#FBBF24;">Envoyée</span>
+                                                </t>
+                                                <t t-elif="order.state === 'purchase'">
+                                                    <span class="cat-badge" style="background:#DBEAFE;color:#1E40AF;border-color:#3B82F6;">Confirmée</span>
+                                                </t>
+                                                <t t-elif="order.state === 'done'">
+                                                    <span class="cat-badge" style="background:#DCFCE7;color:#166534;border-color:#4ADE80;">Livrée</span>
+                                                </t>
+                                                <t t-else="">
+                                                    <span class="cat-badge">En cours</span>
+                                                </t>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </t>
                 </t>
 
             </div>

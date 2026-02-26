@@ -30,6 +30,7 @@ export class PharmacyDashboard extends Component {
             currency: '$',
             med: [],
             show_add_medicine_form: false,
+            show_add_order_form: false,
             stats: {
                 revenue_today: '0.00',
                 orders_today: 0,
@@ -273,6 +274,79 @@ export class PharmacyDashboard extends Component {
         const totalElement = document.getElementById('order-total');
         if (totalElement) {
             totalElement.textContent = total.toFixed(2);
+        }
+    }
+
+    setShowAddOrderForm(show) {
+        this.state.show_add_order_form = show;
+    }
+
+    async saveSupplierOrder() {
+        try {
+            // Récupérer les valeurs du formulaire
+            const supplier = document.getElementById('order-supplier').value;
+            const type = document.getElementById('order-type').value;
+            const product = document.getElementById('order-product').value;
+            const quantity = parseFloat(document.getElementById('order-quantity').value);
+            const unitPrice = parseFloat(document.getElementById('order-unitprice').value);
+            const deliveryDate = document.getElementById('order-date').value;
+            const status = document.getElementById('order-status').value;
+            const notes = document.getElementById('order-notes').value;
+
+            // Validation basique
+            if (!supplier || !type || !product || !quantity || !unitPrice) {
+                alert('Veuillez remplir tous les champs obligatoires');
+                return;
+            }
+
+            // Calculer le montant total
+            const totalAmount = quantity * unitPrice;
+
+            // Créer la commande via ORM
+            const orderId = await this.orm.create('purchase.order', [{
+                partner_id: parseInt(supplier) || 1,
+                state: status || 'draft',
+                order_line: [[0, 0, {
+                    product_id: product,
+                    product_qty: quantity,
+                    price_unit: unitPrice,
+                }]],
+                notes: notes,
+                date_planned: deliveryDate,
+            }]);
+
+            // Ajouter aux données locales
+            this.state.order_data.push({
+                id: orderId,
+                partner_id: [supplier, supplier],
+                amount_total: totalAmount,
+                create_date: new Date().toISOString(),
+                state: status || 'draft',
+                order_line: [{
+                    name: product,
+                    product_qty: quantity,
+                }]
+            });
+
+            // Réinitialiser le formulaire
+            document.getElementById('order-supplier').value = '';
+            document.getElementById('order-type').value = '';
+            document.getElementById('order-product').value = '';
+            document.getElementById('order-quantity').value = '';
+            document.getElementById('order-unitprice').value = '';
+            document.getElementById('order-total').value = '';
+            document.getElementById('order-date').value = '';
+            document.getElementById('order-status').value = 'draft';
+            document.getElementById('order-notes').value = '';
+
+            // Fermer le formulaire
+            this.state.show_add_order_form = false;
+
+            console.log('Commande fournisseur créée avec succès:', orderId);
+            alert('Commande créée avec succès');
+        } catch(error) {
+            console.error('Erreur lors de la création de la commande:', error);
+            alert('Erreur lors de l\'enregistrement de la commande');
         }
     }
 
