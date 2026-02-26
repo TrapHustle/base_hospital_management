@@ -29,6 +29,7 @@ export class PharmacyDashboard extends Component {
             menu: 'home',
             currency: '$',
             med: [],
+            show_add_medicine_form: false,
             stats: {
                 revenue_today: '0.00',
                 orders_today: 0,
@@ -192,8 +193,71 @@ export class PharmacyDashboard extends Component {
 
     setMenu(menu) {
         this.state.menu = menu;
+        this.state.show_add_medicine_form = false;
         if (menu === 'vaccines' && this.state.vaccine.length === 0) {
             this.fetch_vaccine_data();
+        }
+    }
+
+    setShowAddMedicineForm(show) {
+        this.state.show_add_medicine_form = show;
+    }
+
+    async saveMedicine() {
+        try {
+            // Récupérer les valeurs du formulaire
+            const name = document.getElementById('med-name').value;
+            const category = document.getElementById('med-category').value;
+            const dosage = document.getElementById('med-dosage').value;
+            const form = document.getElementById('med-form').value;
+            const price = parseFloat(document.getElementById('med-price').value);
+            const stock = parseInt(document.getElementById('med-stock').value);
+            const expdate = document.getElementById('med-expdate').value;
+            const supplier = document.getElementById('med-supplier').value;
+            const description = document.getElementById('med-description').value;
+
+            // Validation basique
+            if (!name || !category || !dosage || !form || !price || stock === '') {
+                alert('Veuillez remplir tous les champs obligatoires');
+                return;
+            }
+
+            // Créer le médicament via ORM
+            const medicineId = await this.orm.create('product.product', [{
+                name: name,
+                categ_id: category,
+                list_price: price,
+                qty_available: stock,
+                description: description,
+                supplier: supplier,
+            }]);
+
+            // Ajouter aux données locales
+            this.state.product_lst.push({
+                id: medicineId,
+                name: name,
+                list_price: price,
+                qty_available: stock,
+            });
+
+            // Réinitialiser le formulaire
+            document.getElementById('med-name').value = '';
+            document.getElementById('med-category').value = '';
+            document.getElementById('med-dosage').value = '';
+            document.getElementById('med-form').value = '';
+            document.getElementById('med-price').value = '';
+            document.getElementById('med-stock').value = '';
+            document.getElementById('med-expdate').value = '';
+            document.getElementById('med-supplier').value = '';
+            document.getElementById('med-description').value = '';
+
+            // Fermer le formulaire
+            this.state.show_add_medicine_form = false;
+
+            console.log('Médicament créé avec succès:', medicineId);
+        } catch(error) {
+            console.error('Erreur lors de la création du médicament:', error);
+            alert('Erreur lors de l\'enregistrement du médicament');
         }
     }
 

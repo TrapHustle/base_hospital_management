@@ -2,7 +2,7 @@
 <!-- Lab dashboard template with modern design and kanban views -->
 <templates id="lab_dashboard" xml:space="preserve">
     <t t-name="LabDashboard" owl="1">
-        <div class="oh_dashboards lab-dashboard" t-ref="root">
+        <div class="lab-dashboard" t-ref="root">
             <!-- Navbar -->
             <div class="dashboard-navbar">
                 <div class="navbar-brand">

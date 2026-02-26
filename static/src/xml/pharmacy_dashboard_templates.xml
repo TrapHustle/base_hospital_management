@@ -294,56 +294,163 @@
 
                 <!-- PAGE MEDICINES -->
                 <t t-if="state.menu === 'medicines'">
-                    <div class="page-header">
-                        <div>
-                            <div class="page-title">Gestion des Médicaments</div>
-                            <div class="page-subtitle">Gérez votre inventaire et surveillez les stocks.</div>
-                        </div>
-                        <div class="header-actions">
-                            <button class="btn btn-outline">Exporter CSV</button>
-                            <button class="btn btn-primary">+ Ajouter Médicament</button>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header">
-                            <div>
-                                <div class="card-title">Inventaire Complet</div>
-                                <div class="card-subtitle" t-out="'Nombre total: ' + state.product_lst.length + ' articles'"/>
+                    <!-- ADD MEDICINE FORM -->
+                    <t t-if="state.show_add_medicine_form">
+                        <div class="form-section">
+                            <div class="form-section-header">
+                                <h2 class="form-section-title">Ajouter un Nouveau Médicament</h2>
+                                <p class="form-section-subtitle">Remplissez les informations du médicament</p>
+                            </div>
+                            
+                            <div class="medicine-form">
+                                <div class="hsp_table">
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <div class="form-group form-group-required">
+                                                        <label for="med-name">Nom du Médicament</label>
+                                                        <input type="text" id="med-name" placeholder="Nom complet du médicament"/>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="form-group form-group-required">
+                                                        <label for="med-category">Catégorie</label>
+                                                        <select id="med-category">
+                                                            <option value="">Sélectionner une catégorie</option>
+                                                            <option value="antibiotics">Antibiotiques</option>
+                                                            <option value="painkillers">Analgésiques</option>
+                                                            <option value="antiinflammatory">Anti-inflammatoires</option>
+                                                            <option value="cardiovascular">Cardiovasculaires</option>
+                                                            <option value="dermatology">Dermatologie</option>
+                                                            <option value="other">Autres</option>
+                                                        </select>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="form-group form-group-required">
+                                                        <label for="med-dosage">Dosage</label>
+                                                        <input type="text" id="med-dosage" placeholder="Ex: 500mg"/>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="form-group form-group-required">
+                                                        <label for="med-form">Forme</label>
+                                                        <select id="med-form">
+                                                            <option value="">Sélectionner une forme</option>
+                                                            <option value="tablet">Comprimé</option>
+                                                            <option value="capsule">Capsule</option>
+                                                            <option value="injection">Injection</option>
+                                                            <option value="liquid">Liquide</option>
+                                                            <option value="cream">Crème</option>
+                                                            <option value="syrup">Sirop</option>
+                                                        </select>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="form-group form-group-required">
+                                                        <label for="med-price">Prix (€)</label>
+                                                        <input type="number" id="med-price" placeholder="0.00" step="0.01"/>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="form-group form-group-required">
+                                                        <label for="med-stock">Quantité en Stock</label>
+                                                        <input type="number" id="med-stock" placeholder="0" min="0"/>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="form-group">
+                                                        <label for="med-expdate">Date d'Expiration</label>
+                                                        <input type="date" id="med-expdate"/>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="form-group">
+                                                        <label for="med-supplier">Fournisseur</label>
+                                                        <input type="text" id="med-supplier" placeholder="Nom du fournisseur"/>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2">
+                                                    <div class="form-group">
+                                                        <label for="med-description">Description / Notes</label>
+                                                        <textarea id="med-description" rows="3" placeholder="Informations supplémentaires..."></textarea>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    
+                                    <div class="save">
+                                        <button class="save_medicine" t-on-click="saveMedicine">Enregistrer</button>
+                                        <button class="cancel_medicine" t-on-click="() => this.setShowAddMedicineForm(false)">Annuler</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <table class="data-table" style="width:100%;">
-                            <thead>
-                                <tr>
-                                    <th>Produit</th>
-                                    <th>Stock</th>
-                                    <th>Prix</th>
-                                    <th>Catégorie</th>
-                                    <th>Statut</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <t t-foreach="state.product_lst.slice(0, 10)" t-as="prod" t-key="prod.id">
+                    </t>
+
+                    <!-- MEDICINES LIST -->
+                    <t t-if="!state.show_add_medicine_form">
+                        <div class="page-header">
+                            <div>
+                                <div class="page-title">Gestion des Médicaments</div>
+                                <div class="page-subtitle">Gérez votre inventaire et surveillez les stocks.</div>
+                            </div>
+                            <div class="header-actions">
+                                <button class="btn btn-outline">Exporter CSV</button>
+                                <button class="btn btn-primary" t-on-click="() => this.setShowAddMedicineForm(true)">+ Ajouter Médicament</button>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-title">Inventaire Complet</div>
+                                    <div class="card-subtitle" t-out="'Nombre total: ' + state.product_lst.length + ' articles'"/>
+                                </div>
+                            </div>
+                            <table class="data-table" style="width:100%;">
+                                <thead>
                                     <tr>
-                                        <td><span class="prod-name" t-out="prod.name"/></td>
-                                        <td><span class="mono" t-out="(prod.qty_available or 0).toFixed(0)"/></td>
-                                        <td><span class="mono" t-out="(prod.list_price or 0).toFixed(2)"/> €</td>
-                                        <td><span class="cat-badge">Médicament</span></td>
-                                        <td>
-                                            <t t-if="(prod.qty_available or 0) === 0">
-                                                <span class="cat-badge" style="background:var(--red-pale);color:var(--red);border-color:var(--red);">Rupture</span>
-                                            </t>
-                                            <t t-elif="(prod.qty_available or 0) &lt; 10">
-                                                <span class="cat-badge" style="background:var(--orange-pale);color:var(--orange);border-color:var(--orange);">Faible</span>
-                                            </t>
-                                            <t t-else="">
-                                                <span class="cat-badge" style="background:#EAF5EA;color:#2E7D32;border-color:#2E7D32;">OK</span>
-                                            </t>
-                                        </td>
+                                        <th>Produit</th>
+                                        <th>Stock</th>
+                                        <th>Prix</th>
+                                        <th>Catégorie</th>
+                                        <th>Statut</th>
                                     </tr>
-                                </t>
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="state.product_lst.slice(0, 10)" t-as="prod" t-key="prod.id">
+                                        <tr>
+                                            <td><span class="prod-name" t-out="prod.name"/></td>
+                                            <td><span class="mono" t-out="(prod.qty_available or 0).toFixed(0)"/></td>
+                                            <td><span class="mono" t-out="(prod.list_price or 0).toFixed(2)"/> €</td>
+                                            <td><span class="cat-badge">Médicament</span></td>
+                                            <td>
+                                                <t t-if="(prod.qty_available or 0) === 0">
+                                                    <span class="cat-badge" style="background:var(--red-pale);color:var(--red);border-color:var(--red);">Rupture</span>
+                                                </t>
+                                                <t t-elif="(prod.qty_available or 0) &lt; 10">
+                                                    <span class="cat-badge" style="background:var(--orange-pale);color:var(--orange);border-color:var(--orange);">Faible</span>
+                                                </t>
+                                                <t t-else="">
+                                                    <span class="cat-badge" style="background:#EAF5EA;color:#2E7D32;border-color:#2E7D32;">OK</span>
+                                                </t>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </t>
                 </t>
 
                 <!-- PAGE VACCINES -->

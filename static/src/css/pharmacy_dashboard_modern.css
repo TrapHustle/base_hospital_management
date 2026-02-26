@@ -545,6 +545,147 @@
 .pf-dashboard .mb-1         { margin-bottom: 8px; }
 .pf-dashboard .mb-2         { margin-bottom: 16px; }
 
+/* ─────────────── FORM SECTION ─────────────── */
+.pf-dashboard .form-section {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.pf-dashboard .form-section-header {
+    background: linear-gradient(135deg, var(--plum) 0%, var(--plum-mid) 100%);
+    padding: 24px 28px;
+    color: white;
+    border-bottom: 1px solid var(--border);
+}
+
+.pf-dashboard .form-section-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0;
+    color: white;
+    letter-spacing: -0.2px;
+}
+
+.pf-dashboard .form-section-subtitle {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 6px 0 0 0;
+    font-weight: 400;
+}
+
+.pf-dashboard .medicine-form {
+    padding: 28px;
+}
+
+.pf-dashboard .hsp_table {
+    width: 100%;
+}
+
+.pf-dashboard .hsp_table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.pf-dashboard .hsp_table table tr {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.pf-dashboard .hsp_table table tr td {
+    flex: 1;
+}
+
+.pf-dashboard .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.pf-dashboard .form-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: 0.3px;
+}
+
+.pf-dashboard .form-group-required label::after {
+    content: " *";
+    color: var(--red);
+    font-weight: 700;
+}
+
+.pf-dashboard .form-group input,
+.pf-dashboard .form-group select,
+.pf-dashboard .form-group textarea {
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 13px;
+    color: var(--ink);
+    background: var(--white);
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.pf-dashboard .form-group input:focus,
+.pf-dashboard .form-group select:focus,
+.pf-dashboard .form-group textarea:focus {
+    outline: none;
+    border-color: var(--plum-mid);
+    box-shadow: 0 0 0 3px rgba(92, 61, 94, 0.1);
+}
+
+.pf-dashboard .form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.pf-dashboard .save {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+
+.pf-dashboard .save_medicine,
+.pf-dashboard .cancel_medicine {
+    flex: 1;
+    padding: 12px 24px;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    letter-spacing: 0.2px;
+}
+
+.pf-dashboard .save_medicine {
+    background: linear-gradient(135deg, var(--plum) 0%, var(--plum-mid) 100%);
+    color: white;
+}
+
+.pf-dashboard .save_medicine:hover {
+    background: linear-gradient(135deg, var(--plum-mid) 0%, #5C3D5E 100%);
+}
+
+.pf-dashboard .cancel_medicine {
+    background: var(--surface);
+    color: var(--ink);
+    border: 1px solid var(--border);
+}
+
+.pf-dashboard .cancel_medicine:hover {
+    background: var(--white);
+    border-color: var(--plum-mid);
+}
+
 /* ─────────────── RESPONSIVE ─────────────── */
 @media (max-width: 1400px) {
     .pf-dashboard .dash-grid        { grid-template-columns: 1fr; }
