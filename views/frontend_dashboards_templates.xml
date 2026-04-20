@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Doctor Dashboard Frontend Template -->
+    <template id="hospital_doctor_dashboard" name="Doctor Dashboard">
+        <t t-call="web.layout">
+            <t t-set="head_">
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title>Doctor Dashboard - Hospital Management</title>
+                <!-- CSS Files - Inline styles for immediate loading -->
+                <link rel="stylesheet" type="text/css" href="/base_hospital_management/static/src/css/doctor_dashboard.css" media="all"/>
+            </t>
+            <div id="hospital-dashboard-doctor" class="hospital-dashboard">
+                <div class="oh_dashboards" id="doctor-dashboard-root">
+                    <!-- Navbar -->
+                    <div class="dashboard-navbar">
+                        <div class="navbar-brand">
+                            <div class="logo">🏥</div>
+                            <span>Hospital Management - Doctor</span>
+                        </div>
+                        <div class="navbar-right">
+                            <div class="user-profile">
+                                <div class="user-avatar" id="user-avatar">DR</div>
+                                <span id="user-name">Doctor</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-container">
+                        <!-- Welcome Section -->
+                        <div class="welcome-section">
+                            <h1>Welcome, <span id="welcome-name">Doctor</span></h1>
+                            <p>Voici votre tableau de bord médical pour aujourd'hui</p>
+                        </div>
+
+                        <!-- Statistics Cards -->
+                        <div class="stats-grid" id="stats-grid">
+                            <!-- Stats will be populated by JS -->
+                        </div>
+
+                        <!-- Main Action Buttons -->
+                        <div class="main-actions" id="main-actions">
+                            <!-- Actions will be populated by JS -->
+                        </div>
+
+                        <!-- Charts Grid -->
+                        <div class="charts-grid" id="charts-grid">
+                            <!-- Charts will be populated by JS -->
+                        </div>
+
+                        <!-- Recent Activities -->
+                        <div class="recent-activity" id="recent-activity">
+                            <!-- Activities will be populated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js" defer="defer"></script>
+            <script type="module" src="/base_hospital_management/static/src/js/doctor_dashboard_frontend.js" defer="defer"></script>
+        </t>
+    </template>
+
+    <!-- Lab Dashboard Frontend Template -->
+    <template id="hospital_lab_dashboard" name="Lab Dashboard">
+        <t t-call="web.layout">
+            <t t-set="head_">
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title>Lab Dashboard - Hospital Management</title>
+                <link rel="stylesheet" type="text/css" href="/base_hospital_management/static/src/css/lab_dashboard.css" media="all"/>
+            </t>
+            <div id="hospital-dashboard-lab" class="hospital-dashboard">
+                <div class="oh_dashboards lab-dashboard" id="lab-dashboard-root">
+                    <!-- Navbar -->
+                    <div class="dashboard-navbar">
+                        <div class="navbar-brand">
+                            <div class="logo">🧪</div>
+                            <span>Laboratory Dashboard</span>
+                        </div>
+                        <div class="navbar-right">
+                            <div class="user-profile">
+                                <div class="user-avatar" id="lab-user-avatar">LT</div>
+                                <span id="lab-user-name">Lab Technician</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lab-container">
+                        <!-- Welcome Section -->
+                        <div class="welcome-section">
+                            <h1>Welcome, <span id="lab-welcome-name">Lab Technician</span></h1>
+                            <p>Tableau de bord du laboratoire</p>
+                        </div>
+
+                        <!-- Statistics Cards -->
+                        <div class="stats-grid" id="lab-stats-grid">
+                            <!-- Stats will be populated by JS -->
+                        </div>
+
+                        <!-- Main Content -->
+                        <div class="main-content-grid-lab">
+                            <!-- Sidebar Menu -->
+                            <div class="sidebar-menu-lab" id="lab-sidebar">
+                                <!-- Menu will be populated by JS -->
+                            </div>
+
+                            <!-- Content Area -->
+                            <div class="content-area-lab" id="lab-content-area">
+                                <!-- Content will be populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js" defer="defer"></script>
+            <script type="module" src="/base_hospital_management/static/src/js/lab_dashboard_frontend.js" defer="defer"></script>
+        </t>
+    </template>
+
+    <!-- Pharmacy Dashboard Frontend Template -->
+    <template id="hospital_pharmacy_dashboard" name="Pharmacy Dashboard">
+        <t t-call="web.layout">
+            <t t-set="head_">
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title>Pharmacy Dashboard - Hospital Management</title>
+                <link rel="stylesheet" type="text/css" href="/base_hospital_management/static/src/css/pharmacy_dashboard_modern.css" media="all"/>
+            </t>
+            <div id="hospital-dashboard-pharmacy" class="hospital-dashboard">
+                <div class="pf-dashboard" id="pharmacy-dashboard-root">
+                    <!-- Sidebar -->
+                    <aside class="sidebar" id="pharmacy-sidebar">
+                        <!-- Sidebar will be populated by JS -->
+                    </aside>
+
+                    <!-- Main Content -->
+                    <main class="main">
+                        <!-- Topbar -->
+                        <header class="topbar" id="pharmacy-topbar">
+                            <!-- Topbar will be populated by JS -->
+                        </header>
+
+                        <div class="content" id="pharmacy-content">
+                            <!-- Content will be populated by JS -->
+                        </div>
+                    </main>
+                </div>
+            </div>
+            <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js" defer="defer"></script>
+            <script type="module" src="/base_hospital_management/static/src/js/pharmacy_dashboard_frontend.js" defer="defer"></script>
+        </t>
+    </template>
+
+    <!-- Reception Dashboard Frontend Template -->
+    <template id="hospital_reception_dashboard" name="Reception Dashboard">
+        <t t-call="web.layout">
+            <t t-set="head_">
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title>Reception Dashboard - Hospital Management</title>
+                <link rel="stylesheet" type="text/css" href="/base_hospital_management/static/src/css/reception_dashboard.css" media="all"/>
+            </t>
+            <div id="hospital-dashboard-reception" class="hospital-dashboard">
+                <div class="r_Container" id="reception-dashboard-root">
+                    <!-- Main Navigation -->
+                    <div class="r_dashButtonContainer" id="reception-nav">
+                        <!-- Navigation will be populated by JS -->
+                    </div>
+
+                    <!-- Main Content Area -->
+                    <div id="view_main">
+                        <!-- Content will be populated by JS -->
+                    </div>
+                </div>
+            </div>
+            <script type="module" src="/base_hospital_management/static/src/js/reception_dashboard_frontend.js" defer="defer"></script>
+        </t>
+    </template>
+
+    <!-- Hospital Portal Frontend Template (for patients) -->
+    <template id="hospital_portal_dashboard" name="Hospital Portal">
+        <t t-call="web.layout">
+            <t t-set="head_">
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title>Hospital Portal - Patient Access</title>
+                <link rel="stylesheet" type="text/css" href="/base_hospital_management/static/src/css/hospital_portal.css" media="all"/>
+            </t>
+            <div id="hospital-dashboard-portal" class="hospital-dashboard">
+                <div class="o_portal" id="hospital-portal-root">
+                    <!-- Portal Header -->
+                    <div class="page-header">
+                        <h1>Hospital Patient Portal</h1>
+                        <p>Access your medical records and appointments</p>
+                    </div>
+
+                    <!-- Portal Navigation -->
+                    <div class="o_portal_my_home" id="portal-nav">
+                        <!-- Navigation will be populated by JS -->
+                    </div>
+
+                    <!-- Portal Content -->
+                    <div class="o_portal_docs" id="portal-content">
+                        <!-- Content will be populated by JS -->
+                    </div>
+                </div>
+            </div>
+            <script type="module" src="/base_hospital_management/static/src/js/hospital_portal_frontend.js" defer="defer"></script>
+        </t>
+    </template>
+</odoo>

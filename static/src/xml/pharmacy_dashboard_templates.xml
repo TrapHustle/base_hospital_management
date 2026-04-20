@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Pharmacy Dashboard - Redesigned to match Doctor Dashboard modern style -->
+<templates id="pharmacy_dashboard" xml:space="preserve">
+    <t t-name="PharmacyDashboard" owl="1">
+        <div class="oh_dashboards" t-ref="root">
+
+            <!-- Navbar -->
+            <div class="dashboard-navbar">
+                <div class="navbar-brand">
+                    <div class="logo">💊</div>
+                    <span>Pharmacy Management</span>
+                </div>
+                <div class="navbar-right">
+                    <div class="user-profile">
+                        <div class="user-avatar">PH</div>
+                        <span>Pharmacist</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-container">
+
+                <!-- Welcome Section -->
+                <div class="welcome-section">
+                    <h1>Bienvenue à la Pharmacie</h1>
+                    <p>Gérez vos médicaments, vaccins et commandes facilement</p>
+                </div>
+
+                <!-- Statistics Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card medicines">
+                        <div class="stat-icon">💊</div>
+                        <div class="stat-content">
+                            <h3 t-esc="state.stats ? state.stats.total_medicines || 0 : 0"/>
+                            <p>Médicaments</p>
+                            <div class="trend up">Stock disponible</div>
+                        </div>
+                    </div>
+                    <div class="stat-card vaccines">
+                        <div class="stat-icon">💉</div>
+                        <div class="stat-content">
+                            <h3 t-esc="state.stats ? state.stats.total_vaccines || 0 : 0"/>
+                            <p>Vaccins</p>
+                            <div class="trend up">En stock</div>
+                        </div>
+                    </div>
+                    <div class="stat-card orders">
+                        <div class="stat-icon">🛒</div>
+                        <div class="stat-content">
+                            <h3 t-esc="state.stats ? state.stats.total_orders || 0 : 0"/>
+                            <p>Commandes</p>
+                            <div class="trend up">Ce mois</div>
+                        </div>
+                    </div>
+                    <div class="stat-card revenue">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-content">
+                            <h3 t-esc="state.stats ? state.stats.revenue || 0 : 0"/>
+                            <p>Revenus (FCFA)</p>
+                            <div class="trend up">↑ Ce mois</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Action Buttons -->
+                <div class="main-actions">
+                    <button class="action-btn home-btn"
+                            t-att-class="{ 'active': state.menu === 'home' }"
+                            t-on-click="() => this.create_order('home')">
+                        <span class="btn-icon">🏠</span>
+                        <span class="btn-text">Nouvelle Commande</span>
+                    </button>
+                    <button class="action-btn medicines-btn"
+                            t-att-class="{ 'active': state.menu === 'medicines' }"
+                            t-on-click="() => this.fetch_medicine_data('medicines')">
+                        <span class="btn-icon">💊</span>
+                        <span class="btn-text">Médicaments</span>
+                    </button>
+                    <button class="action-btn vaccines-btn"
+                            t-att-class="{ 'active': state.menu === 'vaccines' }"
+                            t-on-click="() => this.fetch_vaccine_data('vaccines')">
+                        <span class="btn-icon">💉</span>
+                        <span class="btn-text">Vaccins</span>
+                    </button>
+                    <button class="action-btn orders-btn"
+                            t-att-class="{ 'active': state.menu === 'orders' }"
+                            t-on-click="() => this.fetch_sale_orders('orders')">
+                        <span class="btn-icon">📋</span>
+                        <span class="btn-text">Commandes</span>
+                    </button>
+                </div>
+
+                <!-- Main Content Area -->
+                <div class="content-layout">
+
+                    <!-- Left Panel: Dynamic Content -->
+                    <div class="content-panel">
+
+                        <!-- Home / Sale Order Form -->
+                        <div t-if="state.menu === 'home'" class="section-card" t-ref="home_content">
+                            <div class="section-header">
+                                <h3>🛒 Nouvelle Commande de Vente</h3>
+                            </div>
+
+                            <!-- Patient Search Bar -->
+                            <div class="pharma-search-bar">
+                                <input class="pharma-search-input"
+                                       t-ref="PatientSearch"
+                                       type="search"
+                                       placeholder="🔍 Recherche par code patient..."
+                                       autofocus="autofocus"/>
+                                <button class="pharma-search-btn" t-on-click="fetch_patient_data">
+                                    Rechercher
+                                </button>
+                                <button class="pharma-clear-btn" t-on-click="clear_data">
+                                    ✕ Effacer
+                                </button>
+                            </div>
+
+                            <!-- Patient Info Form -->
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Nom complet</label>
+                                    <input t-ref="PatientName" type="text" class="form-input"
+                                           placeholder="Nom du patient"/>
+                                </div>
+                                <div class="form-group">
+                                    <label>Téléphone</label>
+                                    <input type="tel" class="form-input" id="patient-phone"
+                                           placeholder="Numéro de téléphone"/>
+                                </div>
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input t-ref="Email" type="email" class="form-input"
+                                           id="patient-mail" placeholder="Adresse email"/>
+                                </div>
+                                <div class="form-group">
+                                    <label>Date de Naissance</label>
+                                    <input type="date" class="form-input" id="o_patient-dob"/>
+                                </div>
+                                <div class="form-group full-width">
+                                    <label>Genre</label>
+                                    <div class="radio-group">
+                                        <label class="radio-label">
+                                            <input type="radio" name="gender" value="male" checked="true"/>
+                                            <span>Masculin</span>
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="gender" value="female"/>
+                                            <span>Féminin</span>
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="gender" value="other"/>
+                                            <span>Autre</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Medicine List Table -->
+                            <div class="section-subheader">
+                                <h4>📦 Liste des Médicaments</h4>
+                            </div>
+                            <div class="table-wrapper">
+                                <table class="pharma-table" id="medicine_table">
+                                    <thead>
+                                        <tr>
+                                            <th>Nom</th>
+                                            <th>Quantité</th>
+                                            <th>Unité</th>
+                                            <th>Prix</th>
+                                            <th>Sous-Total (TTC)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="bill_table" class="bill_tables">
+                                        <t t-foreach="state.order_line" t-as="line" t-key="line.id">
+                                            <PharmacyOrderLines
+                                                id="line.id"
+                                                line="line"
+                                                removeLine.bind="removeLine"
+                                                updateOrderLine.bind="updateOrderLine"
+                                                tax="this.tax_amount"/>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="table-actions">
+                                <button class="add-line-btn" t-on-click="addRow">
+                                    ＋ Ajouter une ligne
+                                </button>
+                                <button class="create-order-btn" t-on-click="create_sale_order">
+                                    ✅ Créer la Commande
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Medicines Grid -->
+                        <div t-if="state.menu === 'medicines'" class="section-card" t-ref="medicine_div">
+                            <div class="section-header">
+                                <h3>💊 Catalogue Médicaments</h3>
+                            </div>
+                            <div class="product-grid">
+                                <t t-foreach="state.med" t-as="med" t-key="med[4]">
+                                    <div class="product-card">
+                                        <div class="product-img-wrap">
+                                            <div t-if="med[3]">
+                                                <img t-att-src="'data:image/png;base64,' + med[3]"
+                                                     class="product-img"/>
+                                            </div>
+                                            <div t-else="" class="product-img-placeholder">💊</div>
+                                        </div>
+                                        <div class="product-info">
+                                            <h4 t-esc="med[0]"/>
+                                            <div class="product-meta">
+                                                <span class="meta-label">Prix</span>
+                                                <span class="meta-value" t-esc="med[1]"/>
+                                            </div>
+                                            <div class="product-meta">
+                                                <span class="meta-label">Stock</span>
+                                                <span class="meta-value stock" t-esc="med[2]"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+
+                        <!-- Vaccines Grid -->
+                        <div t-if="state.menu === 'vaccines'" class="section-card" t-ref="vaccine_div">
+                            <div class="section-header">
+                                <h3>💉 Catalogue Vaccins</h3>
+                            </div>
+                            <div class="product-grid">
+                                <t t-foreach="state.vaccine" t-as="vaccine" t-key="vaccine.id">
+                                    <div class="product-card vaccine-card">
+                                        <div class="product-img-wrap">
+                                            <div t-if="vaccine[3]">
+                                                <img t-att-src="'data:image/png;base64,' + vaccine[3]"
+                                                     class="product-img"/>
+                                            </div>
+                                            <div t-else="" class="product-img-placeholder">💉</div>
+                                        </div>
+                                        <div class="product-info">
+                                            <h4 t-esc="vaccine[0]"/>
+                                            <div class="product-meta">
+                                                <span class="meta-label">Prix</span>
+                                                <span class="meta-value" t-esc="vaccine[1]"/>
+                                            </div>
+                                            <div class="product-meta">
+                                                <span class="meta-label">Stock</span>
+                                                <span class="meta-value stock" t-esc="vaccine[2]"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+
+                        <!-- Orders Table -->
+                        <div t-if="state.menu === 'orders'" class="section-card" t-ref="orders_div">
+                            <div class="section-header">
+                                <h3>📋 Commandes de Vente</h3>
+                            </div>
+                            <div class="table-wrapper">
+                                <table class="pharma-table orders-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Numéro</th>
+                                            <th>Date de Création</th>
+                                            <th>Client</th>
+                                            <th>Total</th>
+                                            <th>Statut</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="state.order_data" t-as="testdata" t-key="testdata.id">
+                                            <tr class="table-row-hover">
+                                                <td t-esc="testdata.name"/>
+                                                <td t-esc="testdata.create_date"/>
+                                                <td t-esc="testdata.partner_id[1]"/>
+                                                <td t-esc="testdata.amount_total"/>
+                                                <td>
+                                                    <span class="status-badge" t-att-class="'status-' + testdata.state"
+                                                          t-esc="testdata.state"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Right Panel: Patient Profile -->
+                    <div class="profile-panel">
+                        <div class="profile-card">
+                            <div class="profile-header">
+                                <h4>👤 Profil Patient</h4>
+                            </div>
+                            <div class="profile-avatar-wrap">
+                                <img id="patient-image" class="profile-avatar"
+                                     src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"/>
+                            </div>
+                            <div class="profile-details">
+                                <div class="profile-field" t-ref="patientTitle" id="patient-title"/>
+                                <div class="profile-field code" t-ref="patientCode" id="patient-code"/>
+                                <div class="profile-field" t-ref="patientGender" id="patient-gender"/>
+                                <div class="profile-field" t-ref="patientBlood" id="patient-blood"/>
+                                <div class="profile-field" t-ref="patientAge" id="patient-age"/>
+                            </div>
+                        </div>
+                        <div class="medical-list-card" id="medical_list"/>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

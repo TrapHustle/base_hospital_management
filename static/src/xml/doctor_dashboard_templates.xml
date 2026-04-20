@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--Doctor dashboard template with modern design-->
+<templates id="doc_dashboard" xml:space="preserve">
+    <t t-name="DoctorDashboard" owl="1">
+        <div class="oh_dashboards" t-ref="root">
+            <!-- Navbar -->
+            <div class="dashboard-navbar">
+                <div class="navbar-brand">
+                    <div class="logo">🏥</div>
+                    <span>Hospital Management</span>
+                </div>
+                <div class="navbar-right">
+                    <div class="user-profile">
+                        <div class="user-avatar">
+                            <t t-esc="state.user_name ? state.user_name.substring(0, 2).toUpperCase() : 'DR'"/>
+                        </div>
+                        <span t-esc="state.user_name || 'Doctor'"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-container">
+                <!-- Welcome Section -->
+                <div class="welcome-section">
+                    <h1>Welcome, <t t-esc="state.user_name || 'Doctor'"/></h1>
+                    <p>Voici votre tableau de bord médical pour aujourd'hui</p>
+                </div>
+
+                <!-- Statistics Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card patients">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-content">
+                            <h3 t-esc="state.stats.total_patients || 0"/>
+                            <p>Patients Total</p>
+                            <div class="trend up" t-if="state.stats.patients_trend > 0">
+                                ↑ <t t-esc="state.stats.patients_trend"/>% ce mois
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card consultations">
+                        <div class="stat-icon">📅</div>
+                        <div class="stat-content">
+                            <h3 t-esc="state.stats.consultations_today || 0"/>
+                            <p>Consultations Aujourd'hui</p>
+                            <div class="trend up" t-if="state.stats.consultations_trend > 0">
+                                ↑ <t t-esc="state.stats.consultations_trend"/>% cette semaine
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card inpatients">
+                        <div class="stat-icon">🏥</div>
+                        <div class="stat-content">
+                            <h3 t-esc="state.stats.active_inpatients || 0"/>
+                            <p>Patients Hospitalisés</p>
+                            <div class="trend" t-att-class="{'up': state.stats.inpatients_trend >= 0, 'down': state.stats.inpatients_trend &lt; 0}">
+                                <t t-if="state.stats.inpatients_trend >= 0">↑</t>
+                                <t t-else="">↓</t>
+                                <t t-esc="Math.abs(state.stats.inpatients_trend)"/>% ce mois
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card allocations">
+                        <div class="stat-icon">⏰</div>
+                        <div class="stat-content">
+                            <h3 t-esc="state.stats.active_allocations || 0"/>
+                            <p>Allocations Actives</p>
+                            <div class="trend up">
+                                <t t-esc="state.stats.total_slots || 0"/> slots disponibles
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Action Buttons -->
+                <div class="main-actions">
+                    <button class="action-btn consultation"
+                            t-att-class="{ 'active': state.activeSection === 'consultation' }"
+                            t-on-click="fetch_consultation">
+                        <span class="btn-icon">💉</span>
+                        <span class="btn-text">Consultation</span>
+                    </button>
+                    <button class="action-btn patient"
+                            t-att-class="{ 'active': state.activeSection === 'patient' }"
+                            t-on-click="list_patient_data">
+                        <span class="btn-icon">👤</span>
+                        <span class="btn-text">Patient</span>
+                    </button>
+                    <button class="action-btn inpatient"
+                            t-att-class="{ 'active': state.activeSection === 'inpatient' }"
+                            t-on-click="action_list_inpatient">
+                        <span class="btn-icon">🛏️</span>
+                        <span class="btn-text">Inpatient</span>
+                    </button>
+                    <button class="action-btn surgery"
+                            t-att-class="{ 'active': state.activeSection === 'surgery' }"
+                            t-on-click="fetch_doctors_schedule">
+                        <span class="btn-icon">⚕️</span>
+                        <span class="btn-text">Surgery</span>
+                    </button>
+                    <button class="action-btn shift"
+                            t-att-class="{ 'active': state.activeSection === 'shift' }"
+                            t-on-click="fetch_allocation_lines">
+                        <span class="btn-icon">📋</span>
+                        <span class="btn-text">Shift Allocation</span>
+                    </button>
+                </div>
+
+                <!-- Appointments Management -->
+                <div class="appointments-section">
+                    <div class="appointments-header">
+                        <div>
+                            <h2>📅 Gestion des Rendez-vous</h2>
+                            <p>Liste des rendez-vous du jour et de la semaine</p>
+                        </div>
+                        <button class="btn btn-primary" t-on-click="add_appointment">
+                            <span>+ Ajouter Rendez-vous</span>
+                        </button>
+                    </div>
+
+                    <!-- Appointments Table -->
+                    <div class="appointments-table">
+                        <table class="appointment-data-table">
+                            <thead>
+                                <tr>
+                                    <th>Heure</th>
+                                    <th>Patient</th>
+                                    <th>Type</th>
+                                    <th>Statut</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-if="state.appointments and state.appointments.length > 0">
+                                    <t t-foreach="state.appointments" t-as="appt" t-key="appt.id">
+                                        <tr>
+                                            <td class="time-cell">
+                                                <t t-esc="appt.time"/>
+                                            </td>
+                                            <td class="patient-cell">
+                                                <t t-esc="appt.patient_name"/>
+                                            </td>
+                                            <td class="type-cell">
+                                                <span class="type-badge" t-att-class="'type-' + appt.appointment_type">
+                                                    <t t-esc="appt.appointment_type"/>
+                                                </span>
+                                            </td>
+                                            <td class="status-cell">
+                                                <span class="status-badge" t-att-class="'status-' + appt.state">
+                                                    <t t-if="appt.state === 'confirmed'">✓ Confirmé</t>
+                                                    <t t-elif="appt.state === 'pending'">⏳ En attente</t>
+                                                    <t t-elif="appt.state === 'cancelled'">✗ Annulé</t>
+                                                    <t t-else=""><t t-esc="appt.state"/></t>
+                                                </span>
+                                            </td>
+                                            <td class="action-cell">
+                                                <button class="btn-small btn-edit" t-on-click="() => this.edit_appointment(appt.id)">
+                                                    Modifier
+                                                </button>
+                                                <t t-if="appt.state !== 'cancelled'">
+                                                    <button class="btn-small btn-delete" t-on-click="() => this.cancel_appointment(appt.id)">
+                                                        Annuler
+                                                    </button>
+                                                </t>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </t>
+                                <t t-else="">
+                                    <tr>
+                                        <td colspan="5" class="no-data-cell">
+                                            <p>Aucun rendez-vous pour cette période</p>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Appointment Stats -->
+                    <div class="appointment-stats">
+                        <div class="stat-box confirmed">
+                            <div class="stat-number" t-out="state.appointmentStats?.confirmed || 0"/>
+                            <div class="stat-label">Confirmés</div>
+                        </div>
+                        <div class="stat-box pending">
+                            <div class="stat-number" t-out="state.appointmentStats?.pending || 0"/>
+                            <div class="stat-label">En attente</div>
+                        </div>
+                        <div class="stat-box cancelled">
+                            <div class="stat-number" t-out="state.appointmentStats?.cancelled || 0"/>
+                            <div class="stat-label">Annulés</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activities -->
+                <div class="recent-activity">
+                    <h3>🔔 Activités Récentes</h3>
+                    <div class="activity-list">
+                        <t t-foreach="state.recent_activities" t-as="activity" t-key="activity.id">
+                            <div class="activity-item" t-att-class="activity.type">
+                                <div class="activity-icon" t-att-class="activity.type">
+                                    <t t-if="activity.type === 'consultation'">💉</t>
+                                    <t t-elif="activity.type === 'admission'">🏥</t>
+                                    <t t-elif="activity.type === 'discharge'">✅</t>
+                                    <t t-elif="activity.type === 'surgery'">⚕️</t>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="title" t-esc="activity.title"/>
+                                    <div class="time" t-esc="activity.time"/>
+                                </div>
+                            </div>
+                        </t>
+                        <div t-if="!state.recent_activities || state.recent_activities.length === 0" class="no-activity">
+                            <p>Aucune activité récente</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

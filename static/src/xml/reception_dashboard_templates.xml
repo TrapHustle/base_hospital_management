@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Reception Dashboard - Redesigned to match Doctor Dashboard modern style -->
+<templates id="reception_dashboard" xml:space="preserve">
+    <t t-name="ReceptionDashboard" owl="1">
+        <div class="oh_dashboards" t-ref="root">
+
+            <!-- ===== NAVBAR ===== -->
+            <div class="dashboard-navbar">
+                <div class="navbar-brand">
+                    <div class="logo">🏥</div>
+                    <span>Hospital Management</span>
+                </div>
+                <div class="navbar-right">
+                    <div class="user-profile">
+                        <div class="user-avatar">RC</div>
+                        <span>Réceptionniste</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-container">
+
+                <!-- ===== WELCOME SECTION ===== -->
+                <div class="welcome-section">
+                    <h1>Bienvenue à la Réception</h1>
+                    <p>Gérez les patients, rendez-vous et chambres facilement</p>
+                </div>
+
+                <!-- ===== STATISTICS CARDS ===== -->
+                <div class="stats-grid">
+                    <div class="stat-card patients">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-content">
+                            <h3 t-esc="state.stats.total_patients || 0"/>
+                            <p>Patients Total</p>
+                            <div class="trend up">↑ Ce mois</div>
+                        </div>
+                    </div>
+                    <div class="stat-card appointments">
+                        <div class="stat-icon">📅</div>
+                        <div class="stat-content">
+                            <h3 t-esc="state.stats.outpatient_appointments || 0"/>
+                            <p>Rendez-vous Aujourd'hui</p>
+                            <div class="trend up">↑ Cette semaine</div>
+                        </div>
+                    </div>
+                    <div class="stat-card inpatients">
+                        <div class="stat-icon">🏥</div>
+                        <div class="stat-content">
+                            <h3 t-esc="state.stats.inpatient_admissions || 0"/>
+                            <p>Patients Hospitalisés</p>
+                            <div class="trend up">En cours</div>
+                        </div>
+                    </div>
+                    <div class="stat-card rooms">
+                        <div class="stat-icon">🛏️</div>
+                        <div class="stat-content">
+                            <h3 t-esc="state.stats.available_rooms || 0"/>
+                            <p>Chambres Disponibles</p>
+                            <div class="trend up">Libres</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== MAIN ACTION BUTTONS ===== -->
+                <div class="main-actions">
+                    <button class="action-btn patient-btn"
+                            t-att-class="{ 'active': state.activeSection === 'patient' }"
+                            t-on-click="createPatient">
+                        <span class="btn-icon">👤</span>
+                        <span class="btn-text">Patient</span>
+                    </button>
+                    <button class="action-btn appointment-btn"
+                            t-att-class="{ 'active': state.activeSection === 'appointment' }"
+                            t-on-click="fetchAppointmentData">
+                        <span class="btn-icon">📅</span>
+                        <span class="btn-text">Rendez-vous</span>
+                    </button>
+                    
+                  
+                    <button class="action-btn roomward-btn"
+                            t-att-class="{ 'active': state.activeSection === 'roomward' }"
+                            t-on-click="fetchRoomWard">
+                        <span class="btn-icon">🏨</span>
+                        <span class="btn-text">Room / Ward</span>
+                    </button>
+                </div>
+
+                <!-- ===== DYNAMIC CONTENT AREA ===== -->
+                <div class="content-area">
+
+                    <!-- CREATE PATIENT -->
+                    <div class="section-card" t-ref="patient_creation"
+                         t-att-class="{ 'd-none': state.activeSection !== 'patient' }">
+                        <div class="section-header">
+                            <h3>👤 Créer un Patient</h3>
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Nom complet *</label>
+                                <input type="text" id="patient-name" class="form-input" placeholder="Nom du patient"/>
+                            </div>
+                            <div class="form-group">
+                                <label>Photo</label>
+                                <input type="file" id="patient-img" class="form-input" accept="image/png, image/gif, image/jpeg"/>
+                            </div>
+                            <div class="form-group">
+                                <label>Téléphone</label>
+                                <input type="tel" id="patient-phone" class="form-input" placeholder="Numéro de téléphone"/>
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="patient-mail" class="form-input" placeholder="Adresse email"/>
+                            </div>
+                            <div class="form-group">
+                                <label>Date de Naissance</label>
+                                <input type="date" id="patient-dob" class="form-input"/>
+                            </div>
+                            <div class="form-group">
+                                <label>Groupe Sanguin</label>
+                                <div class="blood-group-row">
+                                    <select id="patient-bloodgroup" class="form-input bloodgroup" name="group">
+                                        <option value="a">A</option>
+                                        <option value="b">B</option>
+                                        <option value="ab">AB</option>
+                                        <option value="o">O</option>
+                                    </select>
+                                    <div class="radio-group inline">
+                                        <label class="radio-label">
+                                            <input type="radio" name="rhtype" value="+" checked="true"/>
+                                            <span>+ve</span>
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="rhtype" value="-"/>
+                                            <span>-ve</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Genre</label>
+                                <div class="radio-group">
+                                    <label class="radio-label">
+                                        <input type="radio" name="gender" value="male" checked="true"/>
+                                        <span>Masculin</span>
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="gender" value="female"/>
+                                        <span>Féminin</span>
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="gender" value="other"/>
+                                        <span>Autre</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Statut Marital</label>
+                                <select id="patient-m-status" class="form-input" name="status">
+                                    <option value="married">Marié(e)</option>
+                                    <option value="unmarried">Célibataire</option>
+                                    <option value="widow">Veuve</option>
+                                    <option value="widower">Veuf</option>
+                                    <option value="divorcee">Divorcé(e)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn-save" t-on-click="savePatient">✅ Enregistrer</button>
+                        </div>
+                    </div>
+
+                   
+
+                
+                    <!-- ROOM / WARD SELECTOR -->
+                    <div class="section-card d-none" t-ref="room_ward"
+                         t-att-class="{ 'd-none': state.activeSection !== 'roomward' }">
+                        <div class="section-header">
+                            <h3>🏨 Chambres et Salles</h3>
+                        </div>
+                        <div class="sub-actions">
+                            <button class="action-btn sub-btn" t-on-click="fetchRoom">
+                                <span class="btn-icon">🚪</span>
+                                <span class="btn-text">Chambres</span>
+                            </button>
+                            <button class="action-btn sub-btn" t-on-click="fetchWard">
+                                <span class="btn-icon">🏥</span>
+                                <span class="btn-text">Salles</span>
+                            </button>
+                        </div>
+
+                        <!-- Ward Table -->
+                        <div class="d-none" t-ref="ward">
+                            <div class="section-subheader"><h4>🏥 Liste des Salles</h4></div>
+                            <div class="table-wrapper">
+                                <table class="reception-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Nom de la Salle</th>
+                                            <th>Bloc</th>
+                                            <th>Étage</th>
+                                            <th>Lits Disponibles</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="state.ward_data" t-as="ward_data" t-key="ward_data.id">
+                                            <tr class="table-row-hover">
+                                                <td t-esc="ward_data.display_name"/>
+                                                <td t-esc="ward_data.building_id[1]"/>
+                                                <td t-esc="ward_data.floor_no"/>
+                                                <td>
+                                                    <span class="badge-count" t-esc="ward_data.bed_count"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Room Table -->
+                        <div class="d-none" t-ref="room">
+                            <div class="section-subheader"><h4>🚪 Liste des Chambres</h4></div>
+                            <div class="table-wrapper">
+                                <table class="reception-table">
+                                    <thead>
+                                        <tr>
+                                            <th>N° Chambre</th>
+                                            <th>Type de Lit</th>
+                                            <th>Loyer</th>
+                                            <th>Statut</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="state.room_data" t-as="room_data" t-key="room_data.id">
+                                            <tr class="table-row-hover">
+                                                <td t-esc="room_data.display_name"/>
+                                                <td t-esc="room_data.bed_type"/>
+                                                <td t-esc="room_data.rent"/>
+                                                <td>
+                                                    <span class="status-badge"
+                                                          t-att-class="'status-' + room_data.state"
+                                                          t-esc="room_data.state"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DEFAULT / EMPTY STATE -->
+                    <div class="section-card welcome-card"
+                         t-if="!state.activeSection">
+                        <div class="empty-state">
+                            <div class="empty-icon">🏥</div>
+                            <h3>Bienvenue à la Réception</h3>
+                            <p>Sélectionnez une action ci-dessus pour commencer</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- ===== RECENT ACTIVITY ===== -->
+                <div class="recent-activity">
+                    <h3>🔔 Activités Récentes</h3>
+                    <div class="activity-list">
+                        <t t-foreach="state.recent_activities" t-as="activity" t-key="activity.id">
+                            <div class="activity-item">
+                                <div class="activity-icon" t-att-class="activity.type">
+                                    <t t-if="activity.type === 'patient'">👤</t>
+                                    <t t-elif="activity.type === 'outpatient'">🩺</t>
+                                    <t t-elif="activity.type === 'inpatient'">🛏️</t>
+                                    <t t-elif="activity.type === 'discharge'">✅</t>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="title" t-esc="activity.title"/>
+                                    <div class="time" t-esc="activity.time"/>
+                                </div>
+                            </div>
+                        </t>
+                        <div t-if="!state.recent_activities or state.recent_activities.length === 0" class="no-activity">
+                            <p>Aucune activité récente</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </t>
+</templates>
