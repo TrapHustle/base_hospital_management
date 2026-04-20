@@ -35,6 +35,12 @@ export class DoctorDashboard extends Component {
                 inpatients_trend    : -3,
             },
             recent_activities: [],
+            appointments: [],
+            appointmentStats: {
+                confirmed: 0,
+                pending: 0,
+                cancelled: 0,
+            },
         });
 
         // Chart instances (pour pouvoir les détruire proprement)
@@ -48,6 +54,7 @@ export class DoctorDashboard extends Component {
         onMounted(async () => {
             await this.loadDashboardData();
             await this._loadCharts();   // ✅ Chargement Chart.js PUIS rendu
+            await this._loadAppointments();
         });
 
         onWillUnmount(() => {
@@ -62,6 +69,7 @@ export class DoctorDashboard extends Component {
         await Promise.allSettled([
             this._loadStats(),
             this._loadRecentActivities(),
+            this._loadAppointments(),
         ]);
     }
 
@@ -129,6 +137,42 @@ export class DoctorDashboard extends Component {
             this.state.recent_activities = activities.slice(0, 6);
         } catch (e) {
             console.warn('Activities error:', e);
+        }
+    }
+
+    async _loadAppointments() {
+        try {
+            const today = new Date().toISOString().split('T')[0];
+            const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+            
+            // Load appointments for today and tomorrow
+            const appointments = await this.orm.call('hospital.outpatient', 'search_read',
+                [[['op_date', 'in', [today, tomorrow]], ['state', '!=', 'cancel']],
+                 ['op_date', 'op_time', 'patient_id', 'appointment_type', 'state'],
+                 0, 20, 'op_date DESC, op_time ASC']);
+
+            // Format appointments for display
+            const formattedAppointments = appointments.map(appt => ({
+                id: appt.id,
+                time: appt.op_time || '-',
+                patient_name: appt.patient_id ? appt.patient_id[1] : 'Unknown',
+                appointment_type: appt.appointment_type || 'General',
+                state: appt.state,
+            }));
+
+            // Calculate statistics
+            const stats = {
+                confirmed: formattedAppointments.filter(a => a.state === 'confirmed').length,
+                pending: formattedAppointments.filter(a => a.state === 'pending').length,
+                cancelled: formattedAppointments.filter(a => a.state === 'cancelled').length,
+            };
+
+            this.state.appointments = formattedAppointments;
+            this.state.appointmentStats = stats;
+        } catch (e) {
+            console.warn('Appointments loading error:', e);
+            this.state.appointments = [];
+            this.state.appointmentStats = { confirmed: 0, pending: 0, cancelled: 0 };
         }
     }
 
@@ -371,6 +415,40 @@ export class DoctorDashboard extends Component {
             views     : [[false, 'list'], [false, 'form']],
         });
         this.state.activeSection = 'shift';
+    }
+
+    // ─── Appointments Management ──────────────────────────────────────────
+
+    add_appointment() {
+        this.actionService.doAction({
+            name      : _t('New Appointment'),
+            type      : 'ir.actions.act_window',
+            res_model : 'hospital.outpatient',
+            view_mode : 'form',
+            views     : [[false, 'form']],
+        });
+    }
+
+    async edit_appointment(appointment_id) {
+        this.actionService.doAction({
+            name      : _t('Edit Appointment'),
+            type      : 'ir.actions.act_window',
+            res_model : 'hospital.outpatient',
+            res_id    : appointment_id,
+            view_mode : 'form',
+            views     : [[false, 'form']],
+        });
+    }
+
+    async cancel_appointment(appointment_id) {
+        try {
+            await this.orm.call('hospital.outpatient', 'write',
+                [[appointment_id], { state: 'cancelled' }]);
+            // Reload appointments after cancellation
+            await this._loadAppointments();
+        } catch (e) {
+            console.error('Error cancelling appointment:', e);
+        }
     }
 }
 
