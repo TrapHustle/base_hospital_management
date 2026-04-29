@@ -43,6 +43,7 @@ export class PharmacyDashboard extends Component {
               product_lst :[],
               medicines :[],
               units :[],
+              prescriptions: [],
               sub_total,
               vaccine :[],
               order_data:[],
@@ -120,39 +121,48 @@ export class PharmacyDashboard extends Component {
         const filteredData = this.state.order_line.filter(line => line.id != id)
         this.state.order_line = filteredData
     }
-//  Create sale order
+ //  Create sale order
     async create_sale_order () {
+        const patientNameEl = this.patient_name?.el;
+        const patientEmailEl = this.patient_email?.el;
+        const patientPhoneEl = document.getElementById('patient-phone');
+        const patientDobEl = document.getElementById('o_patient-dob');
 
-        const patientName = document.getElementById('patient-name');
-        const patientPhone = document.getElementById('patient-phone');
-        const patientEmail = document.getElementById('patient-email');
-        const patientDob = document.getElementById('patient-dob');
-
-        if (!patientName || patientName.value.trim() === "") {
-                alert("Please enter the Name");
-                return;
-            }
-        if (!patientEmail || patientEmail.value.trim() === "") {
+        if (!patientNameEl || !patientNameEl.value || patientNameEl.value.trim() === "") {
+            alert("Please enter the Name");
+            return;
+        }
+        if (!patientEmailEl || !patientEmailEl.value || patientEmailEl.value.trim() === "") {
             alert("Please enter the Email");
             return;
         }
-        const data = {
-            name: patientName.value.trim(),
-            phone: patientPhone ? patientPhone.value.trim() : null,
-            email: patientEmail.value.trim(),
-            dob: patientDob ? patientDob.value.trim() : null,
-            products: this.state.order_line || [],
-        };
-        const hasInvalidQuantity = data.products.some(product => product.quantity < 1);
-        if (hasInvalidQuantity) {
+
+        const products = (this.state.order_line || [])
+            .filter((l) => l && l.product && Number(l.qty) >= 1);
+
+        const hasInvalidQty = (this.state.order_line || []).some((l) => l && l.product && Number(l.qty) < 1);
+        if (hasInvalidQty) {
             alert("Medicine quantity must be greater than or equal to 1.");
             return;
         }
-        this.orm.call('hospital.pharmacy', 'create_sale_order',[data]
+        if (!products.length) {
+            alert("Please add at least one medicine line.");
+            return;
+        }
+
+        const data = {
+            name: patientNameEl.value.trim(),
+            phone: patientPhoneEl && patientPhoneEl.value ? patientPhoneEl.value.trim() : null,
+            email: patientEmailEl.value.trim(),
+            dob: patientDobEl && patientDobEl.value ? patientDobEl.value.trim() : null,
+            products: this.state.order_line || [],
+        };
+
+        this.orm.call('hospital.pharmacy', 'create_sale_order', [data]
         ).then(function (result) {
-            alert('The sale order has been created with reference number ' +result.invoice)
-            window.location.reload()
-        })
+            alert('The sale order has been created with reference number ' + result.invoice);
+            window.location.reload();
+        });
     }
 //  Fetch patient data
     async fetch_patient_data () {
@@ -160,29 +170,178 @@ export class PharmacyDashboard extends Component {
         await this.orm.call('res.partner', 'action_get_patient_data',
            [[this.patient_search.el.value]],
         ).then(function (result) {
-            // Update patient data using vanilla JavaScript
-            console.log("document.getElementById('patient-title')--->>", document.getElementById('patient-title'));
-
-            document.getElementById('patient-title').textContent = result.name || '';
-            document.getElementById('patient-code').textContent = result.unique || '';
-            document.getElementById('patient-age').textContent = result.dob || '';
-            document.getElementById('patient-blood').textContent = result.blood_group || '';
-            document.getElementById('patient-gender').textContent = result.gender || '';
-            // Update patient image
+            // Update patient data using vanilla JavaScript with null checks
+            const patientTitle = document.getElementById('patient-title');
+            if (patientTitle) patientTitle.textContent = result.name || '';
+            
+            const patientCode = document.getElementById('patient-code');
+            if (patientCode) patientCode.textContent = result.unique || '';
+            
+            const patientAge = document.getElementById('patient-age');
+            if (patientAge) patientAge.textContent = result.dob || '';
+            
+            const patientBlood = document.getElementById('patient-blood');
+            if (patientBlood) patientBlood.textContent = result.blood_group || '';
+            
+            const patientGender = document.getElementById('patient-gender');
+            if (patientGender) patientGender.textContent = result.gender || '';
+            
+            // Update patient image with null check
             const patientImage = document.getElementById('patient-image');
-            if (result.image_1920) {
-                patientImage.src = 'data:image/png;base64,' + result.image_1920;
-            } else {
-                patientImage.src = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png';
+            if (patientImage) {
+                if (result.image_1920) {
+                    patientImage.src = 'data:image/png;base64,' + result.image_1920;
+                } else {
+                    patientImage.src = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png';
+                }
             }
+            
+            // Clear history head if it exists
             if (result.name == 'Patient Not Found') {
-               document.getElementById('hist_head').innerHTML = ''; // Clear history head
-                patientImage.src = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png';
+                const histHead = document.getElementById('hist_head');
+                if (histHead) histHead.innerHTML = '';
+                if (patientImage) patientImage.src = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png';
             }
-            else {
-            }
+            
+            // Fetch prescriptions after patient info is loaded
+            self.fetch_patient_prescriptions(self.patient_search.el.value);
+        }).catch(function (error) {
+            console.error('Patient search error:', error);
         })
     }
+
+//  Fetch patient prescriptions
+    async fetch_patient_prescriptions(patientSearchValue) {
+        var self = this;
+        if (!patientSearchValue) return;
+        
+        await this.orm.call('res.partner', 'get_patient_prescriptions',
+           [[patientSearchValue]],
+        ).then(function (result) {
+            self.state.prescriptions = result.prescriptions || [];
+            self.render_prescriptions();
+            
+            // Setup event listeners for prescriptions
+            self.setup_prescription_listeners();
+        }).catch(function (error) {
+            console.error('Error fetching prescriptions:', error);
+        })
+    }
+
+//  Render prescriptions table
+    render_prescriptions() {
+        const container = document.getElementById('prescriptions-container');
+        const tbody = document.getElementById('prescriptions-tbody');
+        
+        if (!this.state.prescriptions || this.state.prescriptions.length === 0) {
+            if (container) container.style.display = 'none';
+            return;
+        }
+        
+        if (container) container.style.display = 'block';
+        
+        if (tbody) {
+            tbody.innerHTML = '';
+            
+            this.state.prescriptions.forEach((presc, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <input type="checkbox" class="prescription-checkbox" 
+                               data-index="${index}" 
+                               data-medicine-id="${presc.medicine_id}"
+                               data-medicine-name="${presc.medicine_name}"
+                               data-qty="${presc.quantity}">
+                    </td>
+                    <td>${presc.medicine_name}</td>
+                    <td>${presc.quantity}</td>
+                    <td>${presc.no_intakes}</td>
+                    <td>${presc.op_reference}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+    }
+
+//  Setup prescription event listeners
+    setup_prescription_listeners() {
+        var self = this;
+        
+        // Select all checkbox
+        const selectAllCheckbox = document.getElementById('select-all-prescriptions');
+        if (selectAllCheckbox) {
+            selectAllCheckbox.addEventListener('change', function() {
+                document.querySelectorAll('.prescription-checkbox').forEach(cb => {
+                    cb.checked = this.checked;
+                });
+            });
+        }
+        
+        // Add selected prescriptions button
+        const addBtn = document.getElementById('add-selected-prescriptions');
+        if (addBtn) {
+            addBtn.addEventListener('click', function() {
+                self.add_selected_prescriptions();
+            });
+        }
+    }
+
+//  Add selected prescriptions to products
+    async add_selected_prescriptions() {
+        const checked = document.querySelectorAll('.prescription-checkbox:checked');
+        if (!checked || checked.length === 0) {
+            alert('Veuillez sélectionner au moins une prescription');
+            return;
+        }
+
+        // Ensure we have UoM list for UI lines
+        if (!this.state.units || !this.state.units.length) {
+            const units = await this.fetch_uom();
+            this.state.units = units || [];
+        }
+        const defaultUomId = this.state.units?.length ? this.state.units[0].id : false;
+
+        let addedCount = 0;
+
+        checked.forEach((checkbox) => {
+            const medicineId = parseInt(checkbox.getAttribute('data-medicine-id'));
+            const qty = parseInt(checkbox.getAttribute('data-qty')) || 0;
+            if (!medicineId || qty <= 0) return;
+
+            const medicine = (this.state.medicines || []).find((m) => m.id === medicineId);
+            const price = medicine?.list_price ?? medicine?.listPrice ?? 0;
+
+            const existing = (this.state.order_line || []).find((l) => l.product === medicineId);
+
+            if (existing) {
+                existing.qty = (parseInt(existing.qty) || 0) + qty;
+                existing.price = price;
+                existing.sub_total = existing.qty * existing.price;
+                existing.uom = existing.uom || defaultUomId;
+            } else {
+                const newLine = {
+                    id: Date.now() + addedCount,
+                    product: medicineId,
+                    qty: qty,
+                    uom: defaultUomId,
+                    price: price,
+                    sub_total: qty * price,
+                };
+                this.state.order_line = [...(this.state.order_line || []), owl.reactive(newLine)];
+            }
+
+            addedCount++;
+        });
+
+        // Force reactive update for duplicated additions/merges
+        this.state.order_line = [...(this.state.order_line || [])];
+
+        alert(`${addedCount} médicament(s) ajouté(s) à la commande`);
+        const selectAll = document.getElementById('select-all-prescriptions');
+        if (selectAll) selectAll.checked = false;
+        document.querySelectorAll('.prescription-checkbox').forEach(cb => cb.checked = false);
+    }
+
 //  Fetch medicine data while clicking Medicine button
     async fetch_medicine_data () {
         this.state.menu = 'medicines';

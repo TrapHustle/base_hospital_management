@@ -494,10 +494,13 @@ class ResPartner(models.Model):
 
     @api.model
     def action_get_patient_data(self, patient_id):
-        """Method which returns patient details"""
+        """Method which returns patient details
+        Searches by: patient code, barcode, or patient name (case-insensitive)
+        """
         data = self.sudo().search([
-            '|', ('patient_seq', '=', patient_id),
-            ('barcode', 'in', patient_id)
+            '|', '|', ('patient_seq', '=', patient_id),
+            ('barcode', '=', patient_id),
+            ('name', 'ilike', patient_id)
         ])
         patient_history = []
         for rec in self.env['hospital.outpatient'].sudo().search(
@@ -530,6 +533,42 @@ class ResPartner(models.Model):
         else:
             values['gender'] = ''
         return values
+
+    @api.model
+    def get_patient_prescriptions(self, patient_id):
+        """Method which returns patient's prescriptions from latest outpatient visits"""
+        # Search patient by code, barcode, or name
+        patient = self.sudo().search([
+            '|', '|', ('patient_seq', '=', patient_id),
+            ('barcode', '=', patient_id),
+            ('name', 'ilike', patient_id)
+        ])
+        
+        if not patient:
+            return {'prescriptions': []}
+        
+        # Get latest outpatient visits with prescriptions
+        op_records = self.env['hospital.outpatient'].sudo().search([
+            ('patient_id', '=', patient.id),
+            ('state', 'in', ['confirmed', 'done'])
+        ], order='op_date desc', limit=5)
+        
+        prescriptions = []
+        for op in op_records:
+            for prescription in op.prescription_ids:
+                prescriptions.append({
+                    'id': prescription.id,
+                    'op_reference': op.op_reference,
+                    'medicine_id': prescription.medicine_id.id,
+                    'medicine_name': prescription.medicine_id.name,
+                    'quantity': prescription.quantity,
+                    'no_intakes': prescription.no_intakes or '1',
+                    'time': prescription.time or '-',
+                    'note': prescription.note or '',
+                    'op_date': str(op.op_date),
+                })
+        
+        return {'prescriptions': prescriptions}
 
     @api.model
     def create_sale_order_pharmacy(self, order):

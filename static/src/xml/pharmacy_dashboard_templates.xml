@@ -107,7 +107,7 @@
                                 <input class="pharma-search-input"
                                        t-ref="PatientSearch"
                                        type="search"
-                                       placeholder="🔍 Recherche par code patient..."
+                                       placeholder="🔍 Recherche par code, nom ou code-barres..."
                                        autofocus="autofocus"/>
                                 <button class="pharma-search-btn" t-on-click="fetch_patient_data">
                                     Rechercher
@@ -311,6 +311,36 @@
                             </div>
                         </div>
                         <div class="medical-list-card" id="medical_list"/>
+                        
+                        <!-- Prescriptions Section -->
+                        <div class="prescriptions-card" id="prescriptions-container" style="display: none;">
+                            <div class="prescriptions-header">
+                                <h4>💊 Prescriptions en Attente</h4>
+                            </div>
+                            <div class="prescriptions-content">
+                                <table class="prescriptions-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 30px;">
+                                                <input type="checkbox" id="select-all-prescriptions" 
+                                                       title="Sélectionner tout"/>
+                                            </th>
+                                            <th>Médicament</th>
+                                            <th style="width: 80px;">Quantité</th>
+                                            <th style="width: 100px;">Fréquence</th>
+                                            <th style="width: 80px;">Ordonnance</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="prescriptions-tbody">
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="prescriptions-actions">
+                                <button class="btn btn-primary" id="add-selected-prescriptions">
+                                    ✓ Ajouter les Sélectionnées
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
                 </div>
