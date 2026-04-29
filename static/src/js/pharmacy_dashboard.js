@@ -186,6 +186,28 @@ export class PharmacyDashboard extends Component {
             const patientGender = document.getElementById('patient-gender');
             if (patientGender) patientGender.textContent = result.gender || '';
             
+            // Auto-fill form inputs (so user doesn't have to type manually)
+            const patientNameInput = this.patient_name?.el;
+            if (patientNameInput) {
+                patientNameInput.value = result.name || '';
+            }
+
+            const patientEmailInput = this.patient_email?.el;
+            if (patientEmailInput) {
+                patientEmailInput.value = result.email || '';
+            }
+
+            const patientPhoneInput = document.getElementById('patient-phone');
+            if (patientPhoneInput) {
+                patientPhoneInput.value = result.phone || '';
+            }
+
+            const patientDobInput = document.getElementById('o_patient-dob');
+            if (patientDobInput) {
+                // result.dob is already a date string (YYYY-MM-DD) in action_get_patient_data
+                patientDobInput.value = result.dob || '';
+            }
+
             // Update patient image with null check
             const patientImage = document.getElementById('patient-image');
             if (patientImage) {
