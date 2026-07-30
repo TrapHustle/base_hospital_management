@@ -1,325 +1,613 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    
-    <!-- ====================================
-         PORTAL HOME - CARDS AMÉLIORÉES
-         ==================================== -->
-    
-    <!-- Vaccination Card -->
-    <template id="portal_my_home_vaccine_improved"
-              name="Vaccinations Card"
-              inherit_id="portal.portal_my_home" 
-              priority="10">
+
+    <!-- ============================================================
+         CARTES SUR LA PAGE /my  (toujours visibles : config_card)
+         ============================================================ -->
+    <template id="portal_my_home_hub_improved" name="Espace Sante Card"
+              inherit_id="portal.portal_my_home" priority="8">
         <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
             <t t-call="portal.portal_docs_entry">
-                <t t-set="icon" 
-                   t-value="'/base_hospital_management/static/src/img/vaccination.svg'"/>
+                <t t-set="icon" t-value="'/base_hospital_management/static/src/img/op_ticket.svg'"/>
+                <t t-set="title">Mon Espace Santé</t>
+                <t t-set="url" t-value="'/my/health'"/>
+                <t t-set="text">Tableau de bord : vaccinations, analyses, consultations et ordonnances.</t>
+                <t t-set="config_card" t-value="True"/>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="portal_my_home_vaccine_improved" name="Vaccinations Card"
+              inherit_id="portal.portal_my_home" priority="10">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/base_hospital_management/static/src/img/vaccination1.png'"/>
                 <t t-set="title">Vaccinations</t>
                 <t t-set="url" t-value="'/my/vaccinations'"/>
-                <t t-set="text">Mesures préventives pour vous protéger contre les maladies infectieuses.</t>
+                <t t-set="text">Vos vaccins et certificats.</t>
                 <t t-set="placeholder_count" t-value="'vaccination_count'"/>
+                <t t-set="config_card" t-value="True"/>
             </t>
         </xpath>
     </template>
-    
-    <!-- Lab Tests Card -->
-    <template id="portal_my_test_results_improved"
-              name="Lab Tests Card"
-              inherit_id="portal.portal_my_home" 
-              priority="30">
+
+    <template id="portal_my_test_results_improved" name="Lab Tests Card"
+              inherit_id="portal.portal_my_home" priority="20">
         <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
             <t t-call="portal.portal_docs_entry">
-                <t t-set="icon"
-                   t-value="'/base_hospital_management/static/src/img/lab_test.svg'"/>
+                <t t-set="icon" t-value="'/base_hospital_management/static/src/img/lab_test.svg'"/>
                 <t t-set="title">Analyses de Laboratoire</t>
                 <t t-set="url" t-value="'/my/tests'"/>
-                <t t-set="text">Consultez vos résultats d'analyses et téléchargez vos rapports médicaux.</t>
+                <t t-set="text">Vos résultats d'analyses et rapports médicaux.</t>
                 <t t-set="placeholder_count" t-value="'lab_test_count'"/>
+                <t t-set="config_card" t-value="True"/>
             </t>
         </xpath>
     </template>
-    
-    <!-- OP Card -->
-    <template id="portal_my_home_op_improved"
-              name="OP Card"
-              inherit_id="portal.portal_my_home" 
-              priority="30">
+
+    <template id="portal_my_home_op_improved" name="OP Card"
+              inherit_id="portal.portal_my_home" priority="30">
         <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
             <t t-call="portal.portal_docs_entry">
-                <t t-set="icon"
-                   t-value="'/base_hospital_management/static/src/img/op_ticket.svg'"/>
-                <t t-set="title">Consultations Externes</t>
+                <t t-set="icon" t-value="'/base_hospital_management/static/src/img/op_ticket.svg'"/>
+                <t t-set="title">Consultations</t>
                 <t t-set="url" t-value="'/my/op'"/>
-                <t t-set="text">Gérez vos rendez-vous médicaux et consultez vos prescriptions.</t>
+                <t t-set="text">Vos consultations et prescriptions.</t>
                 <t t-set="placeholder_count" t-value="'op_count'"/>
+                <t t-set="config_card" t-value="True"/>
             </t>
         </xpath>
     </template>
 
-    <!-- ====================================
-         VACCINATIONS PAGE - AMÉLIORÉE
-         ==================================== -->
+    <!-- ============================================================
+         NAVIGATION : SIDEBAR (desktop) + TIROIR BURGER (mobile)
+         Le tiroir mobile est piloté 100 % en CSS via une case à cocher
+         cachée (#hms_drawer_cb) — aucun JavaScript requis.
+         ============================================================ -->
+    <template id="hms_portal_nav" name="HMS Portal Nav">
+        <!-- Interrupteur invisible du tiroir mobile (case à cocher) -->
+        <input type="checkbox" id="hms_drawer_cb" class="hms-drawer-cb" aria-hidden="true"/>
+
+        <!-- Barre supérieure : visible uniquement sur mobile -->
+        <div class="hms-topbar">
+            <label for="hms_drawer_cb" class="hms-burger" aria-label="Ouvrir le menu">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </label>
+            <span class="hms-topbar-title">Mon Espace Santé</span>
+        </div>
+
+        <!-- Voile sombre : un clic referme le tiroir (mobile) -->
+        <label for="hms_drawer_cb" class="hms-scrim" aria-hidden="true"></label>
+
+        <!-- Barre latérale (desktop) / tiroir coulissant (mobile) -->
+        <aside class="hms-side">
+            <div class="hms-side-brand">
+                <span class="hms-side-logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21s-7-4.35-9.5-8.5C.5 9 2 5 6 5c2 0 3 1 4 2 1-1 2-2 4-2 4 0 5.5 4 3.5 7.5C19 16.65 12 21 12 21z"/></svg></span>
+                <span class="hms-side-title">Mon Espace Santé</span>
+                <label for="hms_drawer_cb" class="hms-side-close" aria-label="Fermer le menu">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" d="M6 6l12 12M18 6 6 18"/></svg>
+                </label>
+            </div>
+
+            <div class="hms-side-lbl">Navigation</div>
+            <nav class="hms-side-links">
+                <a href="/my/health" t-attf-class="hms-side-a #{'active' if active == 'dash' else ''}">
+                    <span class="hms-side-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0h6"/></svg></span>
+                    <span class="hms-side-txt">Accueil</span>
+                </a>
+                <a href="/my/vaccinations" t-attf-class="hms-side-a #{'active' if active == 'vacc' else ''}">
+                    <span class="hms-side-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m18 2 4 4M17 7 7 17m-2 0-3 3m13.5-9.5L20 8m-9 9-1 4 4-1"/></svg></span>
+                    <span class="hms-side-txt">Vaccinations</span>
+                    <span class="hms-side-badge" t-esc="vaccination_count or 0"/>
+                </a>
+                <a href="/my/tests" t-attf-class="hms-side-a #{'active' if active == 'lab' else ''}">
+                    <span class="hms-side-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 3h6M10 3v7L5 19a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/></svg></span>
+                    <span class="hms-side-txt">Analyses</span>
+                    <span class="hms-side-badge" t-esc="lab_test_count or 0"/>
+                </a>
+                <a href="/my/op" t-attf-class="hms-side-a #{'active' if active == 'op' else ''}">
+                    <span class="hms-side-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="5" width="18" height="14" rx="3"/><path stroke-linecap="round" d="M3 10h18M8 3v4M16 3v4"/></svg></span>
+                    <span class="hms-side-txt">Consultations</span>
+                    <span class="hms-side-badge" t-esc="op_count or 0"/>
+                </a>
+                <a href="/my/appointments" t-attf-class="hms-side-a #{'active' if active == 'rdv' else ''}">
+                    <span class="hms-side-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="17" rx="3"/><path stroke-linecap="round" stroke-linejoin="round" d="M3 9h18M8 2v4M16 2v4m-7 9 2 2 4-4"/></svg></span>
+                    <span class="hms-side-txt">Rendez-vous</span>
+                    <span class="hms-side-badge" t-esc="appointment_count or 0"/>
+                </a>
+                <a href="/my/prescriptions" t-attf-class="hms-side-a #{'active' if active == 'presc' else ''}">
+                    <span class="hms-side-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8 4H6a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path stroke-linecap="round" d="M9 12h6M9 16h4"/></svg></span>
+                    <span class="hms-side-txt">Ordonnances</span>
+                    <span class="hms-side-badge" t-esc="prescription_count or 0"/>
+                </a>
+            </nav>
+
+            <div class="hms-side-foot">
+                <a href="/my/account" class="hms-side-foot-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="8" r="4"/><path stroke-linecap="round" d="M4 20c0-3.6 3.6-6 8-6s8 2.4 8 6"/></svg>
+                    Mon compte
+                </a>
+                <a href="/web/session/logout" class="hms-side-foot-logout" aria-label="Se déconnecter">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12H3m0 0 4-4m-4 4 4 4M11 4h6a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-6"/></svg>
+                </a>
+            </div>
+        </aside>
+    </template>
+
+    <!-- ============================================================
+         TABLEAU DE BORD  /my/health
+         ============================================================ -->
+    <template id="portal_hms_dashboard" name="HMS Dashboard">
+        <t t-call="portal.portal_layout">
+            <div class="o_hms_portal hms-shell">
+                <t t-call="base_hospital_management.hms_portal_nav">
+                    <t t-set="active" t-value="'dash'"/>
+                </t>
+                <div class="hms-main">
+
+                <div class="hms-hero">
+                    <h1>Bonjour <t t-esc="(patient.name or '').split(' ')[0]"/> 👋</h1>
+                    <p>Bienvenue sur votre espace santé. Retrouvez ici vos vaccinations,
+                       vos résultats d'analyses et l'historique de vos consultations.</p>
+                    <span class="hms-chip">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" d="m8 12 3 3 5-6"/></svg>
+                        Dossier patient <t t-esc="patient.patient_seq"/>
+                    </span>
+                </div>
+
+                <div class="hms-stats">
+                    <a href="/my/vaccinations" class="hms-stat">
+                        <span class="hms-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
+                        <div class="hms-ic v"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m18 2 4 4M17 7 7 17m-2 0-3 3m13.5-9.5L20 8m-9 9-1 4 4-1"/></svg></div>
+                        <div class="hms-big" t-esc="vaccination_count or 0"/>
+                        <div class="hms-lbl">Vaccinations</div>
+                    </a>
+                    <a href="/my/tests" class="hms-stat">
+                        <span class="hms-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
+                        <div class="hms-ic l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 3h6M10 3v7L5 19a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/></svg></div>
+                        <div class="hms-big" t-esc="lab_test_count or 0"/>
+                        <div class="hms-lbl">Analyses de laboratoire</div>
+                    </a>
+                    <a href="/my/op" class="hms-stat">
+                        <span class="hms-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
+                        <div class="hms-ic c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="5" width="18" height="14" rx="3"/><path stroke-linecap="round" d="M3 10h18M8 3v4M16 3v4"/></svg></div>
+                        <div class="hms-big" t-esc="op_count or 0"/>
+                        <div class="hms-lbl">Consultations</div>
+                    </a>
+                    <a href="/my/appointments" class="hms-stat">
+                        <span class="hms-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
+                        <div class="hms-ic r"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="17" rx="3"/><path stroke-linecap="round" stroke-linejoin="round" d="M3 9h18M8 2v4M16 2v4m-7 9 2 2 4-4"/></svg></div>
+                        <div class="hms-big" t-esc="appointment_count or 0"/>
+                        <div class="hms-lbl">Rendez-vous à venir</div>
+                    </a>
+                    <a href="/my/prescriptions" class="hms-stat">
+                        <span class="hms-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
+                        <div class="hms-ic p"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8 4H6a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path stroke-linecap="round" d="M9 12h6M9 16h4"/></svg></div>
+                        <div class="hms-big" t-esc="prescription_count or 0"/>
+                        <div class="hms-lbl">Ordonnances</div>
+                    </a>
+                </div>
+
+                <div class="hms-section">
+                    <div class="hms-head">
+                        <div><h3>Activité récente</h3><div class="hms-sub">Vos derniers documents médicaux</div></div>
+                        <a href="/my/vaccinations" class="hms-btn ghost sm">Tout voir</a>
+                    </div>
+                    <div class="hms-body">
+                        <t t-if="not recent_vacc and not recent_tests and not recent_op">
+                            <div class="hms-empty">
+                                <div class="hms-eic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-3-3v6M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg></div>
+                                <h4>Aucun document pour le moment</h4>
+                                <p>Vos vaccinations, analyses et consultations apparaîtront ici dès qu'elles seront enregistrées.</p>
+                            </div>
+                        </t>
+                        <div class="hms-tablewrap" t-if="recent_vacc or recent_tests or recent_op">
+                            <table class="hms-table">
+                                <tbody>
+                                    <tr t-foreach="recent_vacc" t-as="v">
+                                        <td><div class="hms-flexcell"><div class="hms-cellic" style="background:var(--hms-green-bg);color:var(--hms-green)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m18 2 4 4M17 7 7 17"/></svg></div><div><div class="hms-ref"><t t-esc="v.vaccine_product_id.name or 'Vaccination'"/></div><div class="hms-muted">Dose <t t-esc="v.dose"/></div></div></div></td>
+                                        <td class="hms-muted"><span t-field="v.vaccine_date"/></td>
+                                        <td><span class="hms-badge green">Effectué</span></td>
+                                        <td class="hms-tar"><a t-attf-href="/my/vaccinations" class="hms-link">Voir</a></td>
+                                    </tr>
+                                    <tr t-foreach="recent_tests" t-as="t">
+                                        <td><div class="hms-flexcell"><div class="hms-cellic" style="background:var(--hms-blue-bg);color:var(--hms-blue)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 3h6M10 3v7L5 19a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/></svg></div><div><div class="hms-ref"><t t-esc="t.test_id.name or 'Analyse'"/></div><div class="hms-muted">Laboratoire</div></div></div></td>
+                                        <td class="hms-muted"><span t-field="t.create_date" t-options='{"format": "dd/MM/yyyy"}'/></td>
+                                        <td><span class="hms-badge green">Résultats</span></td>
+                                        <td class="hms-tar"><a t-attf-href="/my/tests/#{t.id}" class="hms-link">Voir</a></td>
+                                    </tr>
+                                    <tr t-foreach="recent_op" t-as="o">
+                                        <td><div class="hms-flexcell"><div class="hms-cellic" style="background:var(--hms-amber-bg);color:var(--hms-amber)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="5" width="18" height="14" rx="3"/><path stroke-linecap="round" d="M3 10h18"/></svg></div><div><div class="hms-ref">Consultation <t t-esc="o.op_reference"/></div><div class="hms-muted"><t t-esc="o.doctor_id.doctor_id.name or 'Médecin'"/></div></div></div></td>
+                                        <td class="hms-muted"><span t-field="o.op_date"/></td>
+                                        <td><span class="hms-badge amber">Consultation</span></td>
+                                        <td class="hms-tar"><a t-attf-href="/my/op" class="hms-link">Voir</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- ============================================================
+         VACCINATIONS  /my/vaccinations
+         ============================================================ -->
     <template id="portal_my_vaccines_improved" name="My Vaccinations">
         <t t-call="portal.portal_layout">
-            <t t-set="breadcrumbs_searchbar" t-value="True"/>
-            
-            <div class="page-header">
-                <h3>Mes Vaccinations</h3>
-            </div>
-            
-            <!-- Empty State -->
-            <t t-if="not vaccinations">
-                <div class="alert alert-info" role="alert" style="margin: 20px 0;">
-                    <h4 class="alert-heading">Aucune vaccination enregistrée</h4>
-                    <p class="mb-0">Il n'y a actuellement aucune vaccination associée à votre compte.</p>
-                </div>
-            </t>
-            
-            <!-- Vaccinations Table -->
-            <t t-if="vaccinations">
-                <div class="table_wrapper">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Référence</th>
-                                <th>Vaccin</th>
-                                <th class="text-center">Dose</th>
-                                <th>Date</th>
-                                <th class="text-right">Prix</th>
-                                <th class="text-center">Certificat</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <t t-foreach="vaccinations" t-as="vaccine">
-                                <tr>
-                                    <td>
-                                        <strong t-esc="vaccine['name']"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="vaccine.get('vaccine_product_id', 'N/A')"/>
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="badge badge-info" t-esc="vaccine.get('dose', '1')"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="vaccine.get('vaccine_date', 'N/A')"/>
-                                    </td>
-                                    <td class="text-right">
-                                        <strong t-esc="vaccine.get('vaccine_price', '0') + ' MAD'"/>
-                                    </td>
-                                    <td class="text-center">
-                                        <t t-if="vaccine.get('attachment_id')">
-                                            <a t-attf-href="/web/content/{{vaccine['attachment_id']}}?download=true" 
-                                               class="btn btn-sm btn-outline-info" 
-                                               title="Télécharger le certificat">
-                                                <i class="fa fa-download"/> Télécharger
-                                            </a>
-                                        </t>
-                                        <t t-else="">
-                                            <span class="text-muted">-</span>
-                                        </t>
-                                    </td>
-                                </tr>
-                            </t>
-                        </tbody>
-                    </table>
-                </div>
-            </t>
-        </t>
-    </template>
-
-    <!-- ====================================
-         LAB TESTS PAGE - AMÉLIORÉE
-         ==================================== -->
-    <template id="portal_my_tests_improved" name="My Lab Tests">
-        <t t-call="portal.portal_layout">
-            <t t-set="breadcrumbs_searchbar" t-value="True"/>
-            
-            <div class="page-header">
-                <h3>Mes Analyses de Laboratoire</h3>
-            </div>
-            
-            <!-- Empty State -->
-            <t t-if="not tests">
-                <div class="alert alert-info" role="alert" style="margin: 20px 0;">
-                    <h4 class="alert-heading">Aucune analyse enregistrée</h4>
-                    <p class="mb-0">Il n'y a actuellement aucune analyse de laboratoire associée à votre compte.</p>
-                </div>
-            </t>
-            
-            <!-- Tests Table -->
-            <t t-if="tests">
-                <div class="table_wrapper">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Analyse</th>
-                                <th>Date de prescription</th>
-                                <th class="text-center">Statut</th>
-                                <th class="text-center">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <t t-foreach="tests" t-as="test">
-                                <tr>
-                                    <td>
-                                        <a t-attf-href="/my/tests/{{test['id']}}">
-                                            <strong t-esc="test.get('name', 'Test')"/>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <span t-esc="test.get('date', 'N/A')"/>
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="badge badge-success">Complété</span>
-                                    </td>
-                                    <td class="text-center">
-                                        <a t-attf-href="/my/tests/{{test['id']}}" 
-                                           class="btn btn-sm btn-primary">
-                                            Voir résultats
-                                        </a>
-                                    </td>
-                                </tr>
-                            </t>
-                        </tbody>
-                    </table>
-                </div>
-            </t>
-        </t>
-    </template>
-
-    <!-- ====================================
-         LAB TEST RESULTS PAGE - AMÉLIORÉE
-         ==================================== -->
-    <template id="portal_my_tests_results_improved" name="My Lab Test Results">
-        <t t-call="portal.portal_layout">
-            <t t-set="breadcrumbs_searchbar" t-value="True"/>
-            
-            <div class="page-header">
-                <h3>Résultats d'Analyses</h3>
-            </div>
-            
-            <!-- Empty State -->
-            <t t-if="not results">
-                <div class="alert alert-warning" role="alert" style="margin: 20px 0;">
-                    <h4 class="alert-heading">Résultats en attente</h4>
-                    <p class="mb-0">Les résultats de vos analyses n'ont pas encore été ajoutés. Veuillez nous excuser pour ce désagrément.</p>
-                </div>
-            </t>
-            
-            <!-- Results Table -->
-            <t t-if="results">
-                <div class="table_wrapper">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Test</th>
-                                <th>Résultat</th>
-                                <th class="text-right">Prix</th>
-                                <th class="text-center">Télécharger</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <t t-foreach="results" t-as="result">
-                                <tr>
-                                    <td>
-                                        <strong t-esc="result.get('name', 'Résultat')"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="result.get('result', 'N/A')"/>
-                                    </td>
-                                    <td class="text-right">
-                                        <strong t-esc="result.get('price', '0') + ' MAD'"/>
-                                    </td>
-                                    <td class="text-center">
-                                        <t t-if="result.get('attachment_id')">
-                                            <a t-attf-href="/web/content/{{result['attachment_id']}}?download=true" 
-                                               class="btn btn-sm btn-outline-info"
-                                               title="Télécharger le rapport">
-                                                <i class="fa fa-download"/> Télécharger
-                                            </a>
-                                        </t>
-                                        <t t-else="">
-                                            <span class="text-muted">Non disponible</span>
-                                        </t>
-                                    </td>
-                                </tr>
-                            </t>
-                        </tbody>
-                    </table>
-                </div>
-            </t>
-        </t>
-    </template>
-
-    <!-- ====================================
-         OP (CONSULTATIONS) PAGE - AMÉLIORÉE
-         ==================================== -->
-    <template id="portal_my_op_improved" name="My OP">
-        <t t-call="portal.portal_layout">
-            <div id="my_prescriptions">
-                <div class="page-header">
-                    <h3>Mes Consultations Externes</h3>
-                </div>
-                
-                <!-- Empty State -->
-                <t t-if="not op">
-                    <div class="alert alert-info" role="alert" style="margin: 20px 0;">
-                        <h4 class="alert-heading">Aucune consultation enregistrée</h4>
-                        <p class="mb-0">Il n'y a actuellement aucune consultation externe associée à votre compte.</p>
-                    </div>
+            <div class="o_hms_portal hms-shell">
+                <t t-call="base_hospital_management.hms_portal_nav">
+                    <t t-set="active" t-value="'vacc'"/>
                 </t>
-                
-                <!-- OP Table -->
-                <t t-if="op">
-                    <div class="table_wrapper">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Référence</th>
-                                    <th>Date</th>
-                                    <th>Médecin</th>
-                                    <th class="text-center">Heure</th>
-                                    <th class="text-center">Statut</th>
-                                    <th class="text-center">Prescription</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <t t-foreach="op" t-as="data">
-                                    <tr>
-                                        <td>
-                                            <strong t-esc="data.get('op_reference', 'N/A')"/>
-                                        </td>
-                                        <td>
-                                            <span t-esc="data.get('op_date', 'N/A')"/>
-                                        </td>
-                                        <td>
-                                            <span t-esc="data.get('doctor_name', 'Non assigné')"/>
-                                        </td>
-                                        <td class="text-center">
-                                            <span class="badge badge-info" t-esc="data.get('slot', 'N/A')"/>
-                                        </td>
-                                        <td class="text-center">
-                                            <span class="badge badge-success">Complété</span>
-                                        </td>
-                                        <td class="text-center">
-                                            <t t-if="data.get('prescription_ids')">
-                                                <button class="btn btn-sm btn-outline-info pr_download" 
-                                                        t-att-data-id="data['id']"
-                                                        title="Télécharger la prescription">
-                                                    <i class="fa fa-download"/> Télécharger
-                                                </button>
+                <div class="hms-main">
+                <div class="hms-page-title">
+                    <div>
+                        <h2><span class="hms-pic" style="background:var(--hms-green-bg);color:var(--hms-green)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m18 2 4 4M17 7 7 17m-2 0-3 3m13.5-9.5L20 8m-9 9-1 4 4-1"/></svg></span>Mes vaccinations</h2>
+                        <p>Historique de vos vaccins et certificats téléchargeables.</p>
+                    </div>
+                </div>
+                <div class="hms-section">
+                    <t t-if="not vaccinations">
+                        <div class="hms-empty">
+                            <div class="hms-eic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m18 2 4 4M17 7 7 17m-2 0-3 3m13.5-9.5L20 8m-9 9-1 4 4-1"/></svg></div>
+                            <h4>Aucune vaccination enregistrée</h4>
+                            <p>Il n'y a actuellement aucune vaccination associée à votre compte.</p>
+                        </div>
+                    </t>
+                    <div class="hms-body" t-if="vaccinations">
+                        <div class="hms-tablewrap">
+                            <table class="hms-table">
+                                <thead><tr><th>Vaccin</th><th>Référence</th><th>Dose</th><th>Date</th><th>Prix</th><th class="hms-tar">Certificat</th></tr></thead>
+                                <tbody>
+                                    <tr t-foreach="vaccinations" t-as="v">
+                                        <td><div class="hms-flexcell"><div class="hms-cellic" style="background:var(--hms-green-bg);color:var(--hms-green)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m18 2 4 4M17 7 7 17"/></svg></div><span class="hms-ref"><t t-esc="v.vaccine_product_id.name or 'Vaccin'"/></span></div></td>
+                                        <td class="hms-muted"><t t-esc="v.name"/></td>
+                                        <td><span class="hms-badge purple">Dose <t t-esc="v.dose"/></span></td>
+                                        <td><span t-field="v.vaccine_date"/></td>
+                                        <td class="hms-ref"><t t-esc="'%.0f' % (v.vaccine_price or 0)"/> FCFA</td>
+                                        <td class="hms-tar">
+                                            <t t-if="v.attachment_id">
+                                                <a t-attf-href="/web/content/#{v.attachment_id.id}?download=true" class="hms-btn ghost sm">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m-4-4 4 4 4-4M4 21h16"/></svg>Télécharger
+                                                </a>
                                             </t>
-                                            <t t-else="">
-                                                <span class="text-muted">Aucune</span>
-                                            </t>
+                                            <t t-else=""><span class="hms-muted">—</span></t>
                                         </td>
                                     </tr>
-                                </t>
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div t-if="pager" class="o_portal_pager text-center mt-3">
+                            <t t-call="portal.pager"/>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- ============================================================
+         ANALYSES  /my/tests
+         ============================================================ -->
+    <template id="portal_my_tests_improved" name="My Lab Tests">
+        <t t-call="portal.portal_layout">
+            <div class="o_hms_portal hms-shell">
+                <t t-call="base_hospital_management.hms_portal_nav">
+                    <t t-set="active" t-value="'lab'"/>
+                </t>
+                <div class="hms-main">
+                <div class="hms-page-title">
+                    <div>
+                        <h2><span class="hms-pic" style="background:var(--hms-blue-bg);color:var(--hms-blue)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 3h6M10 3v7L5 19a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/></svg></span>Mes analyses</h2>
+                        <p>Vos analyses de laboratoire et résultats détaillés.</p>
+                    </div>
+                </div>
+                <div class="hms-section">
+                    <t t-if="not tests">
+                        <div class="hms-empty">
+                            <div class="hms-eic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 3h6M10 3v7L5 19a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/></svg></div>
+                            <h4>Aucune analyse enregistrée</h4>
+                            <p>Il n'y a actuellement aucune analyse de laboratoire associée à votre compte.</p>
+                        </div>
+                    </t>
+                    <div class="hms-body" t-if="tests">
+                        <div class="hms-tablewrap">
+                            <table class="hms-table">
+                                <thead><tr><th>Analyse</th><th>Date</th><th>Statut</th><th class="hms-tar">Action</th></tr></thead>
+                                <tbody>
+                                    <tr t-foreach="tests" t-as="t">
+                                        <td><div class="hms-flexcell"><div class="hms-cellic" style="background:var(--hms-blue-bg);color:var(--hms-blue)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 3h6M10 3v7L5 19a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/></svg></div><span class="hms-ref"><t t-esc="t.test_id.name or 'Analyse'"/></span></div></td>
+                                        <td class="hms-muted"><span t-field="t.create_date" t-options='{"format": "dd/MM/yyyy"}'/></td>
+                                        <td>
+                                            <t t-if="t.state == 'completed'"><span class="hms-badge green">Complété</span></t>
+                                            <t t-elif="t.state == 'test'"><span class="hms-badge amber">En cours</span></t>
+                                            <t t-else=""><span class="hms-badge grey">Brouillon</span></t>
+                                        </td>
+                                        <td class="hms-tar"><a t-attf-href="/my/tests/#{t.id}" class="hms-btn sm">Voir résultats</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div t-if="pager" class="o_portal_pager text-center mt-3"><t t-call="portal.pager"/></div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- ============================================================
+         RESULTATS D'ANALYSE  /my/tests/<id>
+         ============================================================ -->
+    <template id="portal_my_tests_results_improved" name="My Lab Test Results">
+        <t t-call="portal.portal_layout">
+            <div class="o_hms_portal hms-shell">
+                <t t-call="base_hospital_management.hms_portal_nav">
+                    <t t-set="active" t-value="'lab'"/>
+                </t>
+                <div class="hms-main">
+                <div class="hms-page-title">
+                    <div>
+                        <h2><span class="hms-pic" style="background:var(--hms-blue-bg);color:var(--hms-blue)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 3h6M10 3v7L5 19a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/></svg></span><t t-esc="test.test_id.name or 'Résultats'"/></h2>
+                        <p>Résultats de votre analyse de laboratoire.</p>
+                    </div>
+                    <a href="/my/tests" class="hms-btn ghost sm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5m6-6-6 6 6 6"/></svg>Retour</a>
+                </div>
+                <div class="hms-section">
+                    <t t-if="not results">
+                        <div class="hms-empty">
+                            <div class="hms-eic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" d="M12 8v4m0 4h.01"/></svg></div>
+                            <h4>Résultats en attente</h4>
+                            <p>Les résultats de cette analyse ne sont pas encore disponibles.</p>
+                        </div>
+                    </t>
+                    <div class="hms-body" t-if="results">
+                        <div class="hms-tablewrap">
+                            <table class="hms-table">
+                                <thead><tr><th>Paramètre</th><th>Résultat</th><th>Prix</th><th class="hms-tar">Rapport</th></tr></thead>
+                                <tbody>
+                                    <tr t-foreach="results" t-as="r">
+                                        <td class="hms-ref"><t t-esc="r.test_id.name or 'Test'"/></td>
+                                        <td><span class="hms-badge green"><t t-esc="r.result or 'N/A'"/></span></td>
+                                        <td class="hms-muted"><t t-esc="'%.0f' % (r.price or 0)"/> FCFA</td>
+                                        <td class="hms-tar">
+                                            <t t-if="r.attachment"><a t-attf-href="/web/content/#{r.id}?model=lab.test.result&amp;field=attachment&amp;download=true" class="hms-link">PDF</a></t>
+                                            <t t-else=""><span class="hms-muted">—</span></t>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- ============================================================
+         CONSULTATIONS (historique)  /my/op
+         ============================================================ -->
+    <template id="portal_my_op_improved" name="My Consultations">
+        <t t-call="portal.portal_layout">
+            <div class="o_hms_portal hms-shell">
+                <t t-call="base_hospital_management.hms_portal_nav">
+                    <t t-set="active" t-value="'op'"/>
+                </t>
+                <div class="hms-main">
+                <div class="hms-page-title">
+                    <div>
+                        <h2><span class="hms-pic" style="background:var(--hms-amber-bg);color:var(--hms-amber)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="5" width="18" height="14" rx="3"/><path stroke-linecap="round" d="M3 10h18M8 3v4M16 3v4"/></svg></span>Mes consultations</h2>
+                        <p>Historique de vos consultations et prescriptions.</p>
+                    </div>
+                </div>
+                <div class="hms-section">
+                    <t t-if="not consultations">
+                        <div class="hms-empty">
+                            <div class="hms-eic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="5" width="18" height="14" rx="3"/><path stroke-linecap="round" d="M3 10h18M8 3v4M16 3v4"/></svg></div>
+                            <h4>Aucune consultation</h4>
+                            <p>Vous n'avez pas encore de consultation passée enregistrée.</p>
+                        </div>
+                    </t>
+                    <div class="hms-cards" t-if="consultations">
+                        <div class="hms-ccard" t-foreach="consultations" t-as="o">
+                            <div class="hms-top">
+                                <div class="hms-avatar"><t t-esc="(o.doctor_id.doctor_id.name or 'Dr')[0:2].upper()"/></div>
+                                <div><div class="hms-doc"><t t-esc="o.doctor_id.doctor_id.name or 'Médecin'"/></div><div class="hms-muted">Réf. <t t-esc="o.op_reference"/></div></div>
+                                <span t-if="o.state in ('done', 'invoice')" class="hms-badge green" style="margin-left:auto">✅ Terminée</span>
+                                <span t-else="" class="hms-badge amber" style="margin-left:auto">Passée</span>
+                            </div>
+                            <div class="hms-meta">
+                                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg><span t-field="o.op_date"/></span>
+                                <t t-set="h" t-value="int(o.slot)"/>
+                                <t t-set="m" t-value="int((o.slot - h) * 60)"/>
+                                <span t-if="o.slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" d="M12 7v5l3 3"/></svg><t t-esc="'%02d:%02d' % (h, m)"/></span>
+                            </div>
+                            <div class="hms-presc" t-if="o.prescription_ids">
+                                <b style="color:var(--hms-ink)">Prescription :</b>
+                                <t t-esc="', '.join(o.prescription_ids.mapped('medicine_id.name'))"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- ============================================================
+         RENDEZ-VOUS (a venir)  /my/appointments
+         ============================================================ -->
+    <template id="portal_my_appointments" name="My Appointments">
+        <t t-call="portal.portal_layout">
+            <div class="o_hms_portal hms-shell">
+                <t t-call="base_hospital_management.hms_portal_nav">
+                    <t t-set="active" t-value="'rdv'"/>
+                </t>
+                <div class="hms-main">
+                <div class="hms-page-title">
+                    <div>
+                        <h2><span class="hms-pic" style="background:var(--hms-purple-50);color:var(--hms-purple)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="17" rx="3"/><path stroke-linecap="round" stroke-linejoin="round" d="M3 9h18M8 2v4M16 2v4m-7 9 2 2 4-4"/></svg></span>Mes rendez-vous</h2>
+                        <p>Vos prochaines consultations programmées.</p>
+                    </div>
+                    <a href="/patient_booking" class="hms-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" d="M12 5v14M5 12h14"/></svg>Prendre rendez-vous</a>
+                </div>
+                <div class="hms-section">
+                    <t t-if="not appointments">
+                        <div class="hms-empty">
+                            <div class="hms-eic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="17" rx="3"/><path stroke-linecap="round" stroke-linejoin="round" d="M3 9h18M8 2v4M16 2v4"/></svg></div>
+                            <h4>Aucun rendez-vous à venir</h4>
+                            <p>Vous n'avez pas de rendez-vous programmé. Cliquez sur « Prendre rendez-vous » pour en planifier un.</p>
+                        </div>
+                    </t>
+                    <div class="hms-cards" t-if="appointments">
+                        <div class="hms-ccard" t-foreach="appointments" t-as="o">
+                            <div class="hms-top">
+                                <div class="hms-avatar"><t t-esc="(o.doctor_id.doctor_id.name or 'Dr')[0:2].upper()"/></div>
+                                <div><div class="hms-doc"><t t-esc="o.doctor_id.doctor_id.name or 'Médecin'"/></div><div class="hms-muted">Réf. <t t-esc="o.op_reference"/></div></div>
+                                <span t-if="o.state == 'done'" class="hms-badge green" style="margin-left:auto">✅ Terminée</span>
+                                <span t-elif="o.state == 'invoice'" class="hms-badge green" style="margin-left:auto">✅ Terminée</span>
+                                <span t-elif="o.is_teleconsultation" class="hms-badge purple" style="margin-left:auto">Téléconsultation</span>
+                                <span t-else="" class="hms-badge amber" style="margin-left:auto">Programmé</span>
+                            </div>
+                            <div class="hms-meta">
+                                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg><span t-field="o.op_date"/></span>
+                                <t t-set="h" t-value="int(o.slot)"/>
+                                <t t-set="m" t-value="int((o.slot - h) * 60)"/>
+                                <span t-if="o.slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" d="M12 7v5l3 3"/></svg><t t-esc="'%02d:%02d' % (h, m)"/></span>
+                            </div>
+                            <t t-if="o.is_teleconsultation and o.video_call_ended">
+                                <div class="hms-muted" style="margin-top:12px;text-align:center;padding:10px;background:#f2f2f2;border-radius:8px">
+                                    ✅ Consultation vidéo terminée
+                                </div>
+                            </t>
+                            <t t-else="">
+                                <a t-if="o.is_teleconsultation and o.video_call_url"
+                                   t-att-href="'/my/appointment/%s/visio' % o.id"
+                                   class="hms-btn" style="margin-top:12px;justify-content:center">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="6" width="13" height="12" rx="2"/><path stroke-linecap="round" stroke-linejoin="round" d="m15 10 5-3v10l-5-3"/></svg>
+                                    Rejoindre (Jitsi)
+                                </a>
+                                <a t-if="o.is_teleconsultation and o.video_call_token"
+                                   t-att-href="'/teleconsultation/room/%s' % o.video_call_token"
+                                   class="hms-btn" style="margin-top:8px;justify-content:center">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="6" width="13" height="12" rx="2"/><path stroke-linecap="round" stroke-linejoin="round" d="m15 10 5-3v10l-5-3"/></svg>
+                                    Rejoindre (visio interne)
+                                </a>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- ============================================================
+         TELECONSULTATION (visio integree)  /my/appointment/<id>/visio
+         ============================================================ -->
+    <template id="portal_appointment_visio" name="Téléconsultation vidéo">
+        <t t-call="web.frontend_layout">
+            <div style="display:flex;flex-direction:column;height:calc(100vh - 60px)">
+                <!-- Bandeau d'information du rendez-vous -->
+                <div style="display:flex;align-items:center;gap:12px;padding:10px 16px;background:#fff;border-bottom:1px solid #e5e7eb;flex-wrap:wrap">
+                    <a href="/my/appointments" class="hms-btn" style="background:#f3f4f6;color:#374151">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="width:16px;height:16px"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+                        Quitter
+                    </a>
+                    <div>
+                        <div style="font-weight:600">Téléconsultation — <t t-esc="op.doctor_id.doctor_id.name or 'Médecin'"/></div>
+                        <div style="font-size:12px;color:#6b7280">Réf. <t t-esc="op.op_reference"/> · <span t-field="op.op_date"/></div>
+                    </div>
+                    <span style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#059669;font-weight:600">
+                        <span style="width:8px;height:8px;border-radius:50%;background:#059669;display:inline-block"/>En direct
+                    </span>
+                </div>
+                <!-- Salle video Jitsi integree -->
+                <div id="jitsi_container" style="flex:1;min-height:420px;background:#111"
+                     t-att-data-domain="jitsi_domain"
+                     t-att-data-room="jitsi_room"
+                     t-att-data-name="patient_name"/>
+            </div>
+            <script t-att-src="'https://%s/external_api.js' % jitsi_domain"/>
+            <script type="text/javascript">
+                document.addEventListener('DOMContentLoaded', function () {
+                    var el = document.getElementById('jitsi_container');
+                    var api = new JitsiMeetExternalAPI(el.dataset.domain, {
+                        roomName: el.dataset.room,
+                        parentNode: el,
+                        width: '100%',
+                        height: '100%',
+                        userInfo: {displayName: el.dataset.name || 'Patient'},
+                    });
+                    // Retour a la liste des RDV quand le patient raccroche
+                    api.addListener('readyToClose', function () {
+                        window.location.href = '/my/appointments';
+                    });
+                });
+            </script>
+        </t>
+    </template>
+
+    <!-- ============================================================
+         ORDONNANCES  /my/prescriptions
+         ============================================================ -->
+    <template id="portal_my_prescriptions" name="My Prescriptions">
+        <t t-call="portal.portal_layout">
+            <div class="o_hms_portal hms-shell">
+                <t t-call="base_hospital_management.hms_portal_nav">
+                    <t t-set="active" t-value="'presc'"/>
+                </t>
+                <div class="hms-main">
+                <div class="hms-page-title">
+                    <div>
+                        <h2><span class="hms-pic" style="background:var(--hms-indigo-bg);color:var(--hms-indigo)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8 4H6a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path stroke-linecap="round" d="M9 12h6M9 16h4"/></svg></span>Mes ordonnances</h2>
+                        <p>Vos prescriptions médicales et traitements.</p>
+                    </div>
+                </div>
+                <t t-if="not outpatients">
+                    <div class="hms-section">
+                        <div class="hms-empty">
+                            <div class="hms-eic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8 4H6a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg></div>
+                            <h4>Aucune ordonnance</h4>
+                            <p>Aucune prescription médicale n'est associée à votre compte pour le moment.</p>
+                        </div>
                     </div>
                 </t>
+                <t t-foreach="outpatients" t-as="o">
+                    <div class="hms-section" t-if="o.prescription_ids">
+                        <div class="hms-head">
+                            <div>
+                                <h3>Ordonnance — <span t-field="o.op_date"/></h3>
+                                <div class="hms-sub">Prescrite par <t t-esc="o.doctor_id.doctor_id.name or 'Médecin'"/> · Réf. <t t-esc="o.op_reference"/></div>
+                            </div>
+                            <a t-att-href="'/my/prescriptions/%s/download' % o.id"
+                               class="hms-btn" style="margin-left:auto">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+                                Télécharger (PDF)
+                            </a>
+                        </div>
+                        <div class="hms-body">
+                            <div class="hms-tablewrap">
+                                <table class="hms-table">
+                                    <thead><tr><th>Médicament</th><th>Quantité</th><th>Fréquence</th><th class="hms-tar">Prise</th></tr></thead>
+                                    <tbody>
+                                        <tr t-foreach="o.prescription_ids" t-as="line">
+                                            <td><div class="hms-flexcell"><div class="hms-cellic" style="background:var(--hms-indigo-bg);color:var(--hms-indigo)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="8" width="18" height="8" rx="4"/><path d="M12 8v8"/></svg></div><span class="hms-ref"><t t-esc="line.medicine_id.name"/></span></div></td>
+                                            <td><t t-esc="line.quantity"/></td>
+                                            <td><span class="hms-badge purple" t-field="line.time"/></td>
+                                            <td class="hms-tar hms-muted"><t t-if="line.note"><span t-field="line.note"/></t><t t-else="">—</t></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+                </div>
             </div>
         </t>
     </template>

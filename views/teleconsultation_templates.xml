@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Standalone self-hosted WebRTC teleconsultation room page -->
+    <template id="teleconsultation_room" name="Salle de téléconsultation">
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport"
+                      content="width=device-width, initial-scale=1, maximum-scale=1"/>
+                <title>Téléconsultation SIH</title>
+                <style>
+                    * { margin: 0; padding: 0; box-sizing: border-box; }
+                    body {
+                        font-family: 'Inter', -apple-system, 'Segoe UI', sans-serif;
+                        background: #1b1020;
+                        color: #fff;
+                        height: 100vh;
+                        overflow: hidden;
+                    }
+                    .tc-wrap { display: flex; flex-direction: column; height: 100vh; }
+                    .tc-header {
+                        display: flex; align-items: center; gap: .75rem;
+                        padding: .8rem 1.2rem;
+                        background: linear-gradient(135deg, #714B67, #875A7B);
+                    }
+                    .tc-header .tc-logo { font-size: 1.4rem; }
+                    .tc-header .tc-titles { line-height: 1.2; }
+                    .tc-header .tc-titles b { font-size: 1rem; }
+                    .tc-header .tc-titles span { font-size: .8rem; opacity: .85; }
+                    .tc-badge {
+                        margin-left: auto; font-size: .78rem; font-weight: 600;
+                        padding: .3rem .7rem; border-radius: 999px;
+                        background: rgba(255,255,255,.18);
+                    }
+                    .tc-stage {
+                        position: relative; flex: 1; background: #000;
+                        display: flex; align-items: center; justify-content: center;
+                        overflow: hidden;
+                    }
+                    #tc-remote {
+                        width: 100%; height: 100%; object-fit: cover; background: #000;
+                    }
+                    #tc-local {
+                        position: absolute; right: 16px; bottom: 16px;
+                        width: 26vw; max-width: 220px; aspect-ratio: 4 / 3;
+                        object-fit: cover; border-radius: 12px;
+                        border: 2px solid rgba(255,255,255,.8);
+                        box-shadow: 0 6px 20px rgba(0,0,0,.5); background: #222;
+                    }
+                    .tc-waiting {
+                        position: absolute; inset: 0; display: flex;
+                        flex-direction: column; align-items: center;
+                        justify-content: center; gap: 1rem; text-align: center;
+                        padding: 2rem;
+                    }
+                    .tc-waiting .tc-spin {
+                        width: 46px; height: 46px; border-radius: 50%;
+                        border: 4px solid rgba(255,255,255,.25);
+                        border-top-color: #fff; animation: tcspin 1s linear infinite;
+                    }
+                    @keyframes tcspin { to { transform: rotate(360deg); } }
+                    .tc-status { font-size: 1.05rem; opacity: .9; }
+                    .tc-hint { font-size: .85rem; opacity: .6; max-width: 420px; }
+                    .tc-controls {
+                        display: flex; align-items: center; justify-content: center;
+                        gap: 1rem; padding: 1rem; background: #17091f;
+                    }
+                    .tc-btn {
+                        width: 56px; height: 56px; border-radius: 50%; border: none;
+                        font-size: 1.3rem; cursor: pointer; color: #fff;
+                        background: #3a2a44; transition: transform .15s, background .15s;
+                    }
+                    .tc-btn:hover { transform: translateY(-2px); }
+                    .tc-btn.off { background: #b23b3b; }
+                    .tc-btn.hangup { background: #d63333; width: 68px; }
+                    .tc-error {
+                        position: absolute; inset: 0; display: none;
+                        flex-direction: column; align-items: center;
+                        justify-content: center; gap: 1rem; text-align: center;
+                        padding: 2rem; background: rgba(0,0,0,.85);
+                    }
+                    .tc-error.show { display: flex; }
+                    .tc-error b { color: #ffb3b3; font-size: 1.1rem; }
+                    .tc-error p { max-width: 460px; opacity: .85; line-height: 1.5; }
+                </style>
+            </head>
+            <body>
+                <div class="tc-wrap"
+                     id="tc-root"
+                     t-att-data-token="token"
+                     t-att-data-role="role">
+                    <div class="tc-header">
+                        <div class="tc-logo">🏥</div>
+                        <div class="tc-titles">
+                            <b>Téléconsultation</b><br/>
+                            <span>Réf. <t t-esc="op_reference"/> —
+                                Dr <t t-esc="doctor_name"/> ·
+                                <t t-esc="patient_name"/></span>
+                        </div>
+                        <span class="tc-badge">
+                            <t t-if="role == 'doctor'">Vue médecin</t>
+                            <t t-else="">Vue patient</t>
+                        </span>
+                    </div>
+
+                    <div class="tc-stage">
+                        <video id="tc-remote" autoplay="autoplay"
+                               playsinline="playsinline"/>
+                        <video id="tc-local" autoplay="autoplay" muted="muted"
+                               playsinline="playsinline"/>
+                        <div class="tc-waiting" id="tc-waiting">
+                            <div class="tc-spin"/>
+                            <div class="tc-status" id="tc-status">
+                                Initialisation…</div>
+                            <div class="tc-hint">Autorisez la caméra et le
+                                microphone lorsque le navigateur le demande.</div>
+                        </div>
+                        <div class="tc-error" id="tc-error">
+                            <b id="tc-error-title">Erreur</b>
+                            <p id="tc-error-msg"></p>
+                        </div>
+                    </div>
+
+                    <div class="tc-controls">
+                        <button class="tc-btn" id="tc-mic" title="Micro">🎙️</button>
+                        <button class="tc-btn" id="tc-cam" title="Caméra">🎥</button>
+                        <button class="tc-btn hangup" id="tc-hangup"
+                                title="Raccrocher">📞</button>
+                    </div>
+                </div>
+
+                <script type="text/javascript"
+                        src="/base_hospital_management/static/src/js/teleconsultation_room.js?v=6"/>
+            </body>
+        </html>
+    </template>
+</odoo>

@@ -26,11 +26,8 @@ class PrescriptionLine(models.Model):
     """Class holding prescription line details"""
     _name = 'prescription.line'
     _description = 'Prescription Lines'
-    _rec_name = 'prescription_id'
+    _rec_name = 'medicine_id'
 
-    prescription_id = fields.Many2one('hospital.prescription',
-                                      string='Prescription',
-                                      help='Name of the prescription')
     medicine_id = fields.Many2one('product.template', domain=[
         '|', ('medicine_ok', '=', True), ('vaccine_ok', '=', True)],
                                   string='Medicine', required=True,

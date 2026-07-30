@@ -212,3 +212,11 @@ access_patient_lab_test_nurse,access.patient.lab.test.nurse,model_patient_lab_te
 access_patient_lab_test_doctor,access.patient.lab.test.doctor,model_patient_lab_test,base_hospital_management.base_hospital_management_group_doctor,1,1,0,0
 access_patient_lab_test_receptionist,access.patient.lab.test.receptionist,model_patient_lab_test,base_hospital_management.base_hospital_management_group_receptionist,1,1,1,1
 access_patient_lab_test_manager,access.patient.lab.test.manager,model_patient_lab_test,base_hospital_management.base_hospital_management_group_manager,1,1,1,1
+
+access_hospital_vaccination_portal,access.hospital.vaccination.portal,model_hospital_vaccination,base.group_portal,1,0,0,0
+access_patient_lab_test_portal,access.patient.lab.test.portal,model_patient_lab_test,base.group_portal,1,0,0,0
+access_lab_test_result_portal,access.lab.test.result.portal,model_lab_test_result,base.group_portal,1,0,0,0
+access_hospital_outpatient_portal,access.hospital.outpatient.portal,model_hospital_outpatient,base.group_portal,1,0,0,0
+access_prescription_line_portal,access.prescription.line.portal,model_prescription_line,base.group_portal,1,0,0,0
+access_teleconsult_signal_user,access.teleconsult.signal.user,model_hospital_teleconsult_signal,base.group_user,1,1,1,1
+access_teleconsult_signal_portal,access.teleconsult.signal.portal,model_hospital_teleconsult_signal,base.group_portal,1,1,1,0

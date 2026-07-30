@@ -21,5 +21,6 @@
 ################################################################################
 from . import patient_booking
 from . import portal
-from . import view_portal
 from . import hospital_portal
+from . import teleconsultation
+from . import public_site

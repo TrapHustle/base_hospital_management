@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!--Format papier A4 de l'ordonnance-->
+    <record id="paperformat_prescription" model="report.paperformat">
+        <field name="name">Ordonnance A4</field>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">8</field>
+        <field name="margin_bottom">8</field>
+        <field name="margin_left">10</field>
+        <field name="margin_right">10</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+    </record>
     <!--Patient prescription report -->
     <record id="action_report_patient_prescription" model="ir.actions.report">
         <field name="name">Patient Prescription</field>
@@ -8,65 +21,121 @@
         <field name="report_name">base_hospital_management.patient_prescription_report</field>
         <field name="report_file">base_hospital_management.patient_prescription_report</field>
         <field name="binding_model_id" ref="model_res_partner"/>
+        <field name="paperformat_id" ref="base_hospital_management.paperformat_prescription"/>
         <field name="binding_type">report</field>
     </record>
-    <!--    Patient prescription report template-->
+    <!--    Patient prescription report template (ordonnance française)-->
     <template id="patient_prescription_report">
-        <t t-call="web.html_container">
-            <t t-call="web.external_layout">
-                <center>
-                <h1>Doctor Prescription</h1></center>
-                <div>
-                    <strong>Date :</strong>
-                    <span t-esc="date"/>
+        <t t-call="web.basic_layout">
+            <div class="page" style="font-family: Arial, Helvetica, sans-serif; color: #2C2C2C; font-size: 12px;">
+
+                <!-- ============ BANDEAU EN-TÊTE (diagonales teal) ============ -->
+                <div style="position: relative; background-color: #017E84; height: 112px; overflow: hidden;">
+                    <div style="position: absolute; top: 0; left: 0; width: 0; height: 0; border-top: 112px solid #00A09D; border-right: 300px solid transparent;"/>
+                    <div style="position: absolute; top: 0; left: 150px; width: 0; height: 0; border-top: 112px solid #33B3AF; border-right: 240px solid transparent; opacity: 0.55;"/>
+                    <div style="position: absolute; top: 20px; left: 30px; color: #ffffff;">
+                        <div style="font-size: 25px; font-weight: bold;"><t t-esc="doctor_name"/></div>
+                        <div style="font-size: 11px; letter-spacing: 4px; margin-top: 6px; text-transform: uppercase;"><t t-esc="doctor_dept"/></div>
+                    </div>
+                    <!-- Pastille ronde à droite -->
+                    <div style="position: absolute; top: 15px; right: 26px; width: 82px; height: 82px; border-radius: 50%; background-color: #ffffff;">
+                        <div style="margin: 7px; width: 68px; height: 68px; border-radius: 50%; background-color: #00A09D; color: #ffffff; text-align: center; font-size: 36px; font-weight: bold; line-height: 66px;">+</div>
+                    </div>
                 </div>
-                <div>
-                    <strong>Patient's Name :</strong>
-                    <span t-esc="patient_name"/>
-                </div>
-                <div>
-                    <strong>Doctor :</strong>
-                    <span t-esc="doctor_name"/>
-                </div>
-                <table class="table">
-                    <thead>
-                        <tr style="text-align:left">
-                            <th>SL.No</th>
-                            <th>Medicine</th>
-                            <th>Intake</th>
-                            <th>Time</th>
-                            <th>Quantity</th>
-                            <th>Before/ After Food</th>
+
+                <!-- ============ INFOS PATIENT (lignes à compléter) ============ -->
+                <div style="padding: 22px 12px 6px 12px;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+                        <tr>
+                            <td style="padding: 7px 4px; width: 62%;">
+                                <span style="color: #017E84; font-weight: bold;">Patient :</span>
+                                <span style="display: inline-block; border-bottom: 1px solid #7FC6C3; min-width: 240px; padding: 0 8px; font-weight: bold;"><t t-esc="patient_name"/></span>
+                            </td>
+                            <td style="padding: 7px 4px;">
+                                <span style="color: #017E84; font-weight: bold;">Date :</span>
+                                <span style="display: inline-block; border-bottom: 1px solid #7FC6C3; min-width: 110px; padding: 0 8px;"><t t-esc="date"/></span>
+                            </td>
                         </tr>
-                    </thead>
-                    <t t-set="i" t-value="0"/>
-                    <tbody>
-                        <center>
+                        <tr>
+                            <td style="padding: 7px 4px;">
+                                <span style="color: #017E84; font-weight: bold;">Âge :</span>
+                                <span style="display: inline-block; border-bottom: 1px solid #7FC6C3; min-width: 60px; padding: 0 8px;"><t t-esc="patient_age"/><t t-if="patient_age != ''"> ans</t></span>
+                                <span style="color: #017E84; font-weight: bold; margin-left: 14px;">Genre :</span>
+                                <span style="display: inline-block; border-bottom: 1px solid #7FC6C3; min-width: 80px; padding: 0 8px;"><t t-esc="patient_gender"/></span>
+                            </td>
+                            <td style="padding: 7px 4px;">
+                                <span style="color: #017E84; font-weight: bold;">N° dossier :</span>
+                                <span style="display: inline-block; border-bottom: 1px solid #7FC6C3; min-width: 90px; padding: 0 8px; font-weight: bold; color: #015a5f;"><t t-esc="patient_seq"/></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="padding: 7px 4px;">
+                                <span style="color: #017E84; font-weight: bold;">Diagnostic :</span>
+                                <span style="display: inline-block; border-bottom: 1px solid #7FC6C3; min-width: 420px; padding: 0 8px;"><t t-esc="diagnosis"/></span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- ============ GRAND Rx + PRESCRIPTIONS ============ -->
+                <div style="padding: 8px 12px 0 12px;">
+                    <div style="font-family: Georgia, 'Times New Roman', serif; font-size: 58px; font-weight: bold; color: #017E84; line-height: 1;">
+                        R<span style="font-size: 32px;">x</span>
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 12px;">
+                        <t t-set="i" t-value="0"/>
                         <tr t-foreach="datas" t-as="line">
-                            <td>
-                                <t t-set="i" t-value="i + 1"/>
-                                <span t-esc="i"/>
+                            <t t-set="i" t-value="i + 1"/>
+                            <td style="width: 30px; padding: 10px 4px; border-bottom: 1px dotted #7FC6C3; vertical-align: top;">
+                                <span style="display: inline-block; width: 20px; height: 20px; border-radius: 50%; background-color: #017E84; color: #ffffff; text-align: center; font-size: 11px; font-weight: bold; line-height: 20px;"><t t-esc="i"/></span>
                             </td>
-                            <td>
-                                <span t-esc="line['medicine']"/>
+                            <td style="padding: 10px 6px; border-bottom: 1px dotted #7FC6C3;">
+                                <span style="font-weight: bold; font-size: 13px;"><t t-esc="line['medicine']"/></span><br/>
+                                <span style="color: #6c757d; font-size: 11px;"><t t-esc="line['time']"/><t t-if="line['note']"> · <t t-esc="line['note']"/></t></span>
                             </td>
-                            <td>
-                                <span t-esc="line['intake']"/>
-                            </td>
-                            <td>
-                                <span t-esc="line['time']"/>
-                            </td>
-                            <td>
-                                <span t-esc="line['quantity']"/>
-                            </td>
-                            <td>
-                                <span t-esc="line['note']"/>
+                            <td style="padding: 10px 6px; border-bottom: 1px dotted #7FC6C3; text-align: right; white-space: nowrap; vertical-align: top;">
+                                <span style="color: #017E84; font-weight: bold;">Qté : <t t-esc="int(line['quantity'])"/></span>
                             </td>
                         </tr>
-                        </center>
-                    </tbody>
+                    </table>
+                </div>
+
+                <!-- ============ CACHET + SIGNATURE ============ -->
+                <table style="width: 100%; border-collapse: collapse; margin-top: 55px;">
+                    <tr>
+                        <td style="width: 55%;"/>
+                        <td style="text-align: center; vertical-align: bottom;">
+                            <!-- Cachet rond du médecin -->
+                            <div style="margin: 0 auto; width: 132px; height: 132px; border: 3px double #017E84; border-radius: 50%; color: #017E84; -webkit-transform: rotate(-8deg); opacity: 0.85;">
+                                <div style="padding-top: 22px; font-size: 9px; font-weight: bold; letter-spacing: 1px; text-align: center;"><t t-esc="company_name"/></div>
+                                <div style="text-align: center; font-size: 12px; font-weight: bold; margin-top: 7px;"><t t-esc="doctor_name"/></div>
+                                <div style="text-align: center; font-size: 8px; margin-top: 3px;"><t t-esc="doctor_dept"/></div>
+                                <div style="text-align: center; font-size: 8px; margin-top: 7px; letter-spacing: 2px;">★ &#160;<t t-esc="date"/>&#160; ★</div>
+                            </div>
+                            <div style="font-family: 'Segoe Script', 'Comic Sans MS', cursive; font-size: 16px; color: #015a5f; margin-top: -30px; text-align: right; padding-right: 4px;"><t t-esc="doctor_name"/></div>
+                            <div style="border-top: 1px solid #017E84; margin-top: 12px; padding-top: 5px; color: #6c757d; font-size: 11px; letter-spacing: 2px;">Signature</div>
+                        </td>
+                    </tr>
                 </table>
-            </t>
+
+                <!-- ============ PIED DE PAGE ============ -->
+                <table style="width: 100%; border-collapse: collapse; margin-top: 40px; border-top: 3px solid #017E84;">
+                    <tr>
+                        <td style="padding: 12px 6px; font-size: 13px; letter-spacing: 4px; font-weight: bold; color: #2C2C2C; text-transform: uppercase;">
+                            <t t-esc="company_name"/>
+                        </td>
+                        <td style="padding: 8px 0; text-align: right;">
+                            <span style="display: inline-block; background-color: #EAF4F4; color: #015a5f; font-size: 10px; padding: 8px 14px;">
+                                <b>Adresse :</b> <t t-esc="company_street"/><t t-if="company_city">, <t t-esc="company_city"/></t>
+                                &#160;&#160;<b>Tél :</b> <t t-esc="company_phone"/>
+                            </span>
+                        </td>
+                    </tr>
+                </table>
+                <div style="text-align: center; color: #adb5bd; font-size: 9px; margin-top: 8px;">
+                    Réf. <t t-esc="op_reference"/> — Document généré par le Système d'Information Hospitalier
+                </div>
+            </div>
         </t>
     </template>
          <!--Report paper format-->

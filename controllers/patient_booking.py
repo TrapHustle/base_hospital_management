@@ -51,10 +51,31 @@ class PatientBooking(http.Controller):
             'patient_id': request.env.user.partner_id.id,
             'doctor_id': int(kw.get("doctor-name")),
             'op_date': kw.get("date"),
-            'reason': kw.get("reason")
+            'reason': kw.get("reason"),
+            'is_teleconsultation': bool(kw.get("teleconsultation")),
         })
         op.sudo().action_confirm()
+        self._notify_doctor_new_booking(op)
         return request.redirect('/my/home')
+
+    @staticmethod
+    def _notify_doctor_new_booking(op):
+        """Push a live notification to the doctor when a booking is made."""
+        doctor_user = (op.doctor_id.doctor_id.user_id
+                       or request.env.ref('base.user_admin', False))
+        if not doctor_user:
+            return
+        message = "%s a pris rendez-vous le %s (%s)" % (
+            op.patient_id.name,
+            op.op_date.strftime('%d/%m/%Y') if op.op_date else '',
+            'Téléconsultation' if op.is_teleconsultation else 'Au cabinet')
+        request.env['bus.bus'].sudo()._sendone(
+            doctor_user.partner_id, 'simple_notification', {
+                'type': 'info',
+                'sticky': True,
+                'title': "Nouveau rendez-vous",
+                'message': message,
+            })
 
     @http.route('/patient_booking/get_doctors', type='json', auth="public",
                 website=True)

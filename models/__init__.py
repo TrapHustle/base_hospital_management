@@ -61,3 +61,4 @@ from . import doctor_allocation
 from . import reception_dashboard_methods
 from . import pharmacy_dashboard_methods
 from . import room_facility
+from . import teleconsult_signal

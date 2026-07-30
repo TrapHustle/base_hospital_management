@@ -28,7 +28,7 @@ class InpatientSurgery(models.Model):
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _description = 'Inpatient Surgery'
 
-    date = fields.Date(dafault=fields.date.today(), string='Date',
+    date = fields.Date(default=fields.date.today(), string='Date',
                        help='Date of adding surgery')
     planned_date = fields.Datetime(string='Planned Date',
                                    help='Planned date for surgery',

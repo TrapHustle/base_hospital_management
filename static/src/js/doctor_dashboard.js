@@ -33,6 +33,8 @@ export class DoctorDashboard extends Component {
                 active_inpatients: 0,
                 active_allocations: 0,
                 total_slots: 0,
+                appointments_today: 0,
+                teleconsultations_today: 0,
                 patients_trend: 0,
                 consultations_trend: 0,
                 inpatients_trend: 0,
@@ -44,6 +46,7 @@ export class DoctorDashboard extends Component {
                 workload: [],
             },
             recent_activities: [],
+            queue: [],
         });
 
         // Charts instances
@@ -80,9 +83,39 @@ export class DoctorDashboard extends Component {
             
             // Load recent activities
             await this.loadRecentActivities();
+
+            // Load today's patient queue (by arrival order)
+            await this.loadQueue();
         } catch (error) {
             console.error('Error loading dashboard data:', error);
         }
+    }
+
+    /**
+     * Load today's patient queue for the logged-in doctor (arrival order)
+     */
+    async loadQueue() {
+        try {
+            const queue = await this.orm.call(
+                'hospital.outpatient', 'get_doctor_queue', []);
+            this.state.queue = queue || [];
+        } catch (error) {
+            console.error('Error loading queue:', error);
+            this.state.queue = [];
+        }
+    }
+
+    /**
+     * Open a patient's consultation form directly from the queue
+     */
+    openConsultation(opId) {
+        this.actionService.doAction({
+            type: 'ir.actions.act_window',
+            res_model: 'hospital.outpatient',
+            res_id: opId,
+            views: [[false, 'form']],
+            target: 'current',
+        });
     }
 
     /**

@@ -17,12 +17,16 @@ class ReceptionDashBoard extends Component{
             ward_data : [],
             room_data : [],
             dr_lst: [],
+            insurance_lst: [],
             currentDate: new Date().toISOString().split('T')[0],
             current_appointment_type: 'outpatient', // 'outpatient' or 'inpatient'
             current_room_ward_type: 'ward', // 'ward' or 'room'
         });
         onMounted(async () => {
             await this.createPatient();
+            // Liste des assurances pour le formulaire d'enregistrement
+            this.state.insurance_lst = await this.orm.call(
+                'hospital.insurance', 'search_read', [[], ['id', 'name']]);
         });
     }
 
@@ -76,22 +80,37 @@ class ReceptionDashBoard extends Component{
             return element ? element.value : '';
         };
 
+        // Champs toujours envoyés
         const data = {
             name: getElementValue('patient-name'),
+            phone: getElementValue('patient-phone'),
+        };
+        // Champs optionnels : envoyés seulement s'ils sont renseignés
+        // (une sélection vide '' ferait échouer la création côté Odoo).
+        const optional = {
             blood_group: getElementValue('patient-bloodgroup'),
             rh_type: getCheckedValue('rhtype'),
             gender: getCheckedValue('gender'),
             marital_status: getElementValue('patient-m-status'),
-            phone: getElementValue('patient-phone'),
             email: getElementValue('patient-mail'),
-            image_1920: getElementData('patient-img', 'file')
+            street: getElementValue('patient-street'),
+            city: getElementValue('patient-city'),
+            date_of_birth: getElementValue('patient-dob'),
+            image_1920: getElementData('patient-img', 'file'),
         };
-
-        const dob = getElementValue('patient-dob');
-        if (dob) {
-            data.date_of_birth = dob;
+        for (const [key, value] of Object.entries(optional)) {
+            if (value) {
+                data[key] = value;
+            }
         }
-
+        const insurance = getElementValue('patient-insurance');
+        if (insurance) {
+            data.insurance_id = parseInt(insurance);
+        }
+        const insuranceNo = getElementValue('patient-insurance-no');
+        if (insuranceNo) {
+            data.unique_id = insuranceNo;  // n° d'assuré (carte)
+        }
         return data;
     }
 
@@ -137,19 +156,11 @@ class ReceptionDashBoard extends Component{
         this.state.patient_lst = result;
 
         const doctorResult = await this.orm.call('doctor.allocation', 'search_read', []);
+        // Le <select class="select_dr"> est rendu par Owl via t-foreach="state.dr_lst".
+        // Ne PAS le remplir aussi à la main (innerHTML/appendChild) : cela supprime les
+        // noeuds gérés par Owl et casse le patch suivant (insertBefore not a child).
         this.state.dr_lst = doctorResult;
-        
-        const selectDoctor = this.ref.el.querySelector('.select_dr');
-        if (selectDoctor) {
-            selectDoctor.innerHTML = '';
-            doctorResult.forEach(element => {
-                const option = document.createElement('option');
-                option.value = element.id;
-                option.textContent = element.display_name;
-                selectDoctor.appendChild(option);
-            });
-        }
-        
+
         const controls = this.ref.el.querySelector('#controls');
         if (controls) {
             controls.innerHTML = '';
@@ -223,6 +234,18 @@ class ReceptionDashBoard extends Component{
             clearField('sl_patient');
             clearField('o_patient-phone');
             clearField('o_patient-dob');
+            clearField('o_patient_bloodgroup');
+            clearField('reason');
+            clearField('slot');
+
+            // Décocher les boutons radio (Rhésus, Genre)
+            this.ref.el
+                .querySelectorAll("input[name='o_rhtype']:checked, input[name='o_patient-gender']:checked")
+                .forEach((el) => { el.checked = false; });
+
+            // Réinitialiser la date du rendez-vous à aujourd'hui
+            const opDateEl = this.ref.el.querySelector('#op_date');
+            if (opDateEl) opDateEl.value = this.state.currentDate;
         }
     }
 

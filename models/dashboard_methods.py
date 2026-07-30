@@ -26,11 +26,22 @@ class ResPartner(models.Model):
         Returns dict with counts and trends
         """
         today = datetime.today().date()
-        
-        # Total patients
-        total_patients = self.search_count([
-            ('patient_seq', 'not in', ['New', 'Employee', 'User'])
-        ])
+
+        # Médecin connecté : si l'utilisateur est un médecin, on filtre tout
+        # le tableau de bord sur SES données uniquement (sinon vue globale).
+        doctor = self.env['hospital.outpatient']._current_doctor()
+        op_dom = [('doctor_id.doctor_id', '=', doctor.id)] if doctor else []
+        alloc_dom = [('doctor_id', '=', doctor.id)] if doctor else []
+        inp_dom = [('attending_doctor_id', '=', doctor.id)] if doctor else []
+
+        # Total patients (distincts) vus par ce médecin, sinon tous les patients
+        if doctor:
+            doctor_ops = self.env['hospital.outpatient'].search(op_dom)
+            total_patients = len(doctor_ops.mapped('patient_id'))
+        else:
+            total_patients = self.search_count([
+                ('patient_seq', 'not in', ['New', 'Employee', 'User'])
+            ])
         
         # Patients from last month for trend
         last_month = today - timedelta(days=30)
@@ -45,7 +56,7 @@ class ResPartner(models.Model):
         
         # Consultations today
         Outpatient = self.env['hospital.outpatient']
-        consultations_today = Outpatient.search_count([
+        consultations_today = Outpatient.search_count(op_dom + [
             ('op_date', '=', today),
             ('state', '!=', 'cancel')
         ])
@@ -64,7 +75,7 @@ class ResPartner(models.Model):
         
         # Active inpatients
         Inpatient = self.env['hospital.inpatient']
-        active_inpatients = Inpatient.search_count([
+        active_inpatients = Inpatient.search_count(inp_dom + [
             ('state', '=', 'admit')
         ])
         
@@ -91,19 +102,32 @@ class ResPartner(models.Model):
         
         # Active allocations today
         Allocation = self.env['doctor.allocation']
-        active_allocations = Allocation.search_count([
+        active_allocations = Allocation.search_count(alloc_dom + [
             ('date', '=', today),
             ('state', '=', 'confirm')
         ])
-        
+
         # Total available slots
-        allocations = Allocation.search([
+        allocations = Allocation.search(alloc_dom + [
             ('date', '=', today),
             ('state', '=', 'confirm')
         ])
         total_slots = sum(alloc.slot_remaining for alloc in allocations)
-        
+
+        # Appointments booked for today (confirmed, not yet invoiced/cancelled)
+        appointments_today = Outpatient.search_count(op_dom + [
+            ('op_date', '=', today),
+            ('state', '=', 'op')
+        ])
+        teleconsultations_today = Outpatient.search_count(op_dom + [
+            ('op_date', '=', today),
+            ('state', '=', 'op'),
+            ('is_teleconsultation', '=', True)
+        ])
+
         return {
+            'appointments_today': appointments_today,
+            'teleconsultations_today': teleconsultations_today,
             'total_patients': total_patients,
             'patients_trend': patients_trend,
             'consultations_today': consultations_today,

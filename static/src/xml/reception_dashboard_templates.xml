@@ -51,6 +51,7 @@
                             <div class="hsp_table">
                                 <table>
                                     <tbody>
+                                        <!-- 1. Identité -->
                                         <tr>
                                             <td>
                                                 <div class="form-group form-group-required">
@@ -60,28 +61,21 @@
                                             </td>
                                             <td>
                                                 <div class="form-group">
-                                                    <label for="patient-bloodgroup">Groupe sanguin</label>
-                                                    <select id="patient-bloodgroup">
-                                                        <option value="">Sélectionner</option>
-                                                        <option value="A">A</option>
-                                                        <option value="B">B</option>
-                                                        <option value="AB">AB</option>
-                                                        <option value="O">O</option>
-                                                    </select>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="form-group form-group-required">
-                                                    <label for="patient-phone">Téléphone</label>
-                                                    <input type="tel" id="patient-phone" placeholder="+212 6XX XXX XXX"/>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <label for="patient-mail">Email</label>
-                                                    <input type="email" id="patient-mail" placeholder="email@example.com"/>
+                                                    <label>Genre</label>
+                                                    <div style="display: flex; gap: 20px; margin-top: 8px;">
+                                                        <label class="radio">
+                                                            <input type="radio" name="gender" value="male" id="gender-male"/>
+                                                            <span>Homme</span>
+                                                        </label>
+                                                        <label class="radio">
+                                                            <input type="radio" name="gender" value="female" id="gender-female"/>
+                                                            <span>Femme</span>
+                                                        </label>
+                                                        <label class="radio">
+                                                            <input type="radio" name="gender" value="other" id="gender-other"/>
+                                                            <span>Autre</span>
+                                                        </label>
+                                                    </div>
                                                 </div>
                                             </td>
                                         </tr>
@@ -105,7 +99,49 @@
                                                 </div>
                                             </td>
                                         </tr>
+                                        <!-- 2. Contact -->
                                         <tr>
+                                            <td>
+                                                <div class="form-group form-group-required">
+                                                    <label for="patient-phone">Téléphone</label>
+                                                    <input type="tel" id="patient-phone" placeholder="+225 07 XX XX XX XX"/>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group">
+                                                    <label for="patient-mail">Email</label>
+                                                    <input type="email" id="patient-mail" placeholder="email@example.com"/>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="form-group">
+                                                    <label for="patient-street">Adresse</label>
+                                                    <input type="text" id="patient-street" placeholder="Quartier, rue"/>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group">
+                                                    <label for="patient-city">Ville</label>
+                                                    <input type="text" id="patient-city" placeholder="Ville"/>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <!-- 3. Données médicales -->
+                                        <tr>
+                                            <td>
+                                                <div class="form-group">
+                                                    <label for="patient-bloodgroup">Groupe sanguin</label>
+                                                    <select id="patient-bloodgroup">
+                                                        <option value="">Sélectionner</option>
+                                                        <option value="a">A</option>
+                                                        <option value="b">B</option>
+                                                        <option value="ab">AB</option>
+                                                        <option value="o">O</option>
+                                                    </select>
+                                                </div>
+                                            </td>
                                             <td>
                                                 <div class="form-group">
                                                     <label>Rhésus (RH)</label>
@@ -121,26 +157,28 @@
                                                     </div>
                                                 </div>
                                             </td>
+                                        </tr>
+                                        <!-- 4. Assurance -->
+                                        <tr>
                                             <td>
                                                 <div class="form-group">
-                                                    <label>Genre</label>
-                                                    <div style="display: flex; gap: 20px; margin-top: 8px;">
-                                                        <label class="radio">
-                                                            <input type="radio" name="gender" value="male" id="gender-male"/>
-                                                            <span>Homme</span>
-                                                        </label>
-                                                        <label class="radio">
-                                                            <input type="radio" name="gender" value="female" id="gender-female"/>
-                                                            <span>Femme</span>
-                                                        </label>
-                                                        <label class="radio">
-                                                            <input type="radio" name="gender" value="other" id="gender-other"/>
-                                                            <span>Autre</span>
-                                                        </label>
-                                                    </div>
+                                                    <label for="patient-insurance">Assurance</label>
+                                                    <select id="patient-insurance">
+                                                        <option value="">Aucune / Patient payant</option>
+                                                        <t t-foreach="state.insurance_lst" t-as="ins" t-key="ins.id">
+                                                            <option t-att-value="ins.id"><t t-esc="ins.name"/></option>
+                                                        </t>
+                                                    </select>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group">
+                                                    <label for="patient-insurance-no">N° d'assuré</label>
+                                                    <input type="text" id="patient-insurance-no" placeholder="N° de la carte d'assurance"/>
                                                 </div>
                                             </td>
                                         </tr>
+                                        <!-- 5. Photo -->
                                         <tr>
                                             <td colspan="2">
                                                 <div class="form-group">
@@ -249,10 +287,10 @@
                                                 <label for="o_patient_bloodgroup">Groupe sanguin</label>
                                                 <select id="o_patient_bloodgroup">
                                                     <option value="">Sélectionner</option>
-                                                    <option value="A">A</option>
-                                                    <option value="B">B</option>
-                                                    <option value="AB">AB</option>
-                                                    <option value="O">O</option>
+                                                    <option value="a">A</option>
+                                                    <option value="b">B</option>
+                                                    <option value="ab">AB</option>
+                                                    <option value="o">O</option>
                                                 </select>
                                             </div>
                                         </td>

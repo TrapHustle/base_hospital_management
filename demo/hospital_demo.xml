@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ================= EMPLOYÉS (par rôle) ================= -->
+        <record id="emp_doctor_kone" model="hr.employee">
+            <field name="name">Dr. Awa Koné</field>
+            <field name="job_id" ref="job_position_doctor"/>
+        </record>
+        <record id="emp_doctor_traore" model="hr.employee">
+            <field name="name">Dr. Ibrahim Traoré</field>
+            <field name="job_id" ref="job_position_doctor"/>
+        </record>
+        <record id="emp_nurse_diallo" model="hr.employee">
+            <field name="name">Inf. Fatou Diallo</field>
+            <field name="job_id" ref="job_position_nurse"/>
+        </record>
+
+        <!-- ================= PRODUITS (vaccins / médicaments) ================= -->
+        <record id="product_vaccine_covid" model="product.template">
+            <field name="name">Vaccin COVID-19</field>
+            <field name="vaccine_ok" eval="True"/>
+            <field name="list_price">15000</field>
+        </record>
+        <record id="product_vaccine_hepb" model="product.template">
+            <field name="name">Vaccin Hépatite B</field>
+            <field name="vaccine_ok" eval="True"/>
+            <field name="list_price">8000</field>
+        </record>
+        <record id="product_med_paracetamol" model="product.template">
+            <field name="name">Paracétamol 500mg</field>
+            <field name="medicine_ok" eval="True"/>
+            <field name="list_price">500</field>
+        </record>
+        <record id="product_med_amoxicilline" model="product.template">
+            <field name="name">Amoxicilline 1g</field>
+            <field name="medicine_ok" eval="True"/>
+            <field name="list_price">1200</field>
+        </record>
+
+        <!-- ================= PATIENTS (DPI) ================= -->
+        <record id="patient_yao" model="res.partner">
+            <field name="name">Yao Kouadio</field>
+            <field name="gender">male</field>
+            <field name="blood_group">o</field>
+            <field name="rh_type">+</field>
+            <field name="date_of_birth">1988-03-12</field>
+            <field name="phone">+225 0700000001</field>
+        </record>
+        <record id="patient_aminata" model="res.partner">
+            <field name="name">Aminata Bamba</field>
+            <field name="gender">female</field>
+            <field name="blood_group">a</field>
+            <field name="rh_type">+</field>
+            <field name="date_of_birth">1995-07-25</field>
+            <field name="phone">+225 0700000002</field>
+        </record>
+        <record id="patient_kofi" model="res.partner">
+            <field name="name">Kofi Mensah</field>
+            <field name="gender">male</field>
+            <field name="blood_group">b</field>
+            <field name="rh_type">-</field>
+            <field name="date_of_birth">1972-11-03</field>
+            <field name="phone">+225 0700000003</field>
+        </record>
+        <record id="patient_mariam" model="res.partner">
+            <field name="name">Mariam Cissé</field>
+            <field name="gender">female</field>
+            <field name="blood_group">ab</field>
+            <field name="rh_type">+</field>
+            <field name="date_of_birth">2001-01-19</field>
+            <field name="phone">+225 0700000004</field>
+        </record>
+
+        <!-- ================= VACCINATIONS ================= -->
+        <record id="vacc_yao_covid" model="hospital.vaccination">
+            <field name="patient_id" ref="patient_yao"/>
+            <field name="vaccine_product_id" ref="product_vaccine_covid"/>
+            <field name="dose">1</field>
+        </record>
+        <record id="vacc_aminata_covid" model="hospital.vaccination">
+            <field name="patient_id" ref="patient_aminata"/>
+            <field name="vaccine_product_id" ref="product_vaccine_covid"/>
+            <field name="dose">2</field>
+        </record>
+        <record id="vacc_kofi_hepb" model="hospital.vaccination">
+            <field name="patient_id" ref="patient_kofi"/>
+            <field name="vaccine_product_id" ref="product_vaccine_hepb"/>
+            <field name="dose">1</field>
+        </record>
+
+        <!-- ================= ADMISSIONS (inpatient) ================= -->
+        <record id="inpatient_kofi" model="hospital.inpatient">
+            <field name="patient_id" ref="patient_kofi"/>
+            <field name="type_admission">routine</field>
+            <field name="attending_doctor_id" ref="emp_doctor_kone"/>
+            <field name="reason">Surveillance post-opératoire</field>
+        </record>
+        <record id="inpatient_mariam" model="hospital.inpatient">
+            <field name="patient_id" ref="patient_mariam"/>
+            <field name="type_admission">emergency</field>
+            <field name="attending_doctor_id" ref="emp_doctor_traore"/>
+            <field name="reason">Crise d'asthme aiguë</field>
+        </record>
+
+    </data>
+</odoo>

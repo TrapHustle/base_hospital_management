@@ -556,26 +556,39 @@ class ResPartner(models.Model):
         if post and not post['patient_id']:
             patient = self.sudo().search([('name', '=', post['op_name'])])
             if not patient:
-
-                patient = self.sudo().create({
-                    'name': post['op_name'],
-                    'blood_group': post['op_blood_group'],
-                    'gender': post['op_gender']
-                })
-                if 'op_dob' in post.keys():
-                    patient.sudo().write({'date_of_birth': post['op_dob']})
+                vals = {'name': post['op_name']}
+                # N'inclure les champs de sélection que s'ils sont renseignés
+                # (une valeur vide '' ferait échouer la création).
+                if post.get('op_blood_group'):
+                    vals['blood_group'] = post['op_blood_group']
+                if post.get('op_gender'):
+                    vals['gender'] = post['op_gender']
+                if post.get('op_dob'):
+                    vals['date_of_birth'] = post['op_dob']
+                patient = self.sudo().create(vals)
         else:
-            patient = self.sudo().search([('id', '=', post['patient_id'])])
-            out_patient = self.env['hospital.outpatient'].sudo().search([('patient_id','=', patient.id)])
-            if not out_patient:
-                self.env['hospital.outpatient'].sudo().create({
+            patient = self.sudo().search(
+                [('id', '=', int(post['patient_id']))])
+            # post['doctor'] arrive du JS en texte : browse('39') itérerait
+            # les caractères ('3', '9') -> Expected singleton. On force l'int.
+            alloc_id = int(post['doctor'])
+            # Bloque seulement si un RDV existe déjà pour CE patient chez CE
+            # créneau (pas pour tout autre RDV passé du patient).
+            existing = self.env['hospital.outpatient'].sudo().search([
+                ('patient_id', '=', patient.id),
+                ('doctor_id', '=', alloc_id),
+            ])
+            if not existing:
+                op = self.env['hospital.outpatient'].sudo().create({
                     'patient_id': patient.id,
                     'op_date': post['date'],
                     'reason': post['reason'],
                     'slot': post['slot'],
-                    'doctor_id': self.env['doctor.allocation'].sudo().browse(
-                        post['doctor']).id
+                    'doctor_id': alloc_id,
                 })
+                # Confirme le RDV : il passe à l'état « op » et apparaît dans
+                # la file d'attente du médecin.
+                op.action_confirm()
 
     @api.model
     def fetch_patient_data(self):

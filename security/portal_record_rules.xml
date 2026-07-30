@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- ================================================================
+             ISOLATION DES DONNEES PATIENT AU PORTAIL
+             Un utilisateur portail ne peut lire QUE les enregistrements
+             rattaches a son propre dossier patient (= son partenaire).
+             Defense en profondeur : les controleurs filtrent deja, ces
+             regles verrouillent aussi tout acces ORM direct.
+             ================================================================ -->
+
+        <record id="rule_portal_vaccination" model="ir.rule">
+            <field name="name">Portail : ses propres vaccinations</field>
+            <field name="model_id" ref="model_hospital_vaccination"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="domain_force">[('patient_id', '=', user.partner_id.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_portal_lab_test" model="ir.rule">
+            <field name="name">Portail : ses propres analyses</field>
+            <field name="model_id" ref="model_patient_lab_test"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="domain_force">[('patient_id', '=', user.partner_id.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_portal_lab_test_result" model="ir.rule">
+            <field name="name">Portail : ses propres résultats d'analyse</field>
+            <field name="model_id" ref="model_lab_test_result"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="domain_force">[('patient_id', '=', user.partner_id.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_portal_outpatient" model="ir.rule">
+            <field name="name">Portail : ses propres consultations</field>
+            <field name="model_id" ref="model_hospital_outpatient"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="domain_force">[('patient_id', '=', user.partner_id.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_portal_prescription" model="ir.rule">
+            <field name="name">Portail : ses propres ordonnances</field>
+            <field name="model_id" ref="model_prescription_line"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="domain_force">['|', ('outpatient_id.patient_id', '=', user.partner_id.id), ('inpatient_id.patient_id', '=', user.partner_id.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

@@ -1,628 +1,464 @@
-/* ====================================
-   HOSPITAL PORTAL - PROFESSIONAL CSS
-   Style Odoo - Design Humain
-   ==================================== */
-
-/* ====================================
-   COLOR VARIABLES
-   ==================================== */
-:root {
-    --primary-color: #017E84;
-    --primary-dark: #015a5f;
-    --secondary-color: #00A09D;
-    --accent-color: #875A7B;
-    --text-dark: #2C2C2C;
-    --text-light: #6c757d;
-    --border-color: #dee2e6;
-    --bg-light: #f8f9fa;
-    --bg-white: #ffffff;
-    --success-color: #28a745;
-    --warning-color: #ffc107;
-    --danger-color: #dc3545;
-    --info-color: #17a2b8;
-}
-
-/* ====================================
-   PORTAL LAYOUT IMPROVEMENTS
-   ==================================== */
-#wrap {
-    background-color: var(--bg-light);
-}
-
-.o_portal {
-    background-color: var(--bg-light);
-}
-
-.o_portal_my_home {
-    padding: 40px 0;
-}
-
-/* ====================================
-   PORTAL CARDS (Home Page)
-   ==================================== */
-.o_portal_docs {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 24px;
-    margin-top: 30px;
-}
-
-.o_portal_docs .col-lg-6,
-.o_portal_docs .col-12 {
-    width: 100% !important;
-    max-width: 100% !important;
-    padding: 0 !important;
-}
-
-.o_portal_docs a {
-    display: block;
-    background: var(--bg-white);
-    border: 1px solid var(--border-color);
-    padding: 24px;
-    text-decoration: none;
-    color: var(--text-dark);
-    transition: all 0.2s ease;
-    height: 100%;
-}
-
-.o_portal_docs a:hover {
-    border-color: var(--primary-color);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    transform: translateY(-2px);
-}
-
-.o_portal_docs .row {
-    display: flex;
-    align-items: center;
-    margin: 0;
-}
-
-.o_portal_docs .col-3 {
-    flex: 0 0 80px;
-    max-width: 80px;
-}
-
-.o_portal_docs .col-9 {
-    flex: 1;
-    padding-left: 20px;
-}
-
-/* Portal Card Icon */
-.o_portal_docs img {
-    width: 56px;
-    height: 56px;
-    object-fit: contain;
-}
-
-/* Portal Card Title */
-.o_portal_docs h3 {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--text-dark);
-    margin: 0 0 8px 0;
-}
-
-/* Portal Card Description */
-.o_portal_docs .text-muted {
-    font-size: 14px;
-    color: var(--text-light) !important;
-    margin: 0 0 12px 0;
-    line-height: 1.5;
-}
-
-/* Portal Card Count Badge */
-.o_portal_docs .badge {
-    display: inline-block;
-    padding: 4px 12px;
-    background: var(--primary-color);
-    color: var(--bg-white);
-    font-size: 13px;
-    font-weight: 500;
-}
-
-/* ====================================
-   PAGE HEADER
-   ==================================== */
-.o_portal_my_doc_table {
-    margin-top: 0;
-}
-
-.page-header {
-    background: var(--bg-white);
-    border: 1px solid var(--border-color);
-    padding: 24px 30px;
-    margin-bottom: 24px;
-}
-
-.page-header h3 {
-    font-size: 24px;
-    font-weight: 600;
-    color: var(--text-dark);
-    margin: 0;
-}
-
-/* ====================================
-   BREADCRUMBS
-   ==================================== */
-.breadcrumb {
-    background: transparent;
-    padding: 16px 0;
-    margin: 0;
-    font-size: 14px;
-}
-
-.breadcrumb-item {
-    color: var(--text-light);
-}
-
-.breadcrumb-item.active {
-    color: var(--text-dark);
-    font-weight: 500;
-}
-
-.breadcrumb-item a {
-    color: var(--primary-color);
-    text-decoration: none;
-}
-
-.breadcrumb-item a:hover {
-    color: var(--primary-dark);
-    text-decoration: underline;
-}
-
-/* ====================================
-   SEARCHBAR
-   ==================================== */
-.o_portal_searchbar {
-    background: var(--bg-white);
-    border: 1px solid var(--border-color);
-    padding: 20px 30px;
-    margin-bottom: 24px;
-}
-
-.o_portal_searchbar h3 {
-    font-size: 22px;
-    font-weight: 600;
-    color: var(--text-dark);
-    margin: 0;
-}
-
-.o_portal_searchbar form {
-    margin-top: 16px;
-}
-
-.o_portal_searchbar input[type="text"],
-.o_portal_searchbar input[type="search"] {
-    height: 42px;
-    padding: 0 16px;
-    border: 1px solid var(--border-color);
-    font-size: 14px;
-}
-
-.o_portal_searchbar input[type="text"]:focus,
-.o_portal_searchbar input[type="search"]:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(1, 126, 132, 0.1);
-    outline: none;
-}
-
-/* ====================================
-   DATA TABLES
-   ==================================== */
-.table_wrapper {
-    background: var(--bg-white);
-    border: 1px solid var(--border-color);
-    overflow: hidden;
-}
-
-.table {
-    margin: 0;
-    border-collapse: collapse;
-}
-
-.table thead {
-    background: var(--bg-light);
-}
-
-.table thead th {
-    padding: 16px 20px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-dark);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    border-bottom: 2px solid var(--border-color);
-}
-
-.table tbody td {
-    padding: 16px 20px;
-    font-size: 14px;
-    color: var(--text-dark);
-    border-bottom: 1px solid var(--border-color);
-    vertical-align: middle;
-}
-
-.table tbody tr:hover {
-    background-color: var(--bg-light);
-}
-
-.table tbody tr:last-child td {
-    border-bottom: none;
-}
-
-/* Table Links */
-.table a {
-    color: var(--primary-color);
-    text-decoration: none;
-    font-weight: 500;
-}
-
-.table a:hover {
-    color: var(--primary-dark);
-    text-decoration: underline;
-}
-
-/* ====================================
-   BUTTONS
-   ==================================== */
-.btn {
-    height: 40px;
-    padding: 0 20px;
-    border: none;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.btn-primary {
-    background-color: var(--primary-color);
-    color: var(--bg-white);
-}
-
-.btn-primary:hover {
-    background-color: var(--primary-dark);
-}
-
-.btn-outline-info {
-    background: transparent;
-    border: 1px solid var(--info-color);
-    color: var(--info-color);
-}
-
-.btn-outline-info:hover {
-    background-color: var(--info-color);
-    color: var(--bg-white);
-}
-
-.btn i {
-    font-size: 16px;
-}
-
-/* Download Button Specific */
-.btn-outline-info a {
-    color: inherit;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-}
-
-/* ====================================
-   EMPTY STATE
-   ==================================== */
-.o_portal_my_doc_table p {
-    background: var(--bg-white);
-    border: 1px solid var(--border-color);
-    padding: 40px;
-    text-align: center;
-    font-size: 15px;
-    color: var(--text-light);
-    margin: 0;
-}
-
-/* ====================================
-   PRESCRIPTIONS SECTION
-   ==================================== */
-#my_prescriptions {
-    min-height: 50vh;
-}
-
-.pr_download {
-    cursor: pointer;
-}
-
-.pr_download:hover {
-    transform: scale(1.05);
-}
-
-/* ====================================
-   VACCINATION CARDS (Alternative)
-   ==================================== */
-.vaccination-card,
-.test-card,
-.op-card {
-    background: var(--bg-white);
-    border: 1px solid var(--border-color);
-    padding: 20px;
-    margin-bottom: 16px;
-    transition: all 0.2s ease;
-}
-
-.vaccination-card:hover,
-.test-card:hover,
-.op-card:hover {
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-}
-
-.vaccination-card h4,
-.test-card h4,
-.op-card h4 {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--text-dark);
-    margin: 0 0 12px 0;
-}
-
-.vaccination-card .info-row,
-.test-card .info-row,
-.op-card .info-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
-    border-bottom: 1px solid var(--bg-light);
-}
-
-.vaccination-card .info-row:last-child,
-.test-card .info-row:last-child,
-.op-card .info-row:last-child {
-    border-bottom: none;
-}
-
-.vaccination-card .info-label,
-.test-card .info-label,
-.op-card .info-label {
-    font-size: 13px;
-    color: var(--text-light);
-    font-weight: 500;
-}
-
-.vaccination-card .info-value,
-.test-card .info-value,
-.op-card .info-value {
-    font-size: 14px;
-    color: var(--text-dark);
-    font-weight: 500;
-}
-
-/* ====================================
-   STATUS BADGES
-   ==================================== */
-.badge-status {
-    display: inline-block;
-    padding: 4px 10px;
-    font-size: 12px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.badge-success {
-    background: #e8f5e9;
-    color: #2e7d32;
-}
-
-.badge-warning {
-    background: #fff3e0;
-    color: #f57c00;
-}
-
-.badge-danger {
-    background: #ffebee;
-    color: #c62828;
-}
-
-.badge-info {
-    background: #e3f2fd;
-    color: #1565c0;
-}
-
-/* ====================================
-   PORTAL SIDEBAR
-   ==================================== */
-.o_portal_sidebar {
-    background: var(--bg-white);
-    border: 1px solid var(--border-color);
-    padding: 20px;
-}
-
-.o_portal_sidebar h4 {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--text-dark);
-    margin: 0 0 16px 0;
-}
-
-.o_portal_sidebar .list-group-item {
-    border: none;
-    border-bottom: 1px solid var(--bg-light);
-    padding: 12px 0;
-    background: transparent;
-}
-
-.o_portal_sidebar .list-group-item:last-child {
-    border-bottom: none;
-}
-
-/* ====================================
-   RESPONSIVE
-   ==================================== */
-@media (max-width: 991px) {
-    .o_portal_docs {
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 16px;
-    }
-    
-    .o_portal_docs .col-3 {
-        flex: 0 0 60px;
-        max-width: 60px;
-    }
-    
-    .o_portal_docs img {
-        width: 48px;
-        height: 48px;
-    }
-    
-    .o_portal_docs h3 {
-        font-size: 16px;
-    }
-    
-    .page-header {
-        padding: 20px;
-    }
-    
-    .o_portal_searchbar {
-        padding: 16px 20px;
-    }
-}
-
-@media (max-width: 767px) {
-    .o_portal_docs {
-        grid-template-columns: 1fr;
-    }
-    
-    .page-header h3 {
-        font-size: 20px;
-    }
-    
-    .o_portal_searchbar h3 {
-        font-size: 18px;
-    }
-    
-    .table thead th,
-    .table tbody td {
-        padding: 12px 16px;
-        font-size: 13px;
-    }
-    
-    /* Make tables scrollable on mobile */
-    .table_wrapper {
-        overflow-x: auto;
-    }
-    
-    .table {
-        min-width: 600px;
-    }
-}
-
-@media (max-width: 575px) {
-    .o_portal_docs a {
-        padding: 20px;
-    }
-    
-    .o_portal_docs .col-9 {
-        padding-left: 16px;
-    }
-    
-    .page-header {
-        padding: 16px;
-    }
-    
-    .o_portal_searchbar {
-        padding: 16px;
-    }
-    
-    .table thead th,
-    .table tbody td {
-        padding: 10px 12px;
-    }
-}
-
-/* ====================================
-   ODOO PORTAL OVERRIDES
-   ==================================== */
-.o_portal_wrap {
-    min-height: calc(100vh - 200px);
-}
-
-.oe_structure {
-    padding: 0;
-}
-
-/* Remove default Odoo spacing */
-.o_portal .container {
-    max-width: 1200px;
-}
-
-/* ====================================
-   PRINT STYLES
-   ==================================== */
-@media print {
-    .o_portal_docs,
-    .o_portal_searchbar,
-    .breadcrumb {
-        display: none;
-    }
-    
-    .table_wrapper {
-        border: none;
-        box-shadow: none;
-    }
-    
-    .btn {
-        display: none;
-    }
-}
-
-/* ====================================
-   ACCESSIBILITY
-   ==================================== */
-.table a:focus,
-.btn:focus,
-.o_portal_docs a:focus {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
-}
-
-/* ====================================
-   ANIMATIONS
-   ==================================== */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.o_portal_docs a,
-.table tbody tr,
-.vaccination-card,
-.test-card,
-.op-card {
-    animation: fadeIn 0.3s ease;
-}
-
-/* ====================================
-   CUSTOM SCROLLBAR
-   ==================================== */
-.table_wrapper::-webkit-scrollbar {
-    height: 8px;
-}
-
-.table_wrapper::-webkit-scrollbar-track {
-    background: var(--bg-light);
-}
-
-.table_wrapper::-webkit-scrollbar-thumb {
-    background: var(--border-color);
-}
-
-.table_wrapper::-webkit-scrollbar-thumb:hover {
-    background: var(--text-light);
+/* ============================================================================
+   PORTAIL PATIENT — base_hospital_management
+   Design moderne : blanc dominant + violet Odoo. Responsive.
+   IMPORTANT : tous les selecteurs sont scopes sous .o_hms_portal
+   pour ne JAMAIS modifier le CSS d'Odoo en dehors du portail.
+   La police Inter est deja chargee par le coeur d'Odoo : pas de @import ici
+   (un @import au milieu d'un bundle concatene est invalide / a proscrire).
+   ============================================================================ */
+
+.o_hms_portal{
+  --hms-purple:#714B67;
+  --hms-purple-600:#5d3d55;
+  --hms-purple-50:#f6f0f4;
+  --hms-purple-100:#ece0e8;
+  --hms-accent:#8e5d80;
+  --hms-ink:#1f2430;
+  --hms-ink-soft:#5b6472;
+  --hms-line:#ecedf1;
+  --hms-bg:#f7f8fb;
+  --hms-green:#1f9d6b;--hms-green-bg:#e7f6ef;
+  --hms-amber:#c98a16;--hms-amber-bg:#fcf3e2;
+  --hms-blue:#2f6fb0;--hms-blue-bg:#e9f1fa;
+  --hms-indigo:#5b54c9;--hms-indigo-bg:#eef0fb;
+  --hms-radius:18px;
+  --hms-shadow:0 1px 2px rgba(20,20,40,.04),0 8px 24px rgba(20,20,40,.06);
+  --hms-shadow-lg:0 12px 40px rgba(113,75,103,.16);
+
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  color:var(--hms-ink);
+  -webkit-font-smoothing:antialiased;
+}
+.o_hms_portal *{box-sizing:border-box}
+.o_hms_portal a{text-decoration:none}
+
+/* ---------- NAV HORIZONTALE ---------- */
+.o_hms_portal .hms-nav{
+  display:flex;gap:6px;flex-wrap:wrap;
+  background:#fff;border:1px solid var(--hms-line);border-radius:14px;
+  padding:7px;box-shadow:var(--hms-shadow);margin-bottom:24px;
+}
+.o_hms_portal .hms-nav a{
+  display:inline-flex;align-items:center;gap:9px;
+  padding:9px 15px;border-radius:10px;font-weight:600;font-size:14px;
+  color:var(--hms-ink-soft);transition:.15s;white-space:nowrap;
+}
+.o_hms_portal .hms-nav a svg{width:18px;height:18px;stroke-width:1.9;flex-shrink:0}
+.o_hms_portal .hms-nav a:hover{background:var(--hms-purple-50);color:var(--hms-purple)}
+.o_hms_portal .hms-nav a.active{
+  background:linear-gradient(135deg,var(--hms-purple),var(--hms-accent));
+  color:#fff;box-shadow:var(--hms-shadow-lg);
+}
+.o_hms_portal .hms-nav a .hms-count{
+  font-size:12px;font-weight:700;background:#eef0f4;color:var(--hms-ink-soft);
+  padding:1px 8px;border-radius:999px;
+}
+.o_hms_portal .hms-nav a.active .hms-count{background:rgba(255,255,255,.22);color:#fff}
+/* Les libelles courts ne servent qu'a la barre du bas mobile */
+.o_hms_portal .hms-lbl-short{display:none}
+
+/* ---------- HERO ---------- */
+.o_hms_portal .hms-hero{
+  background:linear-gradient(120deg,var(--hms-purple),var(--hms-accent));
+  border-radius:22px;padding:28px 30px;color:#fff;position:relative;overflow:hidden;
+  box-shadow:var(--hms-shadow-lg);margin-bottom:24px;
+}
+.o_hms_portal .hms-hero::after{content:"";position:absolute;right:-40px;top:-40px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.08)}
+.o_hms_portal .hms-hero::before{content:"";position:absolute;right:60px;bottom:-70px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.06)}
+.o_hms_portal .hms-hero h1{font-size:24px;font-weight:700;letter-spacing:-.4px;margin:0;color:#fff}
+.o_hms_portal .hms-hero p{opacity:.92;margin:6px 0 0;font-size:14.5px;max-width:560px;position:relative}
+.o_hms_portal .hms-hero .hms-chip{
+  display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.16);
+  padding:6px 13px;border-radius:999px;font-size:12.5px;font-weight:600;margin-top:16px;position:relative;
+}
+.o_hms_portal .hms-hero .hms-chip svg{width:15px;height:15px;stroke-width:2}
+
+/* ---------- STATS ---------- */
+.o_hms_portal .hms-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.o_hms_portal .hms-stat{
+  background:#fff;border:1px solid var(--hms-line);border-radius:var(--hms-radius);
+  padding:22px;box-shadow:var(--hms-shadow);transition:.18s;position:relative;overflow:hidden;display:block;
+}
+.o_hms_portal .hms-stat:hover{transform:translateY(-3px);box-shadow:var(--hms-shadow-lg);border-color:var(--hms-purple-100)}
+.o_hms_portal .hms-stat .hms-ic{width:48px;height:48px;border-radius:13px;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.o_hms_portal .hms-stat .hms-ic svg{width:24px;height:24px;stroke-width:1.9}
+.o_hms_portal .hms-ic.v{background:var(--hms-green-bg);color:var(--hms-green)}
+.o_hms_portal .hms-ic.l{background:var(--hms-blue-bg);color:var(--hms-blue)}
+.o_hms_portal .hms-ic.c{background:var(--hms-amber-bg);color:var(--hms-amber)}
+.o_hms_portal .hms-ic.r{background:var(--hms-purple-50);color:var(--hms-purple)}
+.o_hms_portal .hms-ic.p{background:var(--hms-indigo-bg);color:var(--hms-indigo)}
+.o_hms_portal .hms-stat .hms-big{font-size:30px;font-weight:800;letter-spacing:-1px;line-height:1;color:var(--hms-ink)}
+.o_hms_portal .hms-stat .hms-lbl{color:var(--hms-ink-soft);font-size:14px;font-weight:500;margin-top:4px}
+.o_hms_portal .hms-stat .hms-go{position:absolute;right:20px;top:24px;color:#c7ccd6;transition:.18s}
+.o_hms_portal .hms-stat .hms-go svg{width:20px;height:20px;stroke-width:2}
+.o_hms_portal .hms-stat:hover .hms-go{color:var(--hms-purple);transform:translateX(3px)}
+
+/* ---------- SECTION CARD ---------- */
+.o_hms_portal .hms-section{
+  background:#fff;border:1px solid var(--hms-line);border-radius:var(--hms-radius);
+  box-shadow:var(--hms-shadow);margin-top:24px;overflow:hidden;
+}
+.o_hms_portal .hms-section .hms-head{
+  padding:20px 24px;border-bottom:1px solid var(--hms-line);
+  display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;
+}
+.o_hms_portal .hms-section .hms-head h3{font-size:16.5px;font-weight:700;margin:0}
+.o_hms_portal .hms-section .hms-head .hms-sub{font-size:13px;color:var(--hms-ink-soft);font-weight:500;margin-top:2px}
+.o_hms_portal .hms-section .hms-body{padding:6px 8px}
+
+/* ---------- PAGE TITLE ---------- */
+.o_hms_portal .hms-page-title{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:4px}
+.o_hms_portal .hms-page-title h2{font-size:22px;font-weight:700;letter-spacing:-.4px;display:flex;align-items:center;gap:11px;margin:0}
+.o_hms_portal .hms-page-title .hms-pic{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.o_hms_portal .hms-page-title .hms-pic svg{width:22px;height:22px;stroke-width:1.9}
+.o_hms_portal .hms-page-title p{color:var(--hms-ink-soft);font-size:14px;margin:3px 0 0}
+
+/* ---------- BOUTONS ---------- */
+.o_hms_portal .hms-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  background:linear-gradient(135deg,var(--hms-purple),var(--hms-accent));
+  color:#fff;border:none;padding:10px 17px;border-radius:11px;
+  font-family:inherit;font-weight:600;font-size:13.5px;cursor:pointer;
+  box-shadow:var(--hms-shadow-lg);transition:.15s;
+}
+.o_hms_portal .hms-btn:hover{filter:brightness(1.05);color:#fff}
+.o_hms_portal .hms-btn.ghost{background:#fff;color:var(--hms-purple);border:1px solid var(--hms-purple-100);box-shadow:none}
+.o_hms_portal .hms-btn.ghost:hover{background:var(--hms-purple-50)}
+.o_hms_portal .hms-btn.sm{padding:7px 13px;font-size:12.5px}
+.o_hms_portal .hms-btn svg{width:15px;height:15px;stroke-width:2}
+
+/* ---------- TABLE ---------- */
+.o_hms_portal .hms-tablewrap{width:100%;overflow-x:auto}
+.o_hms_portal table.hms-table{width:100%;border-collapse:collapse;min-width:520px}
+.o_hms_portal .hms-table thead th{
+  text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.5px;
+  color:#9aa1ad;font-weight:600;padding:13px 16px;
+}
+.o_hms_portal .hms-table tbody td{padding:15px 16px;border-top:1px solid var(--hms-line);font-size:14px;vertical-align:middle}
+.o_hms_portal .hms-table tbody tr{transition:.12s}
+.o_hms_portal .hms-table tbody tr:hover{background:var(--hms-purple-50)}
+.o_hms_portal .hms-ref{font-weight:700;color:var(--hms-ink)}
+.o_hms_portal .hms-muted{font-size:12.5px;color:var(--hms-ink-soft)}
+.o_hms_portal .hms-tar{text-align:right}
+.o_hms_portal .hms-tac{text-align:center}
+
+/* ---------- BADGES ---------- */
+.o_hms_portal .hms-badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 11px;border-radius:999px}
+.o_hms_portal .hms-badge.green{background:var(--hms-green-bg);color:var(--hms-green)}
+.o_hms_portal .hms-badge.blue{background:var(--hms-blue-bg);color:var(--hms-blue)}
+.o_hms_portal .hms-badge.amber{background:var(--hms-amber-bg);color:var(--hms-amber)}
+.o_hms_portal .hms-badge.purple{background:var(--hms-purple-50);color:var(--hms-purple)}
+.o_hms_portal .hms-badge.grey{background:#eef0f4;color:var(--hms-ink-soft)}
+
+/* ---------- ICONS CELLULE / FLEX ---------- */
+.o_hms_portal .hms-cellic{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.o_hms_portal .hms-cellic svg{width:18px;height:18px;stroke-width:1.9}
+.o_hms_portal .hms-flexcell{display:flex;align-items:center;gap:12px}
+.o_hms_portal .hms-link{color:var(--hms-purple);font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.o_hms_portal .hms-link:hover{text-decoration:underline}
+
+/* ---------- AVATAR ---------- */
+.o_hms_portal .hms-avatar{
+  width:42px;height:42px;border-radius:50%;
+  background:linear-gradient(135deg,var(--hms-purple),var(--hms-accent));
+  color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex-shrink:0;
+}
+
+/* ---------- CARTES CONSULTATION / RDV ---------- */
+.o_hms_portal .hms-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;padding:14px}
+.o_hms_portal .hms-ccard{border:1px solid var(--hms-line);border-radius:14px;padding:18px;transition:.15s}
+.o_hms_portal .hms-ccard:hover{border-color:var(--hms-purple-100);box-shadow:var(--hms-shadow)}
+.o_hms_portal .hms-ccard .hms-top{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.o_hms_portal .hms-ccard .hms-doc{font-weight:700;font-size:14.5px}
+.o_hms_portal .hms-ccard .hms-meta{display:flex;gap:18px;color:var(--hms-ink-soft);font-size:13px;margin-top:12px;flex-wrap:wrap}
+.o_hms_portal .hms-ccard .hms-meta span{display:flex;align-items:center;gap:6px}
+.o_hms_portal .hms-ccard .hms-meta svg{width:15px;height:15px;stroke-width:2;flex-shrink:0}
+.o_hms_portal .hms-presc{margin-top:14px;border-top:1px dashed var(--hms-line);padding-top:12px;font-size:13px;color:var(--hms-ink-soft)}
+
+/* ---------- ETAT VIDE ---------- */
+.o_hms_portal .hms-empty{padding:54px 20px;text-align:center}
+.o_hms_portal .hms-empty .hms-eic{width:74px;height:74px;border-radius:20px;background:var(--hms-purple-50);color:var(--hms-purple);display:flex;align-items:center;justify-content:center;margin:0 auto 18px}
+.o_hms_portal .hms-empty .hms-eic svg{width:34px;height:34px;stroke-width:1.7}
+.o_hms_portal .hms-empty h4{font-size:17px;font-weight:700;margin:0}
+.o_hms_portal .hms-empty p{color:var(--hms-ink-soft);font-size:14px;margin:6px auto 0;max-width:380px}
+
+/* ============================================================
+   SITE PUBLIC : page d'accueil + inscription
+   ============================================================ */
+.o_hms_portal.hms-landing{max-width:1100px;margin:0 auto;padding:28px 20px 60px}
+
+/* ---- HERO ---- */
+.o_hms_portal .hms-lhero{
+  display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;
+  padding:32px 0 40px;
+}
+.o_hms_portal .hms-lbadge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--hms-purple-50);color:var(--hms-purple);
+  padding:7px 14px;border-radius:999px;font-size:13px;font-weight:600;margin-bottom:20px;
+}
+.o_hms_portal .hms-lbadge svg{width:16px;height:16px;stroke-width:2}
+.o_hms_portal .hms-lhero-text h1{
+  font-size:44px;font-weight:800;line-height:1.08;letter-spacing:-1.2px;
+  margin:0;color:var(--hms-ink);text-wrap:balance;
+}
+.o_hms_portal .hms-lsub{font-size:16.5px;line-height:1.6;color:var(--hms-ink-soft);margin:18px 0 26px;max-width:520px}
+.o_hms_portal .hms-lbtns{display:flex;gap:12px;flex-wrap:wrap}
+.o_hms_portal .hms-btn.big{padding:14px 24px;font-size:15px;border-radius:13px}
+
+/* ---- Illustration telephone ---- */
+.o_hms_portal .hms-lhero-art{display:flex;justify-content:center}
+.o_hms_portal .hms-phone{
+  width:270px;background:#0f1117;border-radius:34px;padding:12px;
+  box-shadow:0 30px 60px rgba(113,75,103,.28);position:relative;
+}
+.o_hms_portal .hms-phone-notch{
+  position:absolute;top:12px;left:50%;transform:translateX(-50%);
+  width:110px;height:22px;background:#0f1117;border-radius:0 0 16px 16px;z-index:2;
+}
+.o_hms_portal .hms-phone-screen{background:var(--hms-bg);border-radius:24px;padding:16px;overflow:hidden}
+.o_hms_portal .hms-phone-hero{
+  background:linear-gradient(135deg,var(--hms-purple),var(--hms-accent));
+  border-radius:16px;padding:16px;color:#fff;display:flex;align-items:center;gap:12px;margin-bottom:12px;
+}
+.o_hms_portal .hms-phone-cross{width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center}
+.o_hms_portal .hms-phone-cross svg{width:22px;height:22px;stroke-width:2.4}
+.o_hms_portal .hms-phone-hi{font-weight:700;font-size:15px}
+.o_hms_portal .hms-phone-sub{font-size:12px;opacity:.85}
+.o_hms_portal .hms-phone-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.o_hms_portal .hms-phone-tile{
+  background:#fff;border:1px solid var(--hms-line);border-radius:13px;padding:12px;
+  font-size:11.5px;color:var(--hms-ink-soft);font-weight:600;
+}
+.o_hms_portal .hms-phone-tile span{display:block;font-size:22px;font-weight:800;color:var(--hms-ink);line-height:1;margin-bottom:3px}
+.o_hms_portal .hms-phone-tile.g span{color:var(--hms-green)}
+.o_hms_portal .hms-phone-tile.b span{color:var(--hms-blue)}
+.o_hms_portal .hms-phone-tile.a span{color:var(--hms-amber)}
+.o_hms_portal .hms-phone-tile.p span{color:var(--hms-purple)}
+.o_hms_portal .hms-phone-row{
+  margin-top:10px;background:#fff;border:1px solid var(--hms-line);border-radius:12px;
+  padding:11px 12px;font-size:11.5px;color:var(--hms-ink-soft);font-weight:600;display:flex;align-items:center;gap:8px;
+}
+.o_hms_portal .hms-phone-dot{width:9px;height:9px;border-radius:50%;background:var(--hms-green);flex-shrink:0}
+
+/* ---- Sections ---- */
+.o_hms_portal .hms-lsection{padding:44px 0}
+.o_hms_portal .hms-ltitle{font-size:29px;font-weight:800;letter-spacing:-.6px;text-align:center;margin:0;color:var(--hms-ink);text-wrap:balance}
+.o_hms_portal .hms-lintro{text-align:center;color:var(--hms-ink-soft);font-size:15.5px;margin:10px auto 30px;max-width:520px}
+.o_hms_portal .hms-features{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.o_hms_portal .hms-feature{
+  background:#fff;border:1px solid var(--hms-line);border-radius:var(--hms-radius);
+  padding:24px;box-shadow:var(--hms-shadow);transition:.18s;
+}
+.o_hms_portal .hms-feature:hover{transform:translateY(-3px);box-shadow:var(--hms-shadow-lg);border-color:var(--hms-purple-100)}
+.o_hms_portal .hms-feature .hms-ic{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;margin-bottom:15px}
+.o_hms_portal .hms-feature .hms-ic svg{width:23px;height:23px;stroke-width:1.9}
+.o_hms_portal .hms-feature h3{font-size:16.5px;font-weight:700;margin:0 0 6px}
+.o_hms_portal .hms-feature p{font-size:14px;line-height:1.55;color:var(--hms-ink-soft);margin:0}
+
+/* ---- Etapes ---- */
+.o_hms_portal .hms-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.o_hms_portal .hms-step{text-align:center;padding:0 10px}
+.o_hms_portal .hms-step-num{
+  width:52px;height:52px;border-radius:50%;margin:0 auto 14px;
+  background:linear-gradient(135deg,var(--hms-purple),var(--hms-accent));
+  color:#fff;font-size:22px;font-weight:800;display:flex;align-items:center;justify-content:center;
+  box-shadow:var(--hms-shadow-lg);
+}
+.o_hms_portal .hms-step h3{font-size:16.5px;font-weight:700;margin:0 0 6px}
+.o_hms_portal .hms-step p{font-size:14px;color:var(--hms-ink-soft);margin:0}
+
+/* ---- CTA ---- */
+.o_hms_portal .hms-cta{
+  background:linear-gradient(135deg,var(--hms-purple),var(--hms-accent));
+  border-radius:24px;padding:44px 30px;text-align:center;color:#fff;margin-top:20px;
+  box-shadow:var(--hms-shadow-lg);
+}
+.o_hms_portal .hms-cta h2{font-size:27px;font-weight:800;margin:0;color:#fff}
+.o_hms_portal .hms-cta p{opacity:.92;margin:8px 0 22px;font-size:15.5px}
+.o_hms_portal .hms-cta .hms-btn.ghost{background:#fff;color:var(--hms-purple);border:none}
+
+/* ---- Formulaire d'inscription ---- */
+.o_hms_portal.hms-authwrap{max-width:460px;margin:0 auto;padding:40px 20px 60px}
+.o_hms_portal .hms-authcard{
+  background:#fff;border:1px solid var(--hms-line);border-radius:22px;
+  padding:32px 28px;box-shadow:var(--hms-shadow-lg);
+}
+.o_hms_portal .hms-auth-head{text-align:center;margin-bottom:22px}
+.o_hms_portal .hms-auth-cross{
+  width:56px;height:56px;border-radius:16px;margin:0 auto 14px;
+  background:linear-gradient(135deg,var(--hms-purple),var(--hms-accent));
+  color:#fff;display:flex;align-items:center;justify-content:center;
+}
+.o_hms_portal .hms-auth-cross svg{width:30px;height:30px;stroke-width:2.4}
+.o_hms_portal .hms-auth-head h1{font-size:23px;font-weight:800;margin:0;letter-spacing:-.4px}
+.o_hms_portal .hms-auth-head p{color:var(--hms-ink-soft);font-size:14px;margin:6px 0 0}
+.o_hms_portal .hms-form{display:flex;flex-direction:column;gap:15px}
+.o_hms_portal .hms-field{display:flex;flex-direction:column;gap:6px}
+.o_hms_portal .hms-field-row{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.o_hms_portal .hms-field label{font-size:13px;font-weight:600;color:var(--hms-ink)}
+.o_hms_portal .hms-field input{
+  border:1px solid var(--hms-line);border-radius:11px;padding:11px 13px;
+  font-family:inherit;font-size:14.5px;color:var(--hms-ink);background:#fff;transition:.15s;
+}
+.o_hms_portal .hms-field input:focus{outline:none;border-color:var(--hms-purple);box-shadow:0 0 0 3px var(--hms-purple-50)}
+.o_hms_portal .hms-err{
+  display:flex;align-items:center;gap:9px;background:#fdecec;color:#b42323;
+  border-radius:11px;padding:11px 14px;font-size:13.5px;font-weight:500;margin-bottom:16px;
+}
+.o_hms_portal .hms-err svg{width:18px;height:18px;stroke-width:2;flex-shrink:0}
+.o_hms_portal .hms-auth-foot{text-align:center;font-size:14px;color:var(--hms-ink-soft);margin:18px 0 0}
+.o_hms_portal .hms-auth-foot a{color:var(--hms-purple);font-weight:600}
+
+/* ---------- RESPONSIVE ---------- */
+@media(max-width:992px){
+  .o_hms_portal .hms-stats{grid-template-columns:repeat(2,1fr)}
+  .o_hms_portal .hms-cards{grid-template-columns:1fr}
+  /* Landing : hero empile, illustration en dessous */
+  .o_hms_portal .hms-lhero{grid-template-columns:1fr;gap:24px;text-align:center}
+  .o_hms_portal .hms-lsub{margin-left:auto;margin-right:auto}
+  .o_hms_portal .hms-lbtns{justify-content:center}
+  .o_hms_portal .hms-lhero-text h1{font-size:38px}
+  .o_hms_portal .hms-features{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:640px){
+  .o_hms_portal .hms-hero{padding:22px 20px}
+  .o_hms_portal .hms-hero h1{font-size:21px}
+  .o_hms_portal .hms-page-title{align-items:flex-start}
+  .o_hms_portal .hms-section .hms-head{flex-direction:column;align-items:flex-start}
+
+  /* Landing mobile : une colonne, titres reduits */
+  .o_hms_portal .hms-lhero-text h1{font-size:31px}
+  .o_hms_portal .hms-lsub{font-size:15px}
+  .o_hms_portal .hms-features{grid-template-columns:1fr}
+  .o_hms_portal .hms-steps{grid-template-columns:1fr;gap:26px}
+  .o_hms_portal .hms-ltitle{font-size:24px}
+  .o_hms_portal .hms-btn.big{width:100%;justify-content:center}
+  .o_hms_portal .hms-field-row{grid-template-columns:1fr}
+
+  /* === CARTES CARREES (grille facon tuiles d'application) === */
+  .o_hms_portal .hms-stats{grid-template-columns:repeat(2,1fr);gap:12px}
+  .o_hms_portal .hms-stat{
+    aspect-ratio:1/1;padding:16px;
+    display:flex;flex-direction:column;justify-content:center;align-items:flex-start;
+  }
+  .o_hms_portal .hms-stat .hms-ic{margin-bottom:12px}
+  .o_hms_portal .hms-stat .hms-big{font-size:32px}
+  .o_hms_portal .hms-stat .hms-lbl{font-size:13px;line-height:1.25}
+  .o_hms_portal .hms-stat .hms-go{top:16px;right:16px}
+  /* 5 tuiles : la derniere, seule sur sa ligne, s'etale en largeur */
+  .o_hms_portal .hms-stat:last-child:nth-child(odd){
+    grid-column:1 / -1;aspect-ratio:auto;flex-direction:row;align-items:center;gap:14px;
+  }
+  .o_hms_portal .hms-stat:last-child:nth-child(odd) .hms-ic{margin-bottom:0}
+}
+/* ---------- TELEPHONE ( <= 480px ) ---------- */
+@media(max-width:480px){
+  /* Le portail Odoo ajoute des marges laterales : on les reduit sur mobile */
+  .o_hms_portal{padding-left:2px;padding-right:2px}
+  /* Titres et hero plus compacts */
+  .o_hms_portal .hms-hero{padding:18px 16px;border-radius:16px}
+  .o_hms_portal .hms-hero h1{font-size:19px}
+  .o_hms_portal .hms-hero p{font-size:13.5px}
+  .o_hms_portal .hms-page-title h2{font-size:19px}
+  .o_hms_portal .hms-page-title .hms-pic{width:34px;height:34px;border-radius:10px}
+  .o_hms_portal .hms-page-title .hms-pic svg{width:19px;height:19px}
+  /* Cartes stats et sections : moins de rembourrage */
+  .o_hms_portal .hms-stat{padding:18px}
+  .o_hms_portal .hms-stat .hms-big{font-size:26px}
+  .o_hms_portal .hms-section .hms-head{padding:16px 16px}
+  .o_hms_portal .hms-section .hms-body{padding:4px 4px}
+  /* Cartes consultation / RDV plein largeur, texte serre */
+  .o_hms_portal .hms-cards{padding:10px;gap:12px}
+  .o_hms_portal .hms-ccard{padding:15px}
+  .o_hms_portal .hms-ccard .hms-meta{gap:10px;font-size:12.5px}
+  /* Les boutons prennent toute la largeur : plus faciles au pouce */
+  .o_hms_portal .hms-btn{width:100%;justify-content:center;padding:12px 16px}
+  .o_hms_portal .hms-btn.sm{width:auto;padding:8px 13px}
+  /* Cellules de tableau plus aerees verticalement */
+  .o_hms_portal .hms-table tbody td{padding:12px 12px}
+  .o_hms_portal .hms-table thead th{padding:11px 12px}
+}
+
+/* ============================================================================
+   SIDEBAR (desktop) + TIROIR BURGER (mobile)
+   - Desktop : .o_hms_portal.hms-shell devient un conteneur flex
+     [ .hms-side | .hms-main ].
+   - Mobile (<= 991px) : .hms-side devient un tiroir hors-ecran, ouvert par
+     la case a cocher #hms_drawer_cb (CSS pur, aucun JS).
+   ============================================================================ */
+.o_hms_portal.hms-shell{display:flex;align-items:flex-start;gap:26px}
+
+/* Elements de pilotage caches sur desktop */
+.o_hms_portal .hms-drawer-cb{position:absolute;width:0;height:0;opacity:0;pointer-events:none}
+.o_hms_portal .hms-topbar{display:none}
+.o_hms_portal .hms-scrim{display:none}
+.o_hms_portal .hms-side-close{display:none}
+
+/* La barre laterale */
+.o_hms_portal .hms-side{
+  flex:0 0 236px;width:236px;align-self:flex-start;
+  position:sticky;top:16px;max-height:calc(100vh - 32px);overflow-y:auto;
+  background:#fff;border:1px solid var(--hms-line);border-radius:var(--hms-radius);
+  box-shadow:var(--hms-shadow);padding:16px 12px;
+  display:flex;flex-direction:column;gap:3px;
+}
+.o_hms_portal .hms-side-brand{display:flex;align-items:center;gap:10px;padding:4px 8px 14px;font-weight:800;font-size:15px;color:var(--hms-ink)}
+.o_hms_portal .hms-side-logo{width:32px;height:32px;flex-shrink:0;border-radius:9px;display:flex;align-items:center;justify-content:center;color:#fff;background:linear-gradient(135deg,var(--hms-purple),var(--hms-accent))}
+.o_hms_portal .hms-side-logo svg{width:18px;height:18px;stroke-width:2}
+.o_hms_portal .hms-side-title{line-height:1.15}
+.o_hms_portal .hms-side-close{margin-left:auto;width:30px;height:30px;flex-shrink:0;border-radius:8px;align-items:center;justify-content:center;color:var(--hms-ink-soft);cursor:pointer}
+.o_hms_portal .hms-side-close svg{width:20px;height:20px;stroke-width:2}
+.o_hms_portal .hms-side-close:hover{background:var(--hms-purple-50);color:var(--hms-purple)}
+
+.o_hms_portal .hms-side-lbl{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--hms-ink-soft);padding:10px 10px 6px}
+.o_hms_portal .hms-side-links{display:flex;flex-direction:column;gap:3px}
+.o_hms_portal .hms-side-a{display:flex;align-items:center;gap:12px;padding:10px 11px;border-radius:11px;font-weight:600;font-size:14px;color:var(--hms-ink-soft);transition:.15s}
+.o_hms_portal .hms-side-a .hms-side-ic{flex-shrink:0;display:flex}
+.o_hms_portal .hms-side-a svg{width:19px;height:19px;stroke-width:1.9}
+.o_hms_portal .hms-side-a:hover{background:var(--hms-purple-50);color:var(--hms-purple)}
+.o_hms_portal .hms-side-a.active{background:linear-gradient(135deg,var(--hms-purple),var(--hms-accent));color:#fff;box-shadow:0 8px 18px -10px var(--hms-purple)}
+.o_hms_portal .hms-side-badge{margin-left:auto;min-width:22px;text-align:center;font-size:11px;font-weight:700;background:var(--hms-purple-50);color:var(--hms-purple);padding:1px 8px;border-radius:999px}
+.o_hms_portal .hms-side-a.active .hms-side-badge{background:rgba(255,255,255,.24);color:#fff}
+
+.o_hms_portal .hms-side-foot{margin-top:12px;padding-top:12px;border-top:1px solid var(--hms-line);display:flex;align-items:center;gap:8px}
+.o_hms_portal .hms-side-foot-link{flex:1;display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:11px;font-weight:600;font-size:13.5px;color:var(--hms-ink-soft)}
+.o_hms_portal .hms-side-foot-link svg{width:18px;height:18px;stroke-width:1.9;flex-shrink:0}
+.o_hms_portal .hms-side-foot-link:hover{background:var(--hms-purple-50);color:var(--hms-purple)}
+.o_hms_portal .hms-side-foot-logout{width:38px;height:38px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-radius:11px;color:var(--hms-ink-soft)}
+.o_hms_portal .hms-side-foot-logout svg{width:18px;height:18px;stroke-width:1.9}
+.o_hms_portal .hms-side-foot-logout:hover{background:#fdecec;color:#c0563f}
+
+/* La zone de contenu a droite de la sidebar */
+.o_hms_portal .hms-main{flex:1 1 auto;min-width:0}
+
+/* ---- Mobile : la sidebar devient un tiroir coulissant ---- */
+@media(max-width:991.98px){
+  .o_hms_portal.hms-shell{display:block}
+
+  .o_hms_portal .hms-topbar{
+    display:flex;align-items:center;gap:12px;margin-bottom:18px;
+    background:#fff;border:1px solid var(--hms-line);border-radius:14px;
+    padding:10px 12px;box-shadow:var(--hms-shadow);
+  }
+  .o_hms_portal .hms-burger{width:40px;height:40px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-radius:10px;background:var(--hms-purple-50);color:var(--hms-purple);cursor:pointer}
+  .o_hms_portal .hms-burger svg{width:22px;height:22px;stroke-width:2}
+  .o_hms_portal .hms-topbar-title{font-weight:800;font-size:15px;color:var(--hms-ink)}
+
+  .o_hms_portal .hms-scrim{
+    display:block;position:fixed;inset:0;z-index:1049;
+    background:rgba(31,36,48,.45);opacity:0;pointer-events:none;transition:opacity .3s;
+  }
+  .o_hms_portal .hms-side{
+    position:fixed;top:0;left:0;bottom:0;z-index:1050;
+    width:284px;max-width:86vw;max-height:100vh;border-radius:0;border-width:0 1px 0 0;
+    transform:translateX(-105%);transition:transform .32s cubic-bezier(.4,0,.2,1);
+  }
+  .o_hms_portal .hms-side-close{display:flex}
+  .o_hms_portal .hms-drawer-cb:checked ~ .hms-side{transform:translateX(0)}
+  .o_hms_portal .hms-drawer-cb:checked ~ .hms-scrim{opacity:1;pointer-events:auto}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .o_hms_portal .hms-side,.o_hms_portal .hms-scrim{transition:none}
 }

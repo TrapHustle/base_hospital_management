@@ -13,7 +13,7 @@
                 <field name="op_date"/>
                 <field name="reason"/>
                 <field name="state" widget='badge'
-                       decoration-success="state=='invoiced'"
+                       decoration-success="state in ('done','invoice')"
                        decoration-danger="state=='cancel'"
                        decoration-warning="state=='draft'"
                        decoration-info="state=='op'"/>
@@ -27,6 +27,14 @@
         <field name="arch" type="xml">
             <form>
                 <header>
+                    <button name="action_join_video_call"
+                            string="Rejoindre la visio (Jitsi)" type="object"
+                            class="oe_highlight" icon="fa-video-camera"
+                            invisible="not is_teleconsultation or state in ('invoice','cancel')"/>
+                    <button name="action_join_internal_video_call"
+                            string="Rejoindre la visio (interne)" type="object"
+                            class="oe_highlight" icon="fa-video-camera"
+                            invisible="not is_teleconsultation or state in ('invoice','cancel')"/>
                     <button name="action_confirm" string="Confirm"
                             type="object" class="oe_highlight" invisible="state != 'draft'"
                             groups="base_hospital_management.base_hospital_management_group_manager,base_hospital_management.base_hospital_management_group_doctor,base_hospital_management.base_hospital_management_group_receptionist,base_hospital_management.base_hospital_management_group_nurse"/>
@@ -34,6 +42,10 @@
                             type="object" class="oe_highlight"
                             invisible="state not in ('op','inpatient','invoice')"
                             groups="base_hospital_management.base_hospital_management_group_manager,base_hospital_management.base_hospital_management_group_doctor,base_hospital_management.base_hospital_management_group_receptionist,base_hospital_management.base_hospital_management_group_nurse"/>
+                    <button name="action_close_consultation"
+                            string="Clôturer la consultation"
+                            class="oe_highlight" invisible="state != 'op'" type="object"
+                            groups="base_hospital_management.base_hospital_management_group_manager,base_hospital_management.base_hospital_management_group_doctor,base_hospital_management.base_hospital_management_group_nurse"/>
                     <button name="action_convert_to_inpatient"
                             string="Convert to Inpatient"
                             class="oe_highlight" invisible="state !='op'" type="object"
@@ -50,7 +62,7 @@
                             invisible="state != 'op'" type="object"
                             groups="base_hospital_management.base_hospital_management_group_manager,base_hospital_management.base_hospital_management_group_receptionist,base_hospital_management.base_hospital_management_group_doctor,base_hospital_management.base_hospital_management_group_nurse"/>
                     <field name="state" widget="statusbar"
-                           statusbar_visible="op,invoice"/>
+                           statusbar_visible="op,done,invoice"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
@@ -83,13 +95,58 @@
                                    readonly="state in ('invoice','cancel')"/>
                             <field name="slot" invisible="state not in ('op','inpatient','invoice')"
                                    readonly="state in ('invoice','cancel')"  widget="float_time"/>
+                            <field name="is_teleconsultation"
+                                   readonly="state in ('invoice','cancel')"/>
+                            <field name="video_call_url" widget="url"
+                                   invisible="not is_teleconsultation"/>
                             <field name="test_count" invisible="1"/>
                         </group>
+                    </group>
+                    <group string="⚠ Antécédents"
+                           invisible="not patient_id">
+                        <field name="patient_risk"
+                               placeholder="Aucun risque renseigné"/>
                     </group>
                     <group>
                         <field name="reason"/>
                     </group>
                     <notebook invisible="state not in ('op','inpatient','invoice')">
+                        <page name="antecedents" string="Antécédents">
+                            <group>
+                                <group>
+                                    <field name="patient_family_doctor_id"/>
+                                </group>
+                                <group>
+                                    <field name="patient_insurance_id"/>
+                                </group>
+                            </group>
+                            <separator string="Antécédents familiaux"/>
+                            <field name="patient_family_ids" nolabel="1">
+                                <list create="false" delete="false">
+                                    <field name="name"/>
+                                    <field name="relation"/>
+                                    <field name="age"/>
+                                    <field name="deceased"/>
+                                </list>
+                            </field>
+                            <separator string="Ordonnances passées"/>
+                            <field name="patient_prescription_ids" nolabel="1">
+                                <list create="false" delete="false">
+                                    <field name="medicine_id"/>
+                                    <field name="no_intakes"/>
+                                    <field name="time"/>
+                                    <field name="quantity"/>
+                                </list>
+                            </field>
+                            <separator string="Examens passés"/>
+                            <field name="patient_lab_test_ids" nolabel="1">
+                                <list create="false" delete="false">
+                                    <field name="test_id"/>
+                                    <field name="date"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
                         <page name="Prescription" string="Prescription">
                             <field name="prescription_ids"
                                    readonly="state in ('invoice','cancel')"

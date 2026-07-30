@@ -78,6 +78,22 @@
                             </div>
                             <div class="row">
                                 <div class="mb-3 col-8">
+                                    <div class="form-check">
+                                        <input class="form-check-input"
+                                               type="checkbox"
+                                               name="teleconsultation"
+                                               id="teleconsultation"
+                                               value="1"/>
+                                        <label class="form-check-label"
+                                               for="teleconsultation">
+                                            Téléconsultation (rendez-vous en
+                                            visioconférence)
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="mb-3 col-8">
                                     <button type="submit"
                                             class="btn btn-primary">
                                         Submit

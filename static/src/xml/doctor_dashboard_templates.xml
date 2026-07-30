@@ -22,7 +22,7 @@
             <div class="dashboard-container">
                 <!-- Welcome Section -->
                 <div class="welcome-section">
-                    <h1>Welcome, <t t-esc="state.user_name || 'Doctor'"/></h1>
+                    <h1>Bienvenue, <t t-esc="state.user_name || 'Docteur'"/></h1>
                     <p>Voici votre tableau de bord médical pour aujourd'hui</p>
                 </div>
 
@@ -64,12 +64,12 @@
                     </div>
 
                     <div class="stat-card allocations">
-                        <div class="stat-icon">⏰</div>
+                        <div class="stat-icon">🗓️</div>
                         <div class="stat-content">
-                            <h3 t-esc="state.stats.active_allocations || 0"/>
-                            <p>Allocations Actives</p>
+                            <h3 t-esc="state.stats.appointments_today || 0"/>
+                            <p>Rendez-vous Aujourd'hui</p>
                             <div class="trend up">
-                                <t t-esc="state.stats.total_slots || 0"/> slots disponibles
+                                dont <t t-esc="state.stats.teleconsultations_today || 0"/> téléconsultation(s)
                             </div>
                         </div>
                     </div>
@@ -109,56 +109,49 @@
                     </button>
                 </div>
 
-                <!-- Charts Grid -->
-                <div class="charts-grid">
-                    <!-- Consultations par mois -->
-                    <div class="chart-card">
-                        <h3>📊 Consultations par Mois</h3>
-                        <div class="chart-container">
-                            <canvas t-ref="consultationsChart"/>
-                        </div>
-                    </div>
-
-                    <!-- Répartition Admissions -->
-                    <div class="chart-card">
-                        <h3>🏥 Types d'Admission</h3>
-                        <div class="chart-container">
-                            <canvas t-ref="admissionsChart"/>
-                        </div>
-                    </div>
-
-                    <!-- Admissions par jour -->
-                    <div class="chart-card">
-                        <h3>📈 Admissions par Jour</h3>
-                        <div class="chart-container">
-                            <canvas t-ref="weeklyChart"/>
-                        </div>
-                    </div>
-
-                    <!-- Charge de travail -->
-                    <div class="chart-card">
-                        <h3>⏰ Charge de Travail</h3>
-                        <div class="chart-container">
-                            <canvas t-ref="workloadChart"/>
+                <!-- Patient queue (arrival order) -->
+                <div class="recent-activity" style="margin-bottom: 24px;">
+                    <h3 class="recent-activity__title">🩺 Dossiers patients par ordre d'arrivée</h3>
+                    <div class="activity-list">
+                        <t t-foreach="state.queue" t-as="qpat" t-key="qpat.id">
+                            <div class="activity-item activity-item--consultation"
+                                 style="cursor: pointer;"
+                                 t-on-click="() => this.openConsultation(qpat.id)">
+                                <div class="activity-icon activity-icon--consultation">
+                                    <t t-esc="qpat.order"/>
+                                </div>
+                                <div class="activity-content">
+                                    <span class="activity-title">
+                                        <t t-esc="qpat.patient_seq"/> — <t t-esc="qpat.patient_name"/>
+                                        <t t-if="qpat.is_teleconsultation"> 📹</t>
+                                    </span>
+                                    <span class="activity-time" t-esc="qpat.reason"/>
+                                </div>
+                                <div class="activity-icon">▶</div>
+                            </div>
+                        </t>
+                        <div t-if="!state.queue || state.queue.length === 0" class="no-activity">
+                            <p>Aucun patient en attente</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Recent Activities -->
                 <div class="recent-activity">
-                    <h3>🔔 Activités Récentes</h3>
+                    <h3 class="recent-activity__title">🔔 Activités Récentes</h3>
                     <div class="activity-list">
                         <t t-foreach="state.recent_activities" t-as="activity" t-key="activity.id">
-                            <div class="activity-item" t-att-class="activity.type">
-                                <div class="activity-icon" t-att-class="activity.type">
+                            <div t-attf-class="activity-item activity-item--{{activity.type}}">
+                                <div t-attf-class="activity-icon activity-icon--{{activity.type}}">
                                     <t t-if="activity.type === 'consultation'">💉</t>
                                     <t t-elif="activity.type === 'admission'">🏥</t>
                                     <t t-elif="activity.type === 'discharge'">✅</t>
                                     <t t-elif="activity.type === 'surgery'">⚕️</t>
+                                    <t t-else="">🔔</t>
                                 </div>
                                 <div class="activity-content">
-                                    <div class="title" t-esc="activity.title"/>
-                                    <div class="time" t-esc="activity.time"/>
+                                    <span class="activity-title" t-esc="activity.title"/>
+                                    <span class="activity-time" t-esc="activity.time"/>
                                 </div>
                             </div>
                         </t>
