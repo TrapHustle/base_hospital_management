@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- =============================================================== -->
+    <!--  BULLETIN DE TRANSFERT DU PATIENT - format CSF Medical Center   -->
+    <!--  Reproduit le carnet papier : constantes a l'admission ET a la  -->
+    <!--  sortie, diagnostic retenu, structure sanitaire d'accueil.      -->
+    <!-- =============================================================== -->
+    <record id="action_report_transfert" model="ir.actions.report">
+        <field name="name">Bulletin de transfert</field>
+        <field name="model">hospital.transfer</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">base_hospital_management.transfert_report</field>
+        <field name="report_file">base_hospital_management.transfert_report</field>
+        <field name="binding_model_id" ref="model_hospital_transfer"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="base_hospital_management.paperformat_prescription"/>
+    </record>
+
+    <!-- Bloc reutilisable : une ligne "Libelle : valeur" soulignee -->
+    <template id="fiche_ligne">
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 9px; font-size: 12.5px;">
+            <tr>
+                <td t-attf-style="white-space: nowrap; vertical-align: bottom; font-weight: bold; width: #{ligne_w or 150}px;">
+                    <t t-esc="ligne_lbl"/>
+                </td>
+                <td style="border-bottom: 1px solid #1c1c1c; vertical-align: bottom; padding: 0 6px 2px;">
+                    <t t-esc="ligne_val or ''"/>
+                </td>
+            </tr>
+        </table>
+    </template>
+
+    <template id="transfert_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.basic_layout">
+                    <t t-set="p" t-value="o.patient_id"/>
+                    <t t-set="nom" t-value="(p.name or '').split(' ', 1)"/>
+                    <div class="page" style="font-family: Arial, Helvetica, sans-serif; color: #1c1c1c; font-size: 12.5px;">
+
+                        <!-- ============ EN-TÊTE CSF ============ -->
+                        <t t-call="base_hospital_management.csf_report_header"/>
+
+                        <!-- ============ TITRE ============ -->
+                        <div style="text-align: center; margin: 16px 0 14px;">
+                            <span style="font-size: 17px; font-weight: bold; letter-spacing: 1.5px;">BULLETIN DE TRANSFERT DU PATIENT</span>
+                        </div>
+
+                        <!-- ============ IDENTITÉ ============ -->
+                        <t t-call="base_hospital_management.fiche_ligne">
+                            <t t-set="ligne_lbl">NOM :</t>
+                            <t t-set="ligne_val" t-value="nom[0] if nom else ''"/>
+                            <t t-set="ligne_w" t-value="90"/>
+                        </t>
+                        <t t-call="base_hospital_management.fiche_ligne">
+                            <t t-set="ligne_lbl">PRENOM :</t>
+                            <t t-set="ligne_val" t-value="nom[1] if len(nom) &gt; 1 else ''"/>
+                            <t t-set="ligne_w" t-value="90"/>
+                        </t>
+                        <t t-call="base_hospital_management.fiche_ligne">
+                            <t t-set="ligne_lbl">AGE :</t>
+                            <t t-set="ligne_val" t-value="'%s ans' % o.patient_age if o.patient_age else ''"/>
+                            <t t-set="ligne_w" t-value="90"/>
+                        </t>
+                        <t t-call="base_hospital_management.fiche_ligne">
+                            <t t-set="ligne_lbl">VENU POUR :</t>
+                            <t t-set="ligne_val" t-value="o.venu_pour or ''"/>
+                            <t t-set="ligne_w" t-value="120"/>
+                        </t>
+
+                        <!-- ============ ADMISSION ============ -->
+                        <t t-call="base_hospital_management.fiche_ligne">
+                            <t t-set="ligne_lbl">ADMIS AU CENTRE LE :</t>
+                            <t t-set="ligne_val" t-value="o.admission_datetime.strftime('%d/%m/%Y à %Hh%M') if o.admission_datetime else ''"/>
+                            <t t-set="ligne_w" t-value="185"/>
+                        </t>
+                        <t t-call="base_hospital_management.fiche_ligne">
+                            <t t-set="ligne_lbl">MOTIF TRANSFERT :</t>
+                            <t t-set="ligne_val" t-value="o.motif_transfert or ''"/>
+                            <t t-set="ligne_w" t-value="160"/>
+                        </t>
+
+                        <div style="font-weight: bold; margin: 12px 0 3px;">RESUME ANAMNESE :</div>
+                        <div style="border-bottom: 1px dotted #1c1c1c; min-height: 20px; padding-bottom: 3px;">
+                            <t t-esc="o.anamnese or ''"/>
+                        </div>
+                        <div style="border-bottom: 1px dotted #1c1c1c; height: 20px;"/>
+
+                        <div style="font-weight: bold; margin: 12px 0 3px;">RESUME EXAMEN CLINIQUE A L'ADMISSION :</div>
+                        <div style="border-bottom: 1px dotted #1c1c1c; min-height: 20px; padding-bottom: 3px;">
+                            <t t-esc="o.examen_admission or ''"/>
+                        </div>
+
+                        <!-- Constantes à l'admission -->
+                        <div style="margin-top: 10px;">
+                            <b>Etat général :</b>
+                            <span style="border-bottom: 1px dotted #1c1c1c; padding: 0 10px;"><t t-esc="o.etat_general_in or ''"/></span>
+                        </div>
+                        <div style="margin-top: 8px;">
+                            <b>Constantes :</b>
+                            T <span style="border-bottom: 1px dotted #1c1c1c; padding: 0 8px;"><t t-if="o.temperature_in"><t t-esc="o.temperature_in"/> °C</t></span> ;
+                            TA <span style="border-bottom: 1px dotted #1c1c1c; padding: 0 8px;"><t t-esc="o.ta_in or ''"/></span> mmHg ;
+                            FC <span style="border-bottom: 1px dotted #1c1c1c; padding: 0 8px;"><t t-if="o.fc_in"><t t-esc="o.fc_in"/></t></span> batts/mn ;
+                            FR <span style="border-bottom: 1px dotted #1c1c1c; padding: 0 8px;"><t t-if="o.fr_in"><t t-esc="o.fr_in"/></t></span> cycles/mn ;
+                            SpO2 <span style="border-bottom: 1px dotted #1c1c1c; padding: 0 8px;"><t t-if="o.spo2_in"><t t-esc="o.spo2_in"/></t></span> %
+                        </div>
+
+                        <!-- ============ PRISE EN CHARGE ============ -->
+                        <div style="font-weight: bold; margin: 14px 0 3px;">DIAGNOSTIC RETENU :</div>
+                        <div style="border-bottom: 1px dotted #1c1c1c; min-height: 20px; padding-bottom: 3px;">
+                            <t t-esc="o.diagnostic or ''"/>
+                        </div>
+                        <div style="font-weight: bold; margin: 12px 0 3px;">EXAMEN REALISE :</div>
+                        <div style="border-bottom: 1px dotted #1c1c1c; min-height: 20px; padding-bottom: 3px;">
+                            <t t-esc="o.examen_realise or ''"/>
+                        </div>
+                        <div style="font-weight: bold; margin: 12px 0 3px;">TRAITEMENT ADMINISTRE :</div>
+                        <div style="border-bottom: 1px dotted #1c1c1c; min-height: 20px; padding-bottom: 3px;">
+                            <t t-esc="o.traitement or ''"/>
+                        </div>
+
+                        <!-- ============ SORTIE ============ -->
+                        <div style="font-weight: bold; margin: 16px 0 6px;">
+                            ETAT DU PATIENT A SA SORTIE DU CENTRE : date
+                            <span style="border-bottom: 1px dotted #1c1c1c; padding: 0 10px; font-weight: normal;">
+                                <t t-esc="o.exit_datetime.strftime('%d/%m/%Y') if o.exit_datetime else ''"/>
+                            </span>
+                            , à heure
+                            <span style="border-bottom: 1px dotted #1c1c1c; padding: 0 10px; font-weight: normal;">
+                                <t t-esc="o.exit_datetime.strftime('%Hh%M') if o.exit_datetime else ''"/>
+                            </span>
+                        </div>
+                        <div>
+                            <b>Etat général :</b>
+                            <span style="border-bottom: 1px dotted #1c1c1c; padding: 0 10px;"><t t-esc="o.etat_general_out or ''"/></span>
+                        </div>
+                        <div style="margin-top: 8px;">
+                            <b>Constantes :</b>
+                            T <span style="border-bottom: 1px dotted #1c1c1c; padding: 0 8px;"><t t-if="o.temperature_out"><t t-esc="o.temperature_out"/> °C</t></span> ;
+                            TA <span style="border-bottom: 1px dotted #1c1c1c; padding: 0 8px;"><t t-esc="o.ta_out or ''"/></span> mmHg ;
+                            FC <span style="border-bottom: 1px dotted #1c1c1c; padding: 0 8px;"><t t-if="o.fc_out"><t t-esc="o.fc_out"/></t></span> batts/mn ;
+                            FR <span style="border-bottom: 1px dotted #1c1c1c; padding: 0 8px;"><t t-if="o.fr_out"><t t-esc="o.fr_out"/></t></span> cycles/mn ;
+                            SpO2 <span style="border-bottom: 1px dotted #1c1c1c; padding: 0 8px;"><t t-if="o.spo2_out"><t t-esc="o.spo2_out"/></t></span> %
+                        </div>
+
+                        <div style="font-weight: bold; margin: 16px 0 3px;">STRUCTURE SANITAIRE ACCUEILLANT LE PATIENT</div>
+                        <div style="border-bottom: 1px dotted #1c1c1c; min-height: 20px; padding-bottom: 3px;">
+                            <t t-esc="o.structure_accueil or ''"/>
+                        </div>
+
+                        <!-- ============ SIGNATURE ============ -->
+                        <div style="margin-top: 34px; text-align: right; font-weight: bold;">
+                            SIGNATURE ET CACHET DU MEDECIN
+                        </div>
+                        <div style="text-align: right; font-size: 11.5px; margin-top: 4px;">
+                            <t t-esc="o.doctor_id.name or ''"/>
+                        </div>
+                        <t t-call="base_hospital_management.csf_report_footer"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

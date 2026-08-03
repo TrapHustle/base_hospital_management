@@ -35,7 +35,7 @@
     <!-- ============================================================
          PAGE D'ACCUEIL PUBLIQUE  /accueil
          ============================================================ -->
-    <template id="public_landing" name="Accueil — SIH">
+    <template id="public_landing" name="Accueil (SIH)">
         <t t-call="website.layout">
             <div class="o_hms_portal hms-landing">
 
@@ -49,7 +49,7 @@
                         <h1>Votre hôpital,<br/>désormais en ligne.</h1>
                         <p class="hms-lsub">
                             Dossier patient unique, prise de rendez-vous, téléconsultation,
-                            résultats d'analyses et ordonnances — tout votre parcours de soins
+                            résultats d'analyses et ordonnances : tout votre parcours de soins
                             centralisé et sécurisé, accessible depuis votre téléphone.
                         </p>
                         <div class="hms-lbtns">
@@ -66,29 +66,69 @@
                         </div>
                     </div>
 
-                    <!-- Illustration : telephone montrant le portail -->
+                    <!-- Illustration : iPhone 15 Pro montrant le portail
+                         (proportions reelles : ecran 393x852 pt, Dynamic Island) -->
                     <div class="hms-lhero-art">
                         <div class="hms-phone">
-                            <div class="hms-phone-notch"></div>
                             <div class="hms-phone-screen">
-                                <div class="hms-phone-hero">
-                                    <div class="hms-phone-cross">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" d="M12 6v12M6 12h12"/></svg>
+                                <div class="hms-phone-island"></div>
+                                <!-- Barre d'etat iOS -->
+                                <div class="hms-phone-status">
+                                    <span>9:41</span>
+                                    <span>
+                                        <svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="14" width="3.2" height="6" rx="1"/><rect x="7.6" y="10.5" width="3.2" height="9.5" rx="1"/><rect x="13.2" y="7" width="3.2" height="13" rx="1"/><rect x="18.8" y="3.5" width="3.2" height="16.5" rx="1"/></svg>
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" d="M2 8.5a15 15 0 0 1 20 0M5.5 12.5a10 10 0 0 1 13 0M9 16.5a5 5 0 0 1 6 0"/><circle cx="12" cy="20" r="1.2" fill="currentColor" stroke="none"/></svg>
+                                        <svg viewBox="0 0 26 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1" y="7" width="20" height="10" rx="3"/><rect x="3" y="9" width="14" height="6" rx="1.6" fill="currentColor" stroke="none"/><path d="M23 10.5v3" stroke-linecap="round"/></svg>
+                                    </span>
+                                </div>
+                                <!-- Contenu de l'application -->
+                                <div class="hms-phone-app">
+                                    <div class="hms-phone-hero">
+                                        <div class="hms-phone-cross">
+                                            <img src="/base_hospital_management/static/src/img/csf_logo_mark.png"
+                                                 alt="CSF Medical Center"/>
+                                        </div>
+                                        <div>
+                                            <div class="hms-phone-hi">Bonjour 👋</div>
+                                            <div class="hms-phone-sub">CSF Medical Center</div>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <div class="hms-phone-hi">Bonjour 👋</div>
-                                        <div class="hms-phone-sub">Espace santé</div>
+                                    <div class="hms-phone-grid">
+                                        <div class="hms-phone-tile g"><span>2</span>Vaccins</div>
+                                        <div class="hms-phone-tile b"><span>3</span>Analyses</div>
+                                        <div class="hms-phone-tile a"><span>4</span>Consult.</div>
+                                        <div class="hms-phone-tile p"><span>1</span>RDV</div>
+                                    </div>
+                                    <div class="hms-phone-row">
+                                        <span class="hms-phone-dot"></span> Ordonnance du 12/06 prête
+                                    </div>
+                                    <div class="hms-phone-next">
+                                        <div class="hms-phone-label">Prochain rendez-vous</div>
+                                        <div class="hms-phone-doc">Dr Coulibaly · Radiologie</div>
+                                        <div class="hms-phone-when">Vendredi 14/06 à 09h30</div>
+                                        <span class="hms-phone-chip">Téléconsultation</span>
                                     </div>
                                 </div>
-                                <div class="hms-phone-grid">
-                                    <div class="hms-phone-tile g"><span>2</span>Vaccins</div>
-                                    <div class="hms-phone-tile b"><span>3</span>Analyses</div>
-                                    <div class="hms-phone-tile a"><span>4</span>Consult.</div>
-                                    <div class="hms-phone-tile p"><span>1</span>RDV</div>
+                                <!-- Barre d'onglets + indicateur d'accueil -->
+                                <div class="hms-phone-tabbar">
+                                    <div class="hms-phone-tab on">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1Z"/></svg>
+                                        Accueil
+                                    </div>
+                                    <div class="hms-phone-tab">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="5" width="18" height="16" rx="2"/><path stroke-linecap="round" d="M8 3v4M16 3v4M3 10h18"/></svg>
+                                        RDV
+                                    </div>
+                                    <div class="hms-phone-tab">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 3v7L4.5 18a2 2 0 0 0 1.7 3h11.6a2 2 0 0 0 1.7-3L15 10V3M8 3h8M6.5 15h11"/></svg>
+                                        Analyses
+                                    </div>
+                                    <div class="hms-phone-tab">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                        Profil
+                                    </div>
                                 </div>
-                                <div class="hms-phone-row">
-                                    <span class="hms-phone-dot"></span> Ordonnance du 12/06 prête
-                                </div>
+                                <div class="hms-phone-home"></div>
                             </div>
                         </div>
                     </div>

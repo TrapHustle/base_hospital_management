@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- =============================================================== -->
+    <!--  DOCUMENTS MEDICAUX : transferts, comptes rendus, certificats   -->
+    <!-- =============================================================== -->
+
+    <!-- ================== BULLETIN DE TRANSFERT ================== -->
+    <record id="hospital_transfer_view_list" model="ir.ui.view">
+        <field name="name">hospital.transfer.view.list</field>
+        <field name="model">hospital.transfer</field>
+        <field name="arch" type="xml">
+            <list string="Bulletins de transfert">
+                <field name="reference"/>
+                <field name="transfer_date"/>
+                <field name="patient_id"/>
+                <field name="motif_transfert"/>
+                <field name="structure_accueil"/>
+                <field name="doctor_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="hospital_transfer_view_form" model="ir.ui.view">
+        <field name="name">hospital.transfer.view.form</field>
+        <field name="model">hospital.transfer</field>
+        <field name="arch" type="xml">
+            <form string="Bulletin de transfert">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="reference" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="patient_id"/>
+                            <field name="patient_age"/>
+                            <field name="op_id"/>
+                            <field name="venu_pour"/>
+                        </group>
+                        <group>
+                            <field name="transfer_date"/>
+                            <field name="doctor_id"/>
+                            <field name="motif_transfert"/>
+                            <field name="structure_accueil"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Admission">
+                            <group>
+                                <field name="admission_datetime"/>
+                            </group>
+                            <group string="Constantes à l'admission">
+                                <group>
+                                    <field name="etat_general_in"/>
+                                    <field name="temperature_in"/>
+                                    <field name="ta_in"/>
+                                </group>
+                                <group>
+                                    <field name="fc_in"/>
+                                    <field name="fr_in"/>
+                                    <field name="spo2_in"/>
+                                </group>
+                            </group>
+                            <group string="Anamnèse et examen">
+                                <field name="anamnese" nolabel="1" placeholder="Résumé de l'anamnèse…"/>
+                                <field name="examen_admission" nolabel="1" placeholder="Résumé de l'examen clinique à l'admission…"/>
+                            </group>
+                        </page>
+                        <page string="Prise en charge">
+                            <group>
+                                <field name="diagnostic" placeholder="Diagnostic retenu…"/>
+                                <field name="examen_realise" placeholder="Examens réalisés…"/>
+                                <field name="traitement" placeholder="Traitement administré…"/>
+                            </group>
+                        </page>
+                        <page string="Sortie">
+                            <group>
+                                <field name="exit_datetime"/>
+                            </group>
+                            <group string="Constantes à la sortie">
+                                <group>
+                                    <field name="etat_general_out"/>
+                                    <field name="temperature_out"/>
+                                    <field name="ta_out"/>
+                                </group>
+                                <group>
+                                    <field name="fc_out"/>
+                                    <field name="fr_out"/>
+                                    <field name="spo2_out"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hospital_transfer" model="ir.actions.act_window">
+        <field name="name">Bulletins de transfert</field>
+        <field name="res_model">hospital.transfer</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Créer un bulletin de transfert</p>
+            <p>Le bulletin accompagne le patient vers la structure qui le reçoit :
+                constantes à l'admission et à la sortie, diagnostic et traitement administré.</p>
+        </field>
+    </record>
+
+    <!-- ================== COMPTES RENDUS D'IMAGERIE ================== -->
+    <record id="hospital_imaging_view_list" model="ir.ui.view">
+        <field name="name">hospital.imaging.view.list</field>
+        <field name="model">hospital.imaging</field>
+        <field name="arch" type="xml">
+            <list string="Comptes rendus">
+                <field name="reference"/>
+                <field name="exam_date"/>
+                <field name="patient_id"/>
+                <field name="exam_type"/>
+                <field name="doctor_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="hospital_imaging_view_form" model="ir.ui.view">
+        <field name="name">hospital.imaging.view.form</field>
+        <field name="model">hospital.imaging</field>
+        <field name="arch" type="xml">
+            <form string="Compte rendu">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="reference" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="patient_id"/>
+                            <field name="patient_age"/>
+                            <field name="exam_type"/>
+                            <field name="exam_demande"/>
+                        </group>
+                        <group>
+                            <field name="exam_date"/>
+                            <field name="indication"/>
+                            <field name="prescriber_id"/>
+                            <field name="doctor_id"/>
+                            <field name="doctor_role"/>
+                            <field name="onmci"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Compte rendu" invisible="exam_type == 'ophtalmo'">
+                            <group>
+                                <field name="technique" placeholder="Technique utilisée…"/>
+                                <field name="resultats" placeholder="Résultats…"/>
+                            </group>
+                        </page>
+                        <page string="Acuité visuelle" invisible="exam_type != 'ophtalmo'">
+                            <group>
+                                <group string="Œil droit">
+                                    <field name="av_loin_od"/>
+                                    <field name="av_pres_od"/>
+                                    <field name="fond_oeil_od"/>
+                                </group>
+                                <group string="Œil gauche">
+                                    <field name="av_loin_og"/>
+                                    <field name="av_pres_og"/>
+                                    <field name="fond_oeil_og"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Conclusion">
+                            <field name="conclusion" nolabel="1" placeholder="Conclusion du compte rendu…"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hospital_imaging" model="ir.actions.act_window">
+        <field name="name">Comptes rendus</field>
+        <field name="res_model">hospital.imaging</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Créer un compte rendu</p>
+            <p>Radiographie, échographie mammaire ou pelvienne, examen ophtalmologique :
+                le type choisi pré-remplit le texte type du carnet.</p>
+        </field>
+    </record>
+
+    <!-- ================== CERTIFICATS MEDICAUX ================== -->
+    <record id="hospital_certificate_view_list" model="ir.ui.view">
+        <field name="name">hospital.certificate.view.list</field>
+        <field name="model">hospital.certificate</field>
+        <field name="arch" type="xml">
+            <list string="Certificats médicaux">
+                <field name="reference"/>
+                <field name="certificate_date"/>
+                <field name="patient_id"/>
+                <field name="certificate_type"/>
+                <field name="doctor_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="hospital_certificate_view_form" model="ir.ui.view">
+        <field name="name">hospital.certificate.view.form</field>
+        <field name="model">hospital.certificate</field>
+        <field name="arch" type="xml">
+            <form string="Certificat médical">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="reference" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="patient_id"/>
+                            <field name="patient_age"/>
+                            <field name="certificate_type"/>
+                        </group>
+                        <group>
+                            <field name="certificate_date"/>
+                            <field name="doctor_id"/>
+                            <field name="onmci"/>
+                        </group>
+                    </group>
+                    <group string="Texte du certificat">
+                        <field name="body" nolabel="1"
+                               placeholder="…ne présente aucun signe clinique de maladie contagieuse."/>
+                    </group>
+                    <group string="Repos médical">
+                        <group>
+                            <field name="rest_days"/>
+                        </group>
+                        <group>
+                            <field name="rest_start"/>
+                        </group>
+                    </group>
+                    <group string="Observations">
+                        <field name="observation" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hospital_certificate" model="ir.actions.act_window">
+        <field name="name">Certificats médicaux</field>
+        <field name="res_model">hospital.certificate</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Délivrer un certificat</p>
+            <p>Les 22 certificats du tarif CSF, avec leur texte type et la signature du médecin.</p>
+        </field>
+    </record>
+
+    <!-- ================== MENUS ================== -->
+    <menuitem id="hospital_menu_documents" name="Documents"
+              parent="hospital_menu_root" sequence="35"/>
+    <menuitem id="menu_hospital_certificate" name="Certificats médicaux"
+              parent="hospital_menu_documents"
+              action="action_hospital_certificate" sequence="10"/>
+    <menuitem id="menu_hospital_imaging" name="Comptes rendus"
+              parent="hospital_menu_documents"
+              action="action_hospital_imaging" sequence="20"/>
+    <menuitem id="menu_hospital_transfer" name="Bulletins de transfert"
+              parent="hospital_menu_documents"
+              action="action_hospital_transfer" sequence="30"/>
+</odoo>

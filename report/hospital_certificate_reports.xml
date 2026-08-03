@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- =============================================================== -->
+    <!--  CERTIFICAT MEDICAL - format CSF Medical Center                 -->
+    <!--  Un gabarit unique pour les 22 certificats du tarif : le type   -->
+    <!--  fournit le titre et le corps, le medecin signe.                -->
+    <!-- =============================================================== -->
+    <record id="action_report_certificate" model="ir.actions.report">
+        <field name="name">Certificat médical</field>
+        <field name="model">hospital.certificate</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">base_hospital_management.certificate_report</field>
+        <field name="report_file">base_hospital_management.certificate_report</field>
+        <field name="binding_model_id" ref="model_hospital_certificate"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="base_hospital_management.paperformat_prescription"/>
+    </record>
+
+    <template id="certificate_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.basic_layout">
+                    <t t-set="p" t-value="o.patient_id"/>
+                    <t t-set="civilite" t-value="{'male': 'Monsieur', 'female': 'Madame'}.get(p.gender, 'M./Mme')"/>
+                    <t t-set="titre" t-value="dict(o._fields['certificate_type'].selection).get(o.certificate_type, 'Certificat médical')"/>
+                    <div class="page" style="font-family: Arial, Helvetica, sans-serif; color: #1c1c1c; font-size: 13px;">
+
+                        <!-- ============ EN-TÊTE CSF ============ -->
+                        <t t-call="base_hospital_management.csf_report_header"/>
+
+                        <!-- ============ TITRE ENCADRÉ ============ -->
+                        <div style="text-align: center; margin: 30px 0 26px;">
+                            <span style="display: inline-block; border: 2px solid #1E5C4B; padding: 9px 30px; font-size: 19px; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase;">
+                                <t t-esc="titre"/>
+                            </span>
+                        </div>
+
+                        <!-- ============ CORPS ============ -->
+                        <div style="line-height: 2.3; text-align: justify; margin-top: 20px;">
+                            Je soussigné(e), Docteur
+                            <span style="border-bottom: 1px dotted #1c1c1c; padding: 0 10px; font-weight: bold;"><t t-esc="o.doctor_id.name or ''"/></span>
+                            <t t-if="o.onmci">, N°ONMCI <span style="border-bottom: 1px dotted #1c1c1c; padding: 0 8px;"><t t-esc="o.onmci"/></span></t>,
+                            médecin au CSF Medical Center, certifie avoir examiné ce jour
+                            <span style="border-bottom: 1px dotted #1c1c1c; padding: 0 10px; font-weight: bold;"><t t-esc="civilite"/> <t t-esc="p.name or ''"/></span>
+                            <t t-if="o.patient_age">, âgé(e) de
+                                <span style="border-bottom: 1px dotted #1c1c1c; padding: 0 8px;"><t t-esc="o.patient_age"/></span> ans
+                            </t>
+                            <t t-if="p.patient_seq">, dossier n°
+                                <span style="border-bottom: 1px dotted #1c1c1c; padding: 0 8px;"><t t-esc="p.patient_seq"/></span>
+                            </t>,
+                            et atteste que l'intéressé(e)
+                            <span style="font-weight: bold;"><t t-esc="o.body or ''"/></span>
+                        </div>
+
+                        <!-- ============ REPOS MÉDICAL ============ -->
+                        <t t-if="o.rest_days">
+                            <div style="margin-top: 18px; line-height: 2.2;">
+                                Un repos médical de
+                                <span style="border-bottom: 1px dotted #1c1c1c; padding: 0 12px; font-weight: bold;"><t t-esc="o.rest_days"/></span>
+                                jour(s) lui est accordé
+                                <t t-if="o.rest_start">à compter du
+                                    <span style="border-bottom: 1px dotted #1c1c1c; padding: 0 10px; font-weight: bold;"><t t-esc="o.rest_start.strftime('%d/%m/%Y')"/></span>
+                                </t>.
+                            </div>
+                        </t>
+
+                        <t t-if="o.observation">
+                            <div style="margin-top: 16px; line-height: 1.9;">
+                                <b>Observations :</b> <t t-esc="o.observation"/>
+                            </div>
+                        </t>
+
+                        <div style="margin-top: 26px; font-style: italic; font-size: 12px;">
+                            Certificat délivré à la demande de l'intéressé(e) et remis en main propre
+                            pour servir et valoir ce que de droit.
+                        </div>
+
+                        <!-- ============ DATE + SIGNATURE ============ -->
+                        <div style="margin-top: 44px; text-align: right;">
+                            <div>Fait à Abidjan, le
+                                <span style="border-bottom: 1px dotted #1c1c1c; padding: 0 10px; font-weight: bold;">
+                                    <t t-esc="o.certificate_date.strftime('%d/%m/%Y') if o.certificate_date else ''"/>
+                                </span>
+                            </div>
+                            <div style="margin-top: 14px; font-weight: bold;">Cachet et signature du médecin</div>
+                            <div style="margin: 8px 0 0 auto; width: 150px; height: 95px; border: 1px dashed #999;"/>
+                        </div>
+                        <t t-call="base_hospital_management.csf_report_footer"/>
+                        <div style="text-align: center; color: #adb5bd; font-size: 8px; margin-top: 4px;">
+                            Réf. <t t-esc="o.reference"/>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

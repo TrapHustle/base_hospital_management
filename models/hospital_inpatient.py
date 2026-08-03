@@ -439,27 +439,64 @@ class HospitalInpatient(models.Model):
                 fields=['name', 'patient_id', 'ward_id', 'bed_id', 'hosp_date',
                         'discharge_date', 'attending_doctor_id', 'state'])
 
+    def _prescription_report_data(self):
+        """Données du PDF d'ordonnance pour un patient hospitalisé.
+
+        Même dictionnaire que `hospital.outpatient._prescription_report_data`
+        : le template d'ordonnance au format CSF attend toutes ces clés.
+        """
+        self.ensure_one()
+        time_labels = {
+            'once': '1 fois par jour', 'twice': '2 fois par jour',
+            'thrice': '3 fois par jour', 'morning': 'Le matin',
+            'noon': 'Le midi', 'evening': 'Le soir',
+        }
+        note_labels = {'before': 'Avant les repas', 'after': 'Après les repas'}
+        forme_labels = dict(
+            self.env['prescription.line']._fields['forme_galenique'].selection)
+        gender_labels = {'male': 'Masculin', 'female': 'Féminin',
+                         'other': 'Autre'}
+        patient = self.patient_id
+        company = self.env.company
+        doctor = self.attending_doctor_id
+        return {
+            'datas': [{
+                'medicine': line.medicine_id.name,
+                'forme': forme_labels.get(line.forme_galenique, ''),
+                'dosage': line.dosage or '',
+                'posologie': line.posologie or '',
+                'intake': line.no_intakes,
+                'time': time_labels.get(line.time, line.time or ''),
+                'quantity': line.quantity,
+                'note': note_labels.get(line.note, ''),
+            } for line in self.prescription_ids],
+            # L'hospitalisation ne gère pas le renouvellement : ordonnance
+            # ponctuelle, comme la case cochée par défaut sur la fiche papier.
+            'validity': 'Ordonnance ponctuelle',
+            'validity_type': 'ponctuelle',
+            'renewable_months': '',
+            'renewable_times': '',
+            'date': fields.Date.today().strftime('%d/%m/%Y'),
+            'op_reference': self.name or '',
+            'diagnosis': self.reason or '',
+            'patient_name': patient.name or '',
+            'patient_seq': patient.patient_seq or '',
+            'patient_age': patient.patient_age or '',
+            'patient_gender': gender_labels.get(patient.gender, ''),
+            'doctor_name': doctor.name or '',
+            'doctor_dept': doctor.department_id.name or '',
+            'company_name': company.name or '',
+            'company_street': company.street or '',
+            'company_city': company.city or '',
+            'company_phone': company.phone or '',
+            'company_email': company.email or '',
+        }
+
     def action_print_prescription(self):
         """Method for printing prescription"""
-        data = False
-        p_list = []
-        for rec in self.prescription_ids:
-            p_list.append({
-                'medicine': rec.medicine_id.name,
-                'intake': rec.no_intakes,
-                'time': rec.time.capitalize(),
-                'quantity': rec.quantity,
-                'note': rec.note.capitalize(),
-            })
-            data = {
-                'datas': p_list,
-                'date': fields.date.today(),
-                'patient_name': self.patient_id.name,
-                'doctor_name': self.attending_doctor_id.name,
-            }
         return self.env.ref(
             'base_hospital_management.action_report_patient_prescription'). \
-            report_action(self, data=data)
+            report_action(self, data=self._prescription_report_data())
 
     @api.model
     def hospital_inpatient_list(self):

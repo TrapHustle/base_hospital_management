@@ -83,6 +83,9 @@ class HospitalPharmacy(models.Model):
             patient_id = self.env['res.partner'].sudo().create({
                 'name': kwargs['name'],
                 'email': kwargs['email'],
+                # Explicite depuis que res.partner.create() ne numérote plus
+                # que les patients : un acheteur en pharmacie en est un.
+                'is_patient': True,
             })
         pharmacy_sale_order = self.env['sale.order'].sudo().create({
             'partner_id': patient_id.id,

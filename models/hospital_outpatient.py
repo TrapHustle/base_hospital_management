@@ -48,6 +48,11 @@ class HospitalOutpatient(models.Model):
                                 domain=[('slot_remaining', '>', 0),
                                         ('date', '=', fields.date.today()),
                                         ('state', '=', 'confirm')])
+    doctor_name = fields.Char(string='Médecin prescripteur',
+                              compute='_compute_doctor_name',
+                              help="Nom du médecin, lisible sans droit d'accès "
+                                   "sur les allocations de médecin. Utilisé par "
+                                   "les fiches imprimables CSF.")
     op_date = fields.Date(default=fields.Date.today(), string='Date',
                           help='Date of OP')
     reason = fields.Text(string='Reason', help='Reason for visiting hospital')
@@ -88,6 +93,17 @@ class HospitalOutpatient(models.Model):
                                        'outpatient_id',
                                        string='Prescription',
                                        help='Prescription for the patient')
+    prescription_validity = fields.Selection(
+        [('ponctuelle', 'Ordonnance ponctuelle'),
+         ('renouvelable', 'Ordonnance renouvelable')],
+        string="Validité de l'ordonnance", default='ponctuelle',
+        help="Validité de l'ordonnance imprimée")
+    renewable_months = fields.Integer(
+        string='Renouvelable (mois)',
+        help="Durée de renouvellement de l'ordonnance en mois")
+    renewable_times = fields.Integer(
+        string='Renouvelable (nb de fois)',
+        help="Nombre de fois où l'ordonnance peut être renouvelée")
     invoiced = fields.Boolean(default=False, string='Invoiced',
                               help='True for invoiced')
     invoice_id = fields.Many2one('account.move', copy=False,
@@ -214,6 +230,19 @@ class HospitalOutpatient(models.Model):
         """Computes the value of test count"""
         self.test_count = len(self.test_ids.ids)
 
+    @api.depends('doctor_id')
+    def _compute_doctor_name(self):
+        """Doctor name readable without access to doctor.allocation.
+
+        La règle d'accès de `doctor.allocation` restreint un médecin à SES
+        propres allocations. Sans ce champ, imprimer la fiche d'une
+        consultation tenue par un confrère lève une AccessError au moment du
+        rendu QWeb. Les fiches lisent donc ce champ plutôt que de traverser
+        `doctor_id.doctor_id`.
+        """
+        for record in self:
+            record.doctor_name = record.doctor_id.sudo().doctor_id.name or ''
+
     @api.onchange('op_date')
     def _onchange_op_date(self):
         """Method for updating the doamil of doctor_id"""
@@ -274,6 +303,8 @@ class HospitalOutpatient(models.Model):
             'noon': 'Le midi', 'evening': 'Le soir',
         }
         note_labels = {'before': 'Avant les repas', 'after': 'Après les repas'}
+        forme_labels = dict(
+            self.env['prescription.line']._fields['forme_galenique'].selection)
         gender_labels = {'male': 'Masculin', 'female': 'Féminin',
                          'other': 'Autre'}
         patient = self.patient_id
@@ -281,15 +312,32 @@ class HospitalOutpatient(models.Model):
         if patient.date_of_birth:
             age = (fields.Date.today() - patient.date_of_birth).days // 365
         company = self.env.company
-        doctor = self.doctor_id.doctor_id
+        doctor = self.doctor_id.sudo().doctor_id
+        # Libellé de validité de l'ordonnance (fiche CSF)
+        if self.prescription_validity == 'renouvelable':
+            validity = 'Ordonnance renouvelable'
+            if self.renewable_months:
+                validity += f" ({self.renewable_months} mois)"
+            if self.renewable_times:
+                validity += f" ({self.renewable_times} fois)"
+        else:
+            validity = 'Ordonnance ponctuelle'
         return {
             'datas': [{
                 'medicine': line.medicine_id.name,
+                'forme': forme_labels.get(line.forme_galenique, ''),
+                'dosage': line.dosage or '',
+                'posologie': line.posologie or '',
                 'intake': line.no_intakes,
                 'time': time_labels.get(line.time, line.time or ''),
                 'quantity': line.quantity,
                 'note': note_labels.get(line.note, ''),
             } for line in self.prescription_ids],
+            'validity': validity,
+            # Valeurs brutes : le PDF coche les cases de la fiche papier
+            'validity_type': self.prescription_validity or 'ponctuelle',
+            'renewable_months': self.renewable_months or '',
+            'renewable_times': self.renewable_times or '',
             'date': self.op_date.strftime('%d/%m/%Y') if self.op_date else '',
             'op_reference': self.op_reference or '',
             'diagnosis': self.reason or '',

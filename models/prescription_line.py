@@ -32,16 +32,27 @@ class PrescriptionLine(models.Model):
         '|', ('medicine_ok', '=', True), ('vaccine_ok', '=', True)],
                                   string='Medicine', required=True,
                                   help='Medicines or vaccines')
+    forme_galenique = fields.Selection(
+        [('comprime', 'Comprimé'), ('gelule', 'Gélule'), ('sirop', 'Sirop'),
+         ('injectable', 'Injectable'), ('pommade', 'Pommade / Crème'),
+         ('goutte', 'Gouttes'), ('suppositoire', 'Suppositoire'),
+         ('sachet', 'Sachet'), ('spray', 'Spray'), ('autre', 'Autre')],
+        string='Forme galénique',
+        help="Forme galénique du médicament (comprimé, sirop, injectable...)")
+    dosage = fields.Char(string='Dosage',
+                         help="Dosage du médicament (ex : 500 mg, 1 g/5 ml)")
+    posologie = fields.Char(string='Posologie',
+                            help="Posologie / mode de prise "
+                                 "(ex : 1 comprimé matin et soir pendant 7 j)")
     quantity = fields.Integer(string='Quantity', required=True,
                               help="The number of medicines for the time "
                                    "period")
-    no_intakes = fields.Float(string='Intakes', required=True,
+    no_intakes = fields.Float(string='Intakes',
                               help="How much medicine want to take")
     time = fields.Selection(
         [('once', 'Once in a day'), ('twice', 'Twice in a Day'),
          ('thrice', 'Thrice in a day'), ('morning', 'In Morning'),
          ('noon', 'In Noon'), ('evening', 'In Evening')], string='Time',
-        required=True,
         help='The interval for medicine intake')
     note = fields.Selection(
         [('before', 'Before Food'), ('after', 'After Food')],

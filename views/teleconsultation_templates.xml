@@ -93,7 +93,7 @@
                         <div class="tc-logo">🏥</div>
                         <div class="tc-titles">
                             <b>Téléconsultation</b><br/>
-                            <span>Réf. <t t-esc="op_reference"/> —
+                            <span>Réf. <t t-esc="op_reference"/> ·
                                 Dr <t t-esc="doctor_name"/> ·
                                 <t t-esc="patient_name"/></span>
                         </div>

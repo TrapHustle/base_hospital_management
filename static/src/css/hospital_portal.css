@@ -1,5 +1,5 @@
 /* ============================================================================
-   PORTAIL PATIENT — base_hospital_management
+   PORTAIL PATIENT (base_hospital_management)
    Design moderne : blanc dominant + violet Odoo. Responsive.
    IMPORTANT : tous les selecteurs sont scopes sous .o_hms_portal
    pour ne JAMAIS modifier le CSS d'Odoo en dehors du portail.
@@ -206,40 +206,126 @@
 .o_hms_portal .hms-lbtns{display:flex;gap:12px;flex-wrap:wrap}
 .o_hms_portal .hms-btn.big{padding:14px 24px;font-size:15px;border-radius:13px}
 
-/* ---- Illustration telephone ---- */
+/* ---- Illustration telephone : iPhone 15 (modele simple) ----
+   Cotes reelles du terminal (en points CSS) :
+     ecran            393 x 852 pt  (1179 x 2556 px @3x)
+     rayon des coins   55 pt
+     Dynamic Island   125 x 36.67 pt, a 11 pt du haut de l'ecran
+     bord aluminium    ~13 pt (le 15 a des bordures un peu plus
+                       epaisses que le 15 Pro en titane)
+   Tout est exprime en calc(... * var(--ph)) : changer --ph met le
+   telephone a l'echelle sans deformer les proportions. */
 .o_hms_portal .hms-lhero-art{display:flex;justify-content:center}
 .o_hms_portal .hms-phone{
-  width:270px;background:#0f1117;border-radius:34px;padding:12px;
+  --ph:.48;                                  /* echelle (1 = taille reelle) */
+  --ph-w:calc(393px * var(--ph));            /* largeur ecran */
+  --ph-h:calc(852px * var(--ph));            /* hauteur ecran */
+  --ph-r:calc(55px * var(--ph));             /* rayon des coins de l'ecran */
+  --ph-bez:calc(13px * var(--ph));           /* bord aluminium */
+  --ph-pad:calc(16px * var(--ph));           /* marge interne de l'app */
+  width:calc(var(--ph-w) + 2 * var(--ph-bez));
+  height:calc(var(--ph-h) + 2 * var(--ph-bez));
+  background:linear-gradient(150deg,#e6e7ea,#b9bcc2 20%,#8f939b 55%,#d5d7dc);
+  border-radius:calc(var(--ph-r) + var(--ph-bez));
+  padding:var(--ph-bez);
   box-shadow:0 30px 60px rgba(113,75,103,.28);position:relative;
 }
-.o_hms_portal .hms-phone-notch{
-  position:absolute;top:12px;left:50%;transform:translateX(-50%);
-  width:110px;height:22px;background:#0f1117;border-radius:0 0 16px 16px;z-index:2;
+/* Boutons aluminium : volume a gauche, veille a droite.
+   Pas de bouton Action : c'est propre au 15 Pro. */
+.o_hms_portal .hms-phone::before,
+.o_hms_portal .hms-phone::after{
+  content:"";position:absolute;width:calc(3px * var(--ph));background:#a8abb2;border-radius:2px;
 }
-.o_hms_portal .hms-phone-screen{background:var(--hms-bg);border-radius:24px;padding:16px;overflow:hidden}
+.o_hms_portal .hms-phone::before{
+  left:calc(-3px * var(--ph));top:calc(170px * var(--ph));height:calc(130px * var(--ph));
+}
+.o_hms_portal .hms-phone::after{
+  right:calc(-3px * var(--ph));top:calc(190px * var(--ph));height:calc(100px * var(--ph));
+}
+.o_hms_portal .hms-phone-screen{
+  position:relative;height:100%;background:var(--hms-bg);
+  border-radius:var(--ph-r);overflow:hidden;display:flex;flex-direction:column;
+}
+/* Dynamic Island (remplace l'encoche) */
+.o_hms_portal .hms-phone-island{
+  position:absolute;top:calc(11px * var(--ph));left:50%;transform:translateX(-50%);
+  width:calc(125px * var(--ph));height:calc(36.67px * var(--ph));
+  background:#000;border-radius:999px;z-index:3;
+}
+/* Barre d'etat : la hauteur reelle (54 pt) laisse passer l'ilot */
+.o_hms_portal .hms-phone-status{
+  height:calc(54px * var(--ph));flex-shrink:0;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:calc(14px * var(--ph)) calc(28px * var(--ph)) 0;
+  font-size:calc(15px * var(--ph));font-weight:700;color:var(--hms-ink);
+}
+.o_hms_portal .hms-phone-status svg{
+  width:calc(17px * var(--ph));height:calc(17px * var(--ph));
+  display:inline-block;vertical-align:middle;margin-left:calc(5px * var(--ph));
+}
+.o_hms_portal .hms-phone-app{
+  flex:1;min-height:0;padding:calc(6px * var(--ph)) var(--ph-pad) 0;overflow:hidden;
+}
 .o_hms_portal .hms-phone-hero{
   background:linear-gradient(135deg,var(--hms-purple),var(--hms-accent));
-  border-radius:16px;padding:16px;color:#fff;display:flex;align-items:center;gap:12px;margin-bottom:12px;
+  border-radius:14px;padding:10px;color:#fff;display:flex;align-items:center;gap:9px;margin-bottom:9px;
 }
-.o_hms_portal .hms-phone-cross{width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center}
+/* Pastille blanche portant le logo CSF (les 2 croix teal/bordeaux) */
+.o_hms_portal .hms-phone-cross{
+  width:32px;height:32px;border-radius:12px;background:#fff;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.12);
+}
+.o_hms_portal .hms-phone-cross img{width:25px;height:25px;display:block}
 .o_hms_portal .hms-phone-cross svg{width:22px;height:22px;stroke-width:2.4}
-.o_hms_portal .hms-phone-hi{font-weight:700;font-size:15px}
-.o_hms_portal .hms-phone-sub{font-size:12px;opacity:.85}
-.o_hms_portal .hms-phone-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.o_hms_portal .hms-phone-hi{font-weight:700;font-size:13.5px}
+.o_hms_portal .hms-phone-sub{font-size:10px;opacity:.85;white-space:nowrap}
+.o_hms_portal .hms-phone-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
 .o_hms_portal .hms-phone-tile{
-  background:#fff;border:1px solid var(--hms-line);border-radius:13px;padding:12px;
-  font-size:11.5px;color:var(--hms-ink-soft);font-weight:600;
+  background:#fff;border:1px solid var(--hms-line);border-radius:12px;padding:8px 9px;
+  font-size:10.5px;color:var(--hms-ink-soft);font-weight:600;
 }
-.o_hms_portal .hms-phone-tile span{display:block;font-size:22px;font-weight:800;color:var(--hms-ink);line-height:1;margin-bottom:3px}
+.o_hms_portal .hms-phone-tile span{display:block;font-size:19px;font-weight:800;color:var(--hms-ink);line-height:1;margin-bottom:3px}
 .o_hms_portal .hms-phone-tile.g span{color:var(--hms-green)}
 .o_hms_portal .hms-phone-tile.b span{color:var(--hms-blue)}
 .o_hms_portal .hms-phone-tile.a span{color:var(--hms-amber)}
 .o_hms_portal .hms-phone-tile.p span{color:var(--hms-purple)}
 .o_hms_portal .hms-phone-row{
-  margin-top:10px;background:#fff;border:1px solid var(--hms-line);border-radius:12px;
-  padding:11px 12px;font-size:11.5px;color:var(--hms-ink-soft);font-weight:600;display:flex;align-items:center;gap:8px;
+  margin-top:7px;background:#fff;border:1px solid var(--hms-line);border-radius:11px;
+  padding:8px 9px;font-size:10.5px;color:var(--hms-ink-soft);font-weight:600;display:flex;align-items:center;gap:8px;
 }
 .o_hms_portal .hms-phone-dot{width:9px;height:9px;border-radius:50%;background:var(--hms-green);flex-shrink:0}
+/* Carte "prochain rendez-vous" */
+.o_hms_portal .hms-phone-next{
+  margin-top:7px;background:#fff;border:1px solid var(--hms-line);border-radius:13px;padding:9px;
+}
+.o_hms_portal .hms-phone-next .hms-phone-label{
+  font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--hms-ink-soft);opacity:.75;
+}
+.o_hms_portal .hms-phone-next .hms-phone-doc{font-size:11.5px;font-weight:700;color:var(--hms-ink);margin-top:5px}
+.o_hms_portal .hms-phone-next .hms-phone-when{font-size:10.5px;color:var(--hms-ink-soft);font-weight:600;margin-top:2px}
+.o_hms_portal .hms-phone-chip{
+  display:inline-block;margin-top:6px;padding:3px 8px;border-radius:999px;
+  background:rgba(113,75,103,.1);color:var(--hms-purple);font-size:9.5px;font-weight:700;
+}
+/* Barre d'onglets + indicateur d'accueil */
+.o_hms_portal .hms-phone-tabbar{
+  flex-shrink:0;display:grid;grid-template-columns:repeat(4,1fr);
+  gap:2px;padding:calc(9px * var(--ph)) var(--ph-pad) 0;
+  border-top:1px solid var(--hms-line);background:#fff;
+}
+.o_hms_portal .hms-phone-tab{
+  text-align:center;font-size:8.5px;font-weight:600;color:var(--hms-ink-soft);opacity:.6;line-height:1.5;
+}
+.o_hms_portal .hms-phone-tab svg{width:15px;height:15px;stroke-width:2;display:block;margin:0 auto}
+.o_hms_portal .hms-phone-tab.on{color:var(--hms-purple);opacity:1}
+.o_hms_portal .hms-phone-home{
+  flex-shrink:0;background:#fff;padding:calc(8px * var(--ph)) 0 calc(8px * var(--ph));
+}
+.o_hms_portal .hms-phone-home::after{
+  content:"";display:block;margin:0 auto;
+  width:calc(140px * var(--ph));height:calc(5px * var(--ph));
+  border-radius:999px;background:rgba(28,28,30,.28);
+}
 
 /* ---- Sections ---- */
 .o_hms_portal .hms-lsection{padding:44px 0}
@@ -354,6 +440,8 @@
 }
 /* ---------- TELEPHONE ( <= 480px ) ---------- */
 @media(max-width:480px){
+  /* Maquette iPhone 15 Pro : on reduit l'echelle, les proportions restent exactes */
+  .o_hms_portal .hms-phone{--ph:.6}
   /* Le portail Odoo ajoute des marges laterales : on les reduit sur mobile */
   .o_hms_portal{padding-left:2px;padding-right:2px}
   /* Titres et hero plus compacts */

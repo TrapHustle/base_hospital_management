@@ -122,7 +122,7 @@
                                 </div>
                                 <div class="activity-content">
                                     <span class="activity-title">
-                                        <t t-esc="qpat.patient_seq"/> — <t t-esc="qpat.patient_name"/>
+                                        <t t-esc="qpat.patient_seq"/> · <t t-esc="qpat.patient_name"/>
                                         <t t-if="qpat.is_teleconsultation"> 📹</t>
                                     </span>
                                     <span class="activity-time" t-esc="qpat.reason"/>

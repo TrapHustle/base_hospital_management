@@ -1,0 +1,845 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- ================================================================ -->
+    <!--  ACTES / SERVICES - CSF Medical Center                           -->
+    <!--  Prix de base = PRIX NON ASSURE (le tarif assuré sera géré par   -->
+    <!--  la liste de prix "Assurance").                                  -->
+    <!--  Type = Service. Cotation biologie = champ cotation_code.        -->
+    <!--                                                                   -->
+    <!--  /!\ Les prix sont transcrits depuis les photos des fiches.      -->
+    <!--  Certaines valeurs (manuscrites / floues) sont à VERIFIER.       -->
+    <!-- ================================================================ -->
+    <data noupdate="1">
+
+        <!-- ============== CONSULTATIONS ============== -->
+        <record id="prod_consult_generaliste" model="product.template">
+            <field name="name">Consultation généraliste</field>
+            <field name="categ_id" ref="categ_consultations"/>
+            <field name="type">service</field>
+            <field name="list_price">10000</field>
+        </record>
+        <record id="prod_consult_specialiste" model="product.template">
+            <field name="name">Consultation spécialiste</field>
+            <field name="categ_id" ref="categ_consultations"/>
+            <field name="type">service</field>
+            <field name="list_price">17500</field>
+        </record>
+
+        <!-- ============== SOINS & SURVEILLANCE ============== -->
+        <record id="prod_prelevement_sanguin" model="product.template">
+            <field name="name">Prélèvement sanguin</field>
+            <field name="categ_id" ref="categ_soins"/>
+            <field name="type">service</field>
+            <field name="list_price">2000</field>
+        </record>
+        <record id="prod_prelevement_sanguin_dom" model="product.template">
+            <field name="name">Prélèvement sanguin à domicile</field>
+            <field name="categ_id" ref="categ_soins"/>
+            <field name="type">service</field>
+            <field name="list_price">3500</field>
+        </record>
+        <record id="prod_injection_im" model="product.template">
+            <field name="name">Injection intramusculaire</field>
+            <field name="categ_id" ref="categ_soins"/>
+            <field name="type">service</field>
+            <field name="list_price">2000</field>
+        </record>
+        <record id="prod_injection_im_dom" model="product.template">
+            <field name="name">Injection intramusculaire à domicile</field>
+            <field name="categ_id" ref="categ_soins"/>
+            <field name="type">service</field>
+            <field name="list_price">3500</field>
+        </record>
+        <record id="prod_injection_sc" model="product.template">
+            <field name="name">Injection sous cutanée</field>
+            <field name="categ_id" ref="categ_soins"/>
+            <field name="type">service</field>
+            <field name="list_price">2000</field>
+        </record>
+        <record id="prod_injection_sc_dom" model="product.template">
+            <field name="name">Injection sous cutanée à domicile</field>
+            <field name="categ_id" ref="categ_soins"/>
+            <field name="type">service</field>
+            <field name="list_price">3500</field>
+        </record>
+        <record id="prod_injection_iv" model="product.template">
+            <field name="name">Injection intraveineuse</field>
+            <field name="categ_id" ref="categ_soins"/>
+            <field name="type">service</field>
+            <field name="list_price">2500</field>
+        </record>
+        <record id="prod_injection_iv_dom" model="product.template">
+            <field name="name">Injection intraveineuse à domicile</field>
+            <field name="categ_id" ref="categ_soins"/>
+            <field name="type">service</field>
+            <field name="list_price">4000</field>
+        </record>
+        <record id="prod_perfusion" model="product.template">
+            <field name="name">Perfusion</field>
+            <field name="categ_id" ref="categ_soins"/>
+            <field name="type">service</field>
+            <field name="list_price">15000</field>
+        </record>
+        <record id="prod_perfusion_dom" model="product.template">
+            <field name="name">Perfusion à domicile</field>
+            <field name="categ_id" ref="categ_soins"/>
+            <field name="type">service</field>
+            <field name="list_price">10000</field>
+        </record>
+        <record id="prod_aerosol" model="product.template">
+            <field name="name">Aérosol</field>
+            <field name="categ_id" ref="categ_soins"/>
+            <field name="type">service</field>
+            <field name="list_price">5000</field>
+        </record>
+        <record id="prod_aerosol_dom" model="product.template">
+            <field name="name">Aérosol à domicile</field>
+            <field name="categ_id" ref="categ_soins"/>
+            <field name="type">service</field>
+            <field name="list_price">7500</field>
+        </record>
+        <record id="prod_pansement" model="product.template">
+            <field name="name">Pansement</field>
+            <field name="categ_id" ref="categ_soins"/>
+            <field name="type">service</field>
+            <field name="list_price">3000</field>
+        </record>
+        <record id="prod_pansement_dom" model="product.template">
+            <field name="name">Pansement à domicile</field>
+            <field name="categ_id" ref="categ_soins"/>
+            <field name="type">service</field>
+            <field name="list_price">3500</field>
+        </record>
+        <record id="prod_surveillance_jour" model="product.template">
+            <field name="name">Surveillance particulière (/jour) - mise en observation</field>
+            <field name="categ_id" ref="categ_soins"/>
+            <field name="type">service</field>
+            <field name="list_price">12000</field>
+        </record>
+        <record id="prod_soins_un_jour" model="product.template">
+            <field name="name">Soins d'un jour</field>
+            <field name="categ_id" ref="categ_soins"/>
+            <field name="type">service</field>
+            <field name="list_price">18000</field>
+        </record>
+
+        <!-- ============== IMAGERIE ============== -->
+        <record id="prod_echo_obst_t1" model="product.template">
+            <field name="name">Échographie obstétricale T1</field>
+            <field name="categ_id" ref="categ_imagerie"/>
+            <field name="type">service</field>
+            <field name="list_price">15000</field>
+        </record>
+        <record id="prod_echo_obst_t2t3" model="product.template">
+            <field name="name">Échographie obstétricale T2/T3</field>
+            <field name="categ_id" ref="categ_imagerie"/>
+            <field name="type">service</field>
+            <field name="list_price">15000</field>
+        </record>
+        <record id="prod_echo_abdo_pelvienne" model="product.template">
+            <field name="name">Échographie abdomino-pelvienne</field>
+            <field name="categ_id" ref="categ_imagerie"/>
+            <field name="type">service</field>
+            <field name="list_price">27000</field>
+        </record>
+        <record id="prod_echo_abdominale" model="product.template">
+            <field name="name">Échographie abdominale</field>
+            <field name="categ_id" ref="categ_imagerie"/>
+            <field name="type">service</field>
+            <field name="list_price">15000</field>
+        </record>
+        <record id="prod_echo_pelvienne" model="product.template">
+            <field name="name">Échographie pelvienne</field>
+            <field name="categ_id" ref="categ_imagerie"/>
+            <field name="type">service</field>
+            <field name="list_price">15000</field>
+        </record>
+        <record id="prod_echo_vesico_renale" model="product.template">
+            <field name="name">Échographie vésico-rénale</field>
+            <field name="categ_id" ref="categ_imagerie"/>
+            <field name="type">service</field>
+            <field name="list_price">15000</field>
+        </record>
+        <record id="prod_echo_vesico_prostatique" model="product.template">
+            <field name="name">Échographie vésico-prostatique</field>
+            <field name="categ_id" ref="categ_imagerie"/>
+            <field name="type">service</field>
+            <field name="list_price">15000</field>
+        </record>
+        <record id="prod_echo_mammaire" model="product.template">
+            <field name="name">Échographie mammaire</field>
+            <field name="categ_id" ref="categ_imagerie"/>
+            <field name="type">service</field>
+            <field name="list_price">25000</field>
+        </record>
+        <record id="prod_echo_testiculaire" model="product.template">
+            <field name="name">Échographie testiculaire (Doppler)</field>
+            <field name="categ_id" ref="categ_imagerie"/>
+            <field name="type">service</field>
+            <field name="list_price">25000</field>
+        </record>
+        <record id="prod_echo_parties_molles" model="product.template">
+            <field name="name">Échographie parties molles</field>
+            <field name="categ_id" ref="categ_imagerie"/>
+            <field name="type">service</field>
+            <field name="list_price">25000</field>
+        </record>
+        <record id="prod_echo_endovaginale" model="product.template">
+            <field name="name">Échographie endovaginale</field>
+            <field name="categ_id" ref="categ_imagerie"/>
+            <field name="type">service</field>
+            <field name="list_price">25000</field>
+        </record>
+        <record id="prod_echo_thyroidienne" model="product.template">
+            <field name="name">Échographie thyroïdienne</field>
+            <field name="categ_id" ref="categ_imagerie"/>
+            <field name="type">service</field>
+            <field name="list_price">15000</field>
+        </record>
+        <record id="prod_ecg" model="product.template">
+            <field name="name">ECG (Électrocardiogramme)</field>
+            <field name="categ_id" ref="categ_imagerie"/>
+            <field name="type">service</field>
+            <field name="list_price">15000</field>
+        </record>
+        <record id="prod_radio_thoracique" model="product.template">
+            <field name="name">Radiographie thoracique</field>
+            <field name="categ_id" ref="categ_imagerie"/>
+            <field name="type">service</field>
+            <field name="list_price">15000</field>
+        </record>
+
+        <!-- ============== BIOLOGIE : BIOCHIMIE SANG ============== -->
+        <record id="prod_bio_glycemie" model="product.template">
+            <field name="name">Glycémie</field>
+            <field name="categ_id" ref="categ_bio_biochimie_sang"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B10</field>
+            <field name="list_price">2500</field>
+        </record>
+        <record id="prod_bio_glycemie_pp" model="product.template">
+            <field name="name">Glycémie post-prandiale</field>
+            <field name="categ_id" ref="categ_bio_biochimie_sang"/>
+            <field name="type">service</field>
+            <field name="list_price">17500</field>
+        </record>
+        <record id="prod_bio_creatinine" model="product.template">
+            <field name="name">Créatinine</field>
+            <field name="categ_id" ref="categ_bio_biochimie_sang"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B10</field>
+            <field name="list_price">2500</field>
+        </record>
+        <record id="prod_bio_uree" model="product.template">
+            <field name="name">Urée</field>
+            <field name="categ_id" ref="categ_bio_biochimie_sang"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B10</field>
+            <field name="list_price">2500</field>
+        </record>
+        <record id="prod_bio_chol_total" model="product.template">
+            <field name="name">Cholestérol total</field>
+            <field name="categ_id" ref="categ_bio_biochimie_sang"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B35</field>
+            <field name="list_price">9000</field>
+        </record>
+        <record id="prod_bio_chol_hdl" model="product.template">
+            <field name="name">Cholestérol HDL</field>
+            <field name="categ_id" ref="categ_bio_biochimie_sang"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B35</field>
+            <field name="list_price">9000</field>
+        </record>
+        <record id="prod_bio_chol_ldl" model="product.template">
+            <field name="name">Cholestérol LDL</field>
+            <field name="categ_id" ref="categ_bio_biochimie_sang"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B30</field>
+            <field name="list_price">9000</field>
+        </record>
+        <record id="prod_bio_triglycerides" model="product.template">
+            <field name="name">Triglycérides</field>
+            <field name="categ_id" ref="categ_bio_biochimie_sang"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B10</field>
+            <field name="list_price">2500</field>
+        </record>
+        <record id="prod_bio_asat" model="product.template">
+            <field name="name">Transaminases ASAT</field>
+            <field name="categ_id" ref="categ_bio_biochimie_sang"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B25</field>
+            <field name="list_price">6500</field>
+        </record>
+        <record id="prod_bio_alat" model="product.template">
+            <field name="name">Transaminases ALAT</field>
+            <field name="categ_id" ref="categ_bio_biochimie_sang"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B25</field>
+            <field name="list_price">6500</field>
+        </record>
+        <record id="prod_bio_gamma_gt" model="product.template">
+            <field name="name">Gamma GT</field>
+            <field name="categ_id" ref="categ_bio_biochimie_sang"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B20</field>
+            <field name="list_price">5000</field>
+        </record>
+        <record id="prod_bio_bilirubine_tot" model="product.template">
+            <field name="name">Bilirubine totale</field>
+            <field name="categ_id" ref="categ_bio_biochimie_sang"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B25</field>
+            <field name="list_price">6500</field>
+        </record>
+        <record id="prod_bio_bilirubine_conj" model="product.template">
+            <field name="name">Bilirubine conjuguée</field>
+            <field name="categ_id" ref="categ_bio_biochimie_sang"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B25</field>
+            <field name="list_price">6500</field>
+        </record>
+        <record id="prod_bio_calcium" model="product.template">
+            <field name="name">Calcium (Ca)</field>
+            <field name="categ_id" ref="categ_bio_biochimie_sang"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B20</field>
+            <field name="list_price">5000</field>
+        </record>
+        <record id="prod_bio_magnesium" model="product.template">
+            <field name="name">Magnésium (Mg)</field>
+            <field name="categ_id" ref="categ_bio_biochimie_sang"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B20</field>
+            <field name="list_price">5000</field>
+        </record>
+        <record id="prod_bio_ionogramme" model="product.template">
+            <field name="name">Ionogramme (Na, K, Cl) - 3 paramètres</field>
+            <field name="categ_id" ref="categ_bio_biochimie_sang"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B60</field>
+            <field name="list_price">15000</field>
+        </record>
+        <record id="prod_bio_pal" model="product.template">
+            <field name="name">Phosphatases alcalines</field>
+            <field name="categ_id" ref="categ_bio_biochimie_sang"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B25</field>
+            <field name="list_price">6500</field>
+        </record>
+        <record id="prod_bio_crp" model="product.template">
+            <field name="name">Protéine C réactive (CRP)</field>
+            <field name="categ_id" ref="categ_bio_biochimie_sang"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B10</field>
+            <field name="list_price">3500</field>
+        </record>
+        <record id="prod_bio_protides" model="product.template">
+            <field name="name">Protides totaux</field>
+            <field name="categ_id" ref="categ_bio_biochimie_sang"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B15</field>
+            <field name="list_price">4000</field>
+        </record>
+        <record id="prod_bio_hba1c" model="product.template">
+            <field name="name">Hémoglobine glyquée (HbA1c)</field>
+            <field name="categ_id" ref="categ_bio_biochimie_sang"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B70</field>
+            <field name="list_price">17500</field>
+        </record>
+        <record id="prod_bio_lipase" model="product.template">
+            <field name="name">Lipase</field>
+            <field name="categ_id" ref="categ_bio_biochimie_sang"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B30</field>
+            <field name="list_price">8000</field>
+        </record>
+        <record id="prod_bio_amylase" model="product.template">
+            <field name="name">Amylase</field>
+            <field name="categ_id" ref="categ_bio_biochimie_sang"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B30</field>
+            <field name="list_price">8000</field>
+        </record>
+        <record id="prod_bio_albumine" model="product.template">
+            <field name="name">Albumine</field>
+            <field name="categ_id" ref="categ_bio_biochimie_sang"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B15</field>
+            <field name="list_price">4000</field>
+        </record>
+        <record id="prod_bio_uricemie" model="product.template">
+            <field name="name">Acide urique (uricémie)</field>
+            <field name="categ_id" ref="categ_bio_biochimie_sang"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B10</field>
+            <field name="list_price">5000</field>
+        </record>
+        <record id="prod_bio_acide_lactique" model="product.template">
+            <field name="name">Acide lactique</field>
+            <field name="categ_id" ref="categ_bio_biochimie_sang"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B30</field>
+            <field name="list_price">7500</field>
+        </record>
+        <record id="prod_bio_cpk" model="product.template">
+            <field name="name">Créatinine phosphokinase (CPK)</field>
+            <field name="categ_id" ref="categ_bio_biochimie_sang"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B20</field>
+            <field name="list_price">5000</field>
+        </record>
+
+        <!-- ============== BIOLOGIE : BIOCHIMIE URINAIRE ============== -->
+        <record id="prod_bio_ecbu" model="product.template">
+            <field name="name">ECBU / Bandelette urinaire</field>
+            <field name="categ_id" ref="categ_bio_biochimie_urinaire"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B18</field>
+            <field name="list_price">5400</field>
+        </record>
+
+        <!-- ============== BIOLOGIE : IMMUNOLOGIE ============== -->
+        <record id="prod_bio_electro_hb" model="product.template">
+            <field name="name">Électrophorèse de l'hémoglobine</field>
+            <field name="categ_id" ref="categ_bio_immunologie"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B60</field>
+            <field name="list_price">15000</field>
+        </record>
+        <record id="prod_bio_electro_protides" model="product.template">
+            <field name="name">Électrophorèse des protides</field>
+            <field name="categ_id" ref="categ_bio_immunologie"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B60</field>
+            <field name="list_price">15000</field>
+        </record>
+        <record id="prod_bio_groupe_abo" model="product.template">
+            <field name="name">Groupe sanguin ABO / Rhésus</field>
+            <field name="categ_id" ref="categ_bio_immunologie"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B30</field>
+            <field name="list_price">8000</field>
+        </record>
+        <record id="prod_bio_nfs" model="product.template">
+            <field name="name">Hémogramme (NFS et plaquettes)</field>
+            <field name="categ_id" ref="categ_bio_immunologie"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B45</field>
+            <field name="list_price">8000</field>
+        </record>
+        <record id="prod_bio_reticulocytes" model="product.template">
+            <field name="name">Réticulocytes</field>
+            <field name="categ_id" ref="categ_bio_immunologie"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B10</field>
+            <field name="list_price">2500</field>
+        </record>
+        <record id="prod_bio_cd4" model="product.template">
+            <field name="name">Typage lymphocytaire CD4 + NFS</field>
+            <field name="categ_id" ref="categ_bio_immunologie"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B120</field>
+            <field name="list_price">30000</field>
+        </record>
+        <record id="prod_bio_vs" model="product.template">
+            <field name="name">Vitesse de sédimentation (VS)</field>
+            <field name="categ_id" ref="categ_bio_immunologie"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B8</field>
+            <field name="list_price">2000</field>
+        </record>
+
+        <!-- ============== BIOLOGIE : HÉMOSTASE ============== -->
+        <record id="prod_bio_fibrinemie" model="product.template">
+            <field name="name">Fibrinémie</field>
+            <field name="categ_id" ref="categ_bio_hemostase"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B10</field>
+            <field name="list_price">2500</field>
+        </record>
+        <record id="prod_bio_inr" model="product.template">
+            <field name="name">INR</field>
+            <field name="categ_id" ref="categ_bio_hemostase"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B20</field>
+            <field name="list_price">5000</field>
+        </record>
+        <record id="prod_bio_tp" model="product.template">
+            <field name="name">Taux de prothrombine (TP)</field>
+            <field name="categ_id" ref="categ_bio_hemostase"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B20</field>
+            <field name="list_price">5000</field>
+        </record>
+        <record id="prod_bio_tca" model="product.template">
+            <field name="name">Temps de céphaline activé (TCA / TCK)</field>
+            <field name="categ_id" ref="categ_bio_hemostase"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B20</field>
+            <field name="list_price">5000</field>
+        </record>
+
+        <!-- ============== BIOLOGIE : HORMONES & MARQUEURS ============== -->
+        <record id="prod_bio_amh" model="product.template">
+            <field name="name">AMH (Hormone anti-müllérienne)</field>
+            <field name="categ_id" ref="categ_bio_hormones"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B70</field>
+            <field name="list_price">35000</field>
+        </record>
+        <record id="prod_bio_afp" model="product.template">
+            <field name="name">AFP (Alpha-fœtoprotéine)</field>
+            <field name="categ_id" ref="categ_bio_hormones"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B70</field>
+            <field name="list_price">17500</field>
+        </record>
+        <record id="prod_bio_beta_hcg" model="product.template">
+            <field name="name">Béta HCG</field>
+            <field name="categ_id" ref="categ_bio_hormones"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B150</field>
+            <field name="list_price">25000</field>
+        </record>
+        <record id="prod_bio_fsh" model="product.template">
+            <field name="name">FSH</field>
+            <field name="categ_id" ref="categ_bio_hormones"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B150</field>
+            <field name="list_price">25000</field>
+        </record>
+        <record id="prod_bio_lh" model="product.template">
+            <field name="name">LH</field>
+            <field name="categ_id" ref="categ_bio_hormones"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B150</field>
+            <field name="list_price">25000</field>
+        </record>
+        <record id="prod_bio_oestradiol" model="product.template">
+            <field name="name">Œstradiol</field>
+            <field name="categ_id" ref="categ_bio_hormones"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B150</field>
+            <field name="list_price">25000</field>
+        </record>
+        <record id="prod_bio_progesterone" model="product.template">
+            <field name="name">Progestérone</field>
+            <field name="categ_id" ref="categ_bio_hormones"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B150</field>
+            <field name="list_price">25000</field>
+        </record>
+        <record id="prod_bio_prolactine" model="product.template">
+            <field name="name">Prolactine</field>
+            <field name="categ_id" ref="categ_bio_hormones"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B150</field>
+            <field name="list_price">25000</field>
+        </record>
+        <record id="prod_bio_psa" model="product.template">
+            <field name="name">PSA (Antigène prostatique)</field>
+            <field name="categ_id" ref="categ_bio_hormones"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B150</field>
+            <field name="list_price">25000</field>
+        </record>
+        <record id="prod_bio_t3_libre" model="product.template">
+            <field name="name">T3 libre</field>
+            <field name="categ_id" ref="categ_bio_hormones"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B150</field>
+            <field name="list_price">25000</field>
+        </record>
+        <record id="prod_bio_t4_libre" model="product.template">
+            <field name="name">T4 libre</field>
+            <field name="categ_id" ref="categ_bio_hormones"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B150</field>
+            <field name="list_price">25000</field>
+        </record>
+        <record id="prod_bio_testosterone" model="product.template">
+            <field name="name">Testostérone</field>
+            <field name="categ_id" ref="categ_bio_hormones"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B150</field>
+            <field name="list_price">25000</field>
+        </record>
+        <record id="prod_bio_tsh" model="product.template">
+            <field name="name">TSH us</field>
+            <field name="categ_id" ref="categ_bio_hormones"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B150</field>
+            <field name="list_price">25000</field>
+        </record>
+        <record id="prod_bio_spermogramme" model="product.template">
+            <field name="name">Spermogramme</field>
+            <field name="categ_id" ref="categ_bio_hormones"/>
+            <field name="type">service</field>
+            <field name="list_price">25000</field>
+        </record>
+
+        <!-- ============== BIOLOGIE : SÉROLOGIE / PARASITOLOGIE ============== -->
+        <record id="prod_bio_ge_qbc" model="product.template">
+            <field name="name">Goutte épaisse (GE) / QBC</field>
+            <field name="categ_id" ref="categ_bio_serologie"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B25</field>
+            <field name="list_price">6500</field>
+        </record>
+        <record id="prod_bio_widal" model="product.template">
+            <field name="name">Widal &amp; Felix (fièvre typhoïde)</field>
+            <field name="categ_id" ref="categ_bio_serologie"/>
+            <field name="type">service</field>
+            <field name="list_price">10000</field>
+        </record>
+        <record id="prod_bio_ac_hbc_tot" model="product.template">
+            <field name="name">Anticorps anti-HBc totale</field>
+            <field name="categ_id" ref="categ_bio_serologie"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B70</field>
+            <field name="list_price">17500</field>
+        </record>
+        <record id="prod_bio_ac_hbc_igm" model="product.template">
+            <field name="name">Anticorps anti-HBc IgM</field>
+            <field name="categ_id" ref="categ_bio_serologie"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B70</field>
+            <field name="list_price">17500</field>
+        </record>
+        <record id="prod_bio_ac_hbe" model="product.template">
+            <field name="name">Anticorps anti-Hbe</field>
+            <field name="categ_id" ref="categ_bio_serologie"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B70</field>
+            <field name="list_price">17500</field>
+        </record>
+        <record id="prod_bio_ac_hbs" model="product.template">
+            <field name="name">Anticorps anti-HBs</field>
+            <field name="categ_id" ref="categ_bio_serologie"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B70</field>
+            <field name="list_price">17500</field>
+        </record>
+        <record id="prod_bio_ac_hvc" model="product.template">
+            <field name="name">Anticorps anti-HVC</field>
+            <field name="categ_id" ref="categ_bio_serologie"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B70</field>
+            <field name="list_price">17500</field>
+        </record>
+        <record id="prod_bio_ag_hbe" model="product.template">
+            <field name="name">Antigène Hbe</field>
+            <field name="categ_id" ref="categ_bio_serologie"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B70</field>
+            <field name="list_price">17500</field>
+        </record>
+        <record id="prod_bio_ag_hbs" model="product.template">
+            <field name="name">Antigène HBs</field>
+            <field name="categ_id" ref="categ_bio_serologie"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B70</field>
+            <field name="list_price">17500</field>
+        </record>
+        <record id="prod_bio_ag_hbs_quant" model="product.template">
+            <field name="name">Antigène HBs quantitatif</field>
+            <field name="categ_id" ref="categ_bio_serologie"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B150</field>
+            <field name="list_price">35500</field>
+        </record>
+        <record id="prod_bio_cmv_igg" model="product.template">
+            <field name="name">Sérologie CMV IgG</field>
+            <field name="categ_id" ref="categ_bio_serologie"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B70</field>
+            <field name="list_price">17500</field>
+        </record>
+        <record id="prod_bio_cmv_igm" model="product.template">
+            <field name="name">Sérologie CMV IgM</field>
+            <field name="categ_id" ref="categ_bio_serologie"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B70</field>
+            <field name="list_price">17500</field>
+        </record>
+        <record id="prod_bio_vih_serotypage" model="product.template">
+            <field name="name">Sérologie VIH-1/2 et Sérotypage</field>
+            <field name="categ_id" ref="categ_bio_serologie"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B70</field>
+            <field name="list_price">17500</field>
+        </record>
+        <record id="prod_bio_rubeole_igm" model="product.template">
+            <field name="name">Sérologie Rubéole IgM</field>
+            <field name="categ_id" ref="categ_bio_serologie"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B70</field>
+            <field name="list_price">17500</field>
+        </record>
+        <record id="prod_bio_syphilis" model="product.template">
+            <field name="name">Sérologie Syphilis (VDRL + TPHA)</field>
+            <field name="categ_id" ref="categ_bio_serologie"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B60</field>
+            <field name="list_price">17500</field>
+        </record>
+        <record id="prod_bio_toxo_igg" model="product.template">
+            <field name="name">Sérologie Toxoplasmose IgG</field>
+            <field name="categ_id" ref="categ_bio_serologie"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B70</field>
+            <field name="list_price">17500</field>
+        </record>
+        <record id="prod_bio_toxo_igm" model="product.template">
+            <field name="name">Sérologie Toxoplasmose IgM</field>
+            <field name="categ_id" ref="categ_bio_serologie"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B70</field>
+            <field name="list_price">17500</field>
+        </record>
+        <record id="prod_bio_vih_elisa" model="product.template">
+            <field name="name">Sérologie VIH ELISA (HIV combi)</field>
+            <field name="categ_id" ref="categ_bio_serologie"/>
+            <field name="type">service</field>
+            <field name="cotation_code">B70</field>
+            <field name="list_price">17500</field>
+        </record>
+
+        <!-- ============== CERTIFICATS MÉDICAUX ============== -->
+        <record id="prod_cert_grossesse" model="product.template">
+            <field name="name">Certificat de grossesse</field>
+            <field name="categ_id" ref="categ_certificats"/>
+            <field name="type">service</field>
+            <field name="list_price">5000</field>
+        </record>
+        <record id="prod_cert_genre_mort" model="product.template">
+            <field name="name">Certificat de genre de mort</field>
+            <field name="categ_id" ref="categ_certificats"/>
+            <field name="type">service</field>
+            <field name="list_price">15000</field>
+        </record>
+        <record id="prod_cert_deces" model="product.template">
+            <field name="name">Certificat de décès</field>
+            <field name="categ_id" ref="categ_certificats"/>
+            <field name="type">service</field>
+            <field name="list_price">0</field>
+        </record>
+        <record id="prod_cert_milieu_hospitalier" model="product.template">
+            <field name="name">Certificat en milieu hospitalier</field>
+            <field name="categ_id" ref="categ_certificats"/>
+            <field name="type">service</field>
+            <field name="list_price">0</field>
+        </record>
+        <record id="prod_cert_non_contagion" model="product.template">
+            <field name="name">Certificat de non contagion</field>
+            <field name="categ_id" ref="categ_certificats"/>
+            <field name="type">service</field>
+            <field name="list_price">5000</field>
+        </record>
+        <record id="prod_cert_aptitude_travail" model="product.template">
+            <field name="name">Certificat d'aptitude / inaptitude au travail</field>
+            <field name="categ_id" ref="categ_certificats"/>
+            <field name="type">service</field>
+            <field name="list_price">30000</field>
+        </record>
+        <record id="prod_cert_visite_contre_visite" model="product.template">
+            <field name="name">Certificat de visite et contre visite</field>
+            <field name="categ_id" ref="categ_certificats"/>
+            <field name="type">service</field>
+            <field name="list_price">10000</field>
+        </record>
+        <record id="prod_cert_rapport_medical" model="product.template">
+            <field name="name">Rapport médical à la demande du patient</field>
+            <field name="categ_id" ref="categ_certificats"/>
+            <field name="type">service</field>
+            <field name="list_price">25000</field>
+        </record>
+        <record id="prod_cert_arret_travail" model="product.template">
+            <field name="name">Arrêt de travail (repos médical)</field>
+            <field name="categ_id" ref="categ_certificats"/>
+            <field name="type">service</field>
+            <field name="list_price">0</field>
+        </record>
+        <record id="prod_cert_coups_blessures" model="product.template">
+            <field name="name">Certificat de coups et blessures</field>
+            <field name="categ_id" ref="categ_certificats"/>
+            <field name="type">service</field>
+            <field name="list_price">50000</field>
+        </record>
+        <record id="prod_cert_prenuptial" model="product.template">
+            <field name="name">Certificat médical prénuptial</field>
+            <field name="categ_id" ref="categ_certificats"/>
+            <field name="type">service</field>
+            <field name="list_price">20000</field>
+        </record>
+        <record id="prod_cert_accident_travail" model="product.template">
+            <field name="name">Certificat médical accident de travail + maladie professionnelle</field>
+            <field name="categ_id" ref="categ_certificats"/>
+            <field name="type">service</field>
+            <field name="list_price">50000</field>
+        </record>
+        <record id="prod_cert_aptitude_pro" model="product.template">
+            <field name="name">Certificat d'aptitude professionnel</field>
+            <field name="categ_id" ref="categ_certificats"/>
+            <field name="type">service</field>
+            <field name="list_price">30000</field>
+        </record>
+        <record id="prod_cert_bonne_sante" model="product.template">
+            <field name="name">Certificat médical de bonne santé</field>
+            <field name="categ_id" ref="categ_certificats"/>
+            <field name="type">service</field>
+            <field name="list_price">30000</field>
+        </record>
+        <record id="prod_cert_age_physiologique" model="product.template">
+            <field name="name">Certificat d'âge physiologique</field>
+            <field name="categ_id" ref="categ_certificats"/>
+            <field name="type">service</field>
+            <field name="list_price">30000</field>
+        </record>
+        <record id="prod_cert_visite_enfants" model="product.template">
+            <field name="name">Certificat de visite périodique des enfants</field>
+            <field name="categ_id" ref="categ_certificats"/>
+            <field name="type">service</field>
+            <field name="list_price">5000</field>
+        </record>
+        <record id="prod_cert_suivi_medical" model="product.template">
+            <field name="name">Certificat de suivi médical</field>
+            <field name="categ_id" ref="categ_certificats"/>
+            <field name="type">service</field>
+            <field name="list_price">20000</field>
+        </record>
+        <record id="prod_cert_tension_arterielle" model="product.template">
+            <field name="name">Certificat de prise de tension artérielle</field>
+            <field name="categ_id" ref="categ_certificats"/>
+            <field name="type">service</field>
+            <field name="list_price">10000</field>
+        </record>
+        <record id="prod_cert_reprise_service" model="product.template">
+            <field name="name">Certificat de reprise de service</field>
+            <field name="categ_id" ref="categ_certificats"/>
+            <field name="type">service</field>
+            <field name="list_price">0</field>
+        </record>
+        <record id="prod_cert_aptitude_conduite" model="product.template">
+            <field name="name">Certificat d'aptitude de conduite</field>
+            <field name="categ_id" ref="categ_certificats"/>
+            <field name="type">service</field>
+            <field name="list_price">20000</field>
+        </record>
+        <record id="prod_cert_dispense_eps" model="product.template">
+            <field name="name">Certificat de dispense d'EPS</field>
+            <field name="categ_id" ref="categ_certificats"/>
+            <field name="type">service</field>
+            <field name="list_price">5000</field>
+        </record>
+        <record id="prod_cert_virginite" model="product.template">
+            <field name="name">Certificat médical de virginité</field>
+            <field name="categ_id" ref="categ_certificats"/>
+            <field name="type">service</field>
+            <field name="list_price">50000</field>
+        </record>
+    </data>
+</odoo>

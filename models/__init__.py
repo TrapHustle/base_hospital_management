@@ -30,6 +30,9 @@ from . import hospital_bed
 from . import hospital_building
 from . import hospital_degree
 from . import hospital_family
+from . import hospital_certificate
+from . import hospital_imaging
+from . import hospital_transfer
 from . import hospital_inpatient
 from . import hospital_insurance
 from . import hospital_laboratory
@@ -46,13 +49,17 @@ from . import lab_test
 from . import lab_test_line
 from . import lab_test_result
 from . import medicine_brand
+from . import medicine_category
 from . import nursing_plan
 from . import patient_lab_test
 from . import patient_room
 from . import pharmacy_medicine
 from . import prescription_line
+from . import prescription_report
+from . import product_pricelist
 from . import product_template
 from . import res_partner
+from . import sale_order
 from . import res_users
 # Extensions (importées APRÈS les modèles de base)
 from . import dashboard_methods

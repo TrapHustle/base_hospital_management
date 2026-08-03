@@ -15,6 +15,10 @@
                 <field name="medicine_brand_id"
                        invisible="(vaccine_ok == False) and
                        (medicine_ok == False)"/>
+                <field name="medicine_category_id"
+                       invisible="medicine_ok == False"
+                       options="{'no_quick_create': False}"/>
+                <field name="cotation_code"/>
                 <field name="pharmacy_id"
                        invisible="(vaccine_ok == False) and (medicine_ok == False)"
                        options="{'no_create': True, 'no_edit': True}"/>

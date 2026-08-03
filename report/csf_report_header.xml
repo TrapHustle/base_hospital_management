@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- =============================================================== -->
+    <!--  EN-TÊTE / PIED DE PAGE CSF MEDICAL CENTER (codés en dur)        -->
+    <!--  Réutilisés par toutes les fiches imprimables via t-call.       -->
+    <!--  Pour modifier le nom/coordonnées : ici, une seule fois.        -->
+    <!-- =============================================================== -->
+    <template id="csf_report_header">
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+                <td style="width: 160px; vertical-align: top;">
+                    <!-- Logo CSF : croix entrelacées + signature -->
+                    <img src="/base_hospital_management/static/src/img/csf_logo_full.png"
+                         alt="CSF Medical Center" style="width: 150px;"/>
+                </td>
+                <td style="vertical-align: top; padding-left: 10px;">
+                    <div style="font-size: 9.5px; color: #444; margin-top: 4px; line-height: 1.55;">
+                        Cocody Angré Bessikoï, non loin du CHU d'Angré, 200m du carrefour de la base CIE Djorogobité<br/>
+                        Email : csfmedicalcenter@gmail.com &#160;·&#160; Tél : +225 27 23 59 07 95 &#160;·&#160; Cel : +225 07 78 88 03 04
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <div style="border-bottom: 2px solid #1E5C4B; margin-top: 6px;"/>
+    </template>
+
+    <!--  Pied de page CSF (codé en dur)  -->
+    <template id="csf_report_footer">
+        <div style="border-top: 2px solid #1E5C4B; margin-top: 26px; padding-top: 6px; text-align: center; color: #777; font-size: 9px;">
+            CSF Medical Center · Cocody Angré Bessikoï, Abidjan · Tél : +225 27 23 59 07 95 / 07 78 88 03 04
+        </div>
+    </template>
+</odoo>

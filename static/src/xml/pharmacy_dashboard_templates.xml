@@ -86,7 +86,7 @@
                                 <span class="kpi-trend up" t-out="'+' + state.stats.revenue_trend + '%'"/>
                             </div>
                             <div>
-                                <div class="kpi-label">Entrées de stock — Ce mois</div>
+                                <div class="kpi-label">Entrées de stock ce mois</div>
                                 <div class="kpi-value" t-out="state.stats.total_medicines"/>
                             </div>
                             <div class="kpi-sub">
@@ -155,7 +155,7 @@
                             <div class="card-header">
                                 <div>
                                     <div class="card-title">Évolution des Flux</div>
-                                    <div class="card-subtitle">Entrées de stock vs ventes — 7 derniers jours</div>
+                                    <div class="card-subtitle">Entrées de stock vs ventes (7 derniers jours)</div>
                                 </div>
                                 <button class="btn btn-outline" style="padding:5px 12px;font-size:12px;">Hebdomadaire</button>
                             </div>
@@ -214,7 +214,7 @@
                                                 <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1L1 14h14L8 1zm0 5v4"/><circle cx="8" cy="12" r="0.8"/></svg>
                                             </div>
                                             <div class="alert-body">
-                                                <div class="alert-text urgent"><t t-out="item.name"/> — Rupture de stock imminente</div>
+                                                <div class="alert-text urgent"><t t-out="item.name"/> : rupture de stock imminente</div>
                                                 <div class="alert-when">AUJOURD'HUI</div>
                                             </div>
                                         </div>
@@ -228,7 +228,7 @@
                                                 <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 4v4l2.5 2.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
                                             </div>
                                             <div class="alert-body">
-                                                <div class="alert-text"><t t-out="item.name"/> — Expire bientôt</div>
+                                                <div class="alert-text"><t t-out="item.name"/> : expire bientôt</div>
                                                 <div class="alert-when">DANS 12J</div>
                                             </div>
                                         </div>
@@ -240,7 +240,7 @@
                                         <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 7v4M8 5v1" stroke="currentColor" stroke-width="1.5"/></svg>
                                     </div>
                                     <div class="alert-body">
-                                        <div class="alert-text">Stock critique — Article à vérifier</div>
+                                        <div class="alert-text">Stock critique : article à vérifier</div>
                                         <div class="alert-when">AUJOURD'HUI</div>
                                     </div>
                                 </div>

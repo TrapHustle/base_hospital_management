@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!--  Liste éditable : le tarif assuré se règle directement ici  -->
+    <record id="product_pricelist_view_tree_csf" model="ir.ui.view">
+        <field name="name">product.pricelist.view.tree.csf</field>
+        <field name="model">product.pricelist</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="name" string="Liste de prix"/>
+                <field name="csf_insurance_margin"
+                       string="Marge assurance (%)"/>
+                <field name="currency_id" optional="hide"/>
+            </list>
+        </field>
+    </record>
+    <!--  Marge visible aussi sur le formulaire natif de liste de prix  -->
+    <record id="product_pricelist_view_form_csf" model="ir.ui.view">
+        <field name="name">product.pricelist.view.form.csf</field>
+        <field name="model">product.pricelist</field>
+        <field name="inherit_id" ref="product.product_pricelist_view"/>
+        <field name="arch" type="xml">
+            <group name="pricelist_settings" position="inside">
+                <field name="csf_insurance_margin"/>
+            </group>
+        </field>
+    </record>
+    <record id="product_pricelist_action_csf" model="ir.actions.act_window">
+        <field name="name">Marge assurance</field>
+        <field name="res_model">product.pricelist</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="product_pricelist_view_tree_csf"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Réglez la marge assurance
+            </p>
+            <p>
+                Le prix de base d'un acte est le tarif <b>non assuré</b>.
+                La marge ci-dessous donne le tarif <b>assuré</b> :
+                20 = tarif assuré supérieur de 20 %, -10 = remise de 10 %.
+            </p>
+        </field>
+    </record>
+    <menuitem id="hospital_pricelist_menu" name="Marge assurance" sequence="7"
+              parent="hospital_menu_configuration"
+              action="product_pricelist_action_csf"/>
+</odoo>

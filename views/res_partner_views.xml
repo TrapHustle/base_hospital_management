@@ -9,6 +9,10 @@
                 <field name="name" string="Name"/>
                 <field name="patient_seq" string="Patient Code"/>
                 <field name="gender" string="Gender"/>
+                <filter name="filter_is_patient" string="Patients"
+                        domain="[('is_patient', '=', True)]"/>
+                <filter name="filter_not_patient" string="Non patients"
+                        domain="[('is_patient', '=', False)]"/>
             </search>
         </field>
     </record>
@@ -65,6 +69,15 @@
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
+                        <button name="action_toggle_is_patient" type="object"
+                                class="oe_stat_button" icon="fa-user-md">
+                            <span class="o_stat_text text-success"
+                                  invisible="not is_patient">Est un patient
+                            </span>
+                            <span class="o_stat_text text-muted"
+                                  invisible="is_patient">Pas un patient
+                            </span>
+                        </button>
                         <button name="action_view_invoice" type="object"
                                 class="oe_stat_button"
                                 invisible="name == False"
@@ -105,6 +118,7 @@
                                    options="{&quot;always_reload&quot;: True}"/>
                             <field name="date_of_birth"/>
                             <field name="phone"/>
+                            <field name="is_patient" widget="boolean_toggle"/>
                         </group>
                         <group>
                             <label for="blood_group" string="Blood Group"/>
@@ -452,7 +466,8 @@
         (0, 0,{'view_mode': 'kanban', 'view_id': ref('res_partner_view_kanban')}),
         (0, 0,{'view_mode': 'list', 'view_id': ref('res_partner_view_tree')}),
         (0, 0,{'view_mode': 'form', 'view_id': ref('res_partner_view_form')})]"/>
-        <field name="domain">[('patient_seq','not in',['New', 'Employee', 'User'])]</field>
+        <field name="domain">[('is_patient','=',True)]</field>
+        <field name="context">{'default_is_patient': True}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Create a new Patient</p>
         </field>

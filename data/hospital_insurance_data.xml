@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- ================================================================ -->
+    <!--  COMPAGNIES D'ASSURANCE - CSF Medical Center                     -->
+    <!--  Source : fiche papier des assurances.                           -->
+    <!--                                                                   -->
+    <!--  /!\ La fiche papier contient aussi des IDENTIFIANTS et des      -->
+    <!--      MOTS DE PASSE. Ils ne doivent JAMAIS être chargés ici ni    -->
+    <!--      poussés sur GitHub. Seuls les noms sont repris.             -->
+    <!--                                                                   -->
+    <!--  La couverture totale n'est pas renseignée (non fournie).        -->
+    <!-- ================================================================ -->
+    <data noupdate="1">
+        <record id="insurance_atlantique" model="hospital.insurance">
+            <field name="name">Atlantique Assurances</field>
+        </record>
+        <record id="insurance_jayme_sante" model="hospital.insurance">
+            <field name="name">Jayme Santé Assurances</field>
+        </record>
+        <record id="insurance_seven" model="hospital.insurance">
+            <field name="name">Seven Assurances</field>
+        </record>
+        <record id="insurance_willis_towers_watson" model="hospital.insurance">
+            <field name="name">Willis Towers Watson</field>
+        </record>
+        <record id="insurance_ankara" model="hospital.insurance">
+            <field name="name">Ankara Assurances</field>
+        </record>
+        <record id="insurance_olea" model="hospital.insurance">
+            <field name="name">Olea Assurances</field>
+        </record>
+        <record id="insurance_amgs_sante" model="hospital.insurance">
+            <field name="name">AMGS Santé</field>
+        </record>
+        <record id="insurance_vitalis" model="hospital.insurance">
+            <field name="name">Vitalis Assurances</field>
+        </record>
+        <record id="insurance_mci" model="hospital.insurance">
+            <field name="name">MCI Assurance</field>
+        </record>
+    </data>
+</odoo>

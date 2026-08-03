@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!--    Medical certificate tree view-->
+    <record id="hospital_certificate_view_tree" model="ir.ui.view">
+        <field name="name">hospital.certificate.view.tree</field>
+        <field name="model">hospital.certificate</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="reference"/>
+                <field name="certificate_date"/>
+                <field name="patient_id"/>
+                <field name="certificate_type"/>
+                <field name="doctor_id"/>
+            </list>
+        </field>
+    </record>
+    <!--    Medical certificate form view-->
+    <record id="hospital_certificate_view_form" model="ir.ui.view">
+        <field name="name">hospital.certificate.view.form</field>
+        <field name="model">hospital.certificate</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="reference" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="patient_id"/>
+                            <field name="patient_age"/>
+                            <field name="certificate_date"/>
+                        </group>
+                        <group>
+                            <field name="certificate_type"/>
+                            <field name="doctor_id"/>
+                            <field name="onmci"/>
+                        </group>
+                    </group>
+                    <!--    Repos médical : seulement pour l'arrêt de travail-->
+                    <group string="Repos médical"
+                           invisible="certificate_type != 'arret_travail'">
+                        <field name="rest_days"/>
+                        <field name="rest_start"/>
+                    </group>
+                    <separator string="Texte du certificat"/>
+                    <field name="body"
+                           placeholder="Corps du certificat, modifiable avant impression…"/>
+                    <separator string="Observations"/>
+                    <field name="observation"
+                           placeholder="Mentions complémentaires…"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!--    Medical certificate search view-->
+    <record id="hospital_certificate_view_search" model="ir.ui.view">
+        <field name="name">hospital.certificate.view.search</field>
+        <field name="model">hospital.certificate</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="reference"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_patient" string="Patient"
+                            context="{'group_by': 'patient_id'}"/>
+                    <filter name="group_type" string="Type"
+                            context="{'group_by': 'certificate_type'}"/>
+                    <filter name="group_date" string="Date"
+                            context="{'group_by': 'certificate_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <!--    Medical certificate action-->
+    <record id="hospital_certificate_action" model="ir.actions.act_window">
+        <field name="name">Certificats médicaux</field>
+        <field name="res_model">hospital.certificate</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Délivrer un nouveau certificat médical
+            </p>
+            <p>
+                Les 22 certificats du tarif CSF. Le choix du type pré-remplit
+                le corps du certificat, que le médecin ajuste avant impression.
+            </p>
+        </field>
+    </record>
+    <!--    Medical certificate menu-->
+    <menuitem id="hospital_certificate_menu" name="Certificats médicaux"
+              sequence="3" parent="hospital_menu_fiches"
+              action="hospital_certificate_action"/>
+</odoo>

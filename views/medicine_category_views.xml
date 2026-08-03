@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!--    Medicine category tree view-->
+    <record id="medicine_category_view_tree" model="ir.ui.view">
+        <field name="name">medicine.category.view.tree</field>
+        <field name="model">medicine.category</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="medicine_count"/>
+            </list>
+        </field>
+    </record>
+    <!--    Medicine category form view-->
+    <record id="medicine_category_view_form" model="ir.ui.view">
+        <field name="name">medicine.category.view.form</field>
+        <field name="model">medicine.category</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="ex : Antibiotiques"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <field name="description"/>
+                        <field name="active" invisible="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Médicaments">
+                            <field name="medicine_ids">
+                                <list>
+                                    <field name="default_code"
+                                           string="Référence"/>
+                                    <field name="name" string="Médicament"/>
+                                    <field name="medicine_brand_id"
+                                           string="Marque"/>
+                                    <field name="list_price" string="Prix"/>
+                                    <field name="qty_available"
+                                           string="Disponible"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!--    Medicine category action-->
+    <record id="medicine_category_action" model="ir.actions.act_window">
+        <field name="name">Catégories de médicaments</field>
+        <field name="res_model">medicine.category</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créer une nouvelle catégorie de médicament
+            </p>
+            <p>
+                Regroupez vos médicaments par classe thérapeutique
+                (Antibiotiques, Antalgiques, etc.).
+            </p>
+        </field>
+    </record>
+    <!--    Medicine category menu-->
+    <menuitem id="medicine_category_menu" name="Catégories de médicaments"
+              sequence="4" parent="hospital_menu_configuration"
+              action="medicine_category_action"/>
+</odoo>

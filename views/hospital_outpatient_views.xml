@@ -153,12 +153,22 @@
                                    string="Prescription">
                                 <list editable="bottom">
                                     <field name="medicine_id"/>
-                                    <field name="no_intakes"/>
-                                    <field name="time"/>
-                                    <field name="note"/>
-                                    <field name="quantity"/>
+                                    <field name="forme_galenique"/>
+                                    <field name="dosage"/>
+                                    <field name="quantity" string="Nombre"/>
+                                    <field name="posologie"/>
+                                    <field name="no_intakes" optional="hide"/>
+                                    <field name="time" optional="hide"/>
+                                    <field name="note" optional="hide"/>
                                 </list>
                             </field>
+                            <group string="Validité de l'ordonnance">
+                                <field name="prescription_validity"/>
+                                <field name="renewable_months"
+                                       invisible="prescription_validity != 'renouvelable'"/>
+                                <field name="renewable_times"
+                                       invisible="prescription_validity != 'renouvelable'"/>
+                            </group>
                         </page>
                     </notebook>
                 </sheet>

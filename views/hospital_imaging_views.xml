@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!--    Imaging report tree view-->
+    <record id="hospital_imaging_view_tree" model="ir.ui.view">
+        <field name="name">hospital.imaging.view.tree</field>
+        <field name="model">hospital.imaging</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="reference"/>
+                <field name="exam_date"/>
+                <field name="patient_id"/>
+                <field name="exam_type"/>
+                <field name="exam_demande"/>
+                <field name="doctor_id"/>
+            </list>
+        </field>
+    </record>
+    <!--    Imaging report form view-->
+    <record id="hospital_imaging_view_form" model="ir.ui.view">
+        <field name="name">hospital.imaging.view.form</field>
+        <field name="model">hospital.imaging</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="reference" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="patient_id"/>
+                            <field name="patient_age"/>
+                            <field name="exam_date"/>
+                            <field name="exam_type"/>
+                        </group>
+                        <group>
+                            <field name="exam_demande"/>
+                            <field name="indication"/>
+                            <field name="prescriber_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <!--    Comptes rendus rédigés : radio et échographies-->
+                        <page string="Compte rendu"
+                              invisible="exam_type == 'ophtalmo'">
+                            <separator string="Technique"/>
+                            <field name="technique"
+                                   placeholder="Technique utilisée…"/>
+                            <separator string="Résultats"/>
+                            <field name="resultats"
+                                   placeholder="Résultats de l'examen…"/>
+                        </page>
+                        <!--    Compte rendu ophtalmo : tableau OD / OG-->
+                        <page string="Acuité visuelle"
+                              invisible="exam_type != 'ophtalmo'">
+                            <group>
+                                <group string="Œil droit">
+                                    <field name="av_loin_od"/>
+                                    <field name="av_pres_od"/>
+                                    <field name="fond_oeil_od"/>
+                                </group>
+                                <group string="Œil gauche">
+                                    <field name="av_loin_og"/>
+                                    <field name="av_pres_og"/>
+                                    <field name="fond_oeil_og"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Signataire">
+                            <group>
+                                <field name="doctor_id"/>
+                                <field name="doctor_role"/>
+                                <field name="onmci"/>
+                            </group>
+                        </page>
+                    </notebook>
+                    <separator string="Conclusion"/>
+                    <field name="conclusion"
+                           placeholder="Conclusion du compte rendu…"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!--    Imaging report search view-->
+    <record id="hospital_imaging_view_search" model="ir.ui.view">
+        <field name="name">hospital.imaging.view.search</field>
+        <field name="model">hospital.imaging</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="reference"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <filter name="filter_radio" string="Radiographie"
+                        domain="[('exam_type', '=', 'radio_thorax')]"/>
+                <filter name="filter_echo" string="Échographie"
+                        domain="[('exam_type', 'in', ['echo_mammaire', 'echo_pelvis_masc'])]"/>
+                <filter name="filter_ophtalmo" string="Ophtalmologie"
+                        domain="[('exam_type', '=', 'ophtalmo')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_patient" string="Patient"
+                            context="{'group_by': 'patient_id'}"/>
+                    <filter name="group_type" string="Type d'examen"
+                            context="{'group_by': 'exam_type'}"/>
+                    <filter name="group_date" string="Date"
+                            context="{'group_by': 'exam_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <!--    Imaging report action-->
+    <record id="hospital_imaging_action" model="ir.actions.act_window">
+        <field name="name">Comptes rendus d'imagerie</field>
+        <field name="res_model">hospital.imaging</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Rédiger un nouveau compte rendu
+            </p>
+            <p>
+                Radiographie, échographie mammaire, échographie du pelvis
+                masculin ou compte rendu ophtalmologique. Le choix du type
+                pré-remplit le texte type de la fiche papier.
+            </p>
+        </field>
+    </record>
+    <!--    Imaging report menu-->
+    <menuitem id="hospital_imaging_menu" name="Comptes rendus d'imagerie"
+              sequence="1" parent="hospital_menu_fiches"
+              action="hospital_imaging_action"/>
+</odoo>

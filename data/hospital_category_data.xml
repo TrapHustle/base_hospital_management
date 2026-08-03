@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- ================================================================ -->
+    <!--  Catégories de PRODUITS (product.category) - CSF Medical Center  -->
+    <!--  Construites d'après les fiches tarifaires de la clinique.       -->
+    <!--  noupdate=1 : vos modifications dans l'interface ne seront pas   -->
+    <!--  écrasées lors d'une mise à jour du module.                      -->
+    <!-- ================================================================ -->
+    <data noupdate="1">
+        <!--  Consultations  -->
+        <record id="categ_consultations" model="product.category">
+            <field name="name">Consultations</field>
+        </record>
+        <!--  Soins et surveillance  -->
+        <record id="categ_soins" model="product.category">
+            <field name="name">Soins &amp; surveillance</field>
+        </record>
+        <!--  Imagerie  -->
+        <record id="categ_imagerie" model="product.category">
+            <field name="name">Imagerie</field>
+        </record>
+        <!--  Biologie (parent)  -->
+        <record id="categ_biologie" model="product.category">
+            <field name="name">Biologie</field>
+        </record>
+        <!--  Biologie : sous-catégories  -->
+        <record id="categ_bio_biochimie_sang" model="product.category">
+            <field name="name">Biochimie sang</field>
+            <field name="parent_id" ref="categ_biologie"/>
+        </record>
+        <record id="categ_bio_biochimie_urinaire" model="product.category">
+            <field name="name">Biochimie urinaire</field>
+            <field name="parent_id" ref="categ_biologie"/>
+        </record>
+        <record id="categ_bio_immunologie" model="product.category">
+            <field name="name">Immunologie</field>
+            <field name="parent_id" ref="categ_biologie"/>
+        </record>
+        <record id="categ_bio_hemostase" model="product.category">
+            <field name="name">Hémostase</field>
+            <field name="parent_id" ref="categ_biologie"/>
+        </record>
+        <record id="categ_bio_serologie" model="product.category">
+            <field name="name">Sérologie / Parasitologie</field>
+            <field name="parent_id" ref="categ_biologie"/>
+        </record>
+        <record id="categ_bio_hormones" model="product.category">
+            <field name="name">Hormones &amp; marqueurs tumoraux</field>
+            <field name="parent_id" ref="categ_biologie"/>
+        </record>
+        <!--  Certificats médicaux  -->
+        <record id="categ_certificats" model="product.category">
+            <field name="name">Certificats médicaux</field>
+        </record>
+        <!--  Consommables (stock)  -->
+        <record id="categ_consommables" model="product.category">
+            <field name="name">Consommables</field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!--  Catégories de MÉDICAMENTS (medicine.category)               -->
+        <!--  2 catégories de départ - à compléter depuis l'interface.    -->
+        <!-- ============================================================ -->
+        <record id="medcateg_antibiotiques" model="medicine.category">
+            <field name="name">Antibiotiques</field>
+            <field name="description">Médicaments destinés à traiter les
+                infections bactériennes.</field>
+        </record>
+        <record id="medcateg_antalgiques" model="medicine.category">
+            <field name="name">Antalgiques</field>
+            <field name="description">Médicaments contre la douleur
+                (antidouleurs).</field>
+        </record>
+    </data>
+</odoo>

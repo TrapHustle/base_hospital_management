@@ -24,117 +24,125 @@
         <field name="paperformat_id" ref="base_hospital_management.paperformat_prescription"/>
         <field name="binding_type">report</field>
     </record>
-    <!--    Patient prescription report template (ordonnance française)-->
+    <!--    Patient prescription report template (ordonnance format CSF)-->
     <template id="patient_prescription_report">
         <t t-call="web.basic_layout">
-            <div class="page" style="font-family: Arial, Helvetica, sans-serif; color: #2C2C2C; font-size: 12px;">
+            <div class="page" style="font-family: Arial, Helvetica, sans-serif; color: #1c1c1c; font-size: 12px;">
 
-                <!-- ============ BANDEAU EN-TÊTE (diagonales teal) ============ -->
-                <div style="position: relative; background-color: #017E84; height: 112px; overflow: hidden;">
-                    <div style="position: absolute; top: 0; left: 0; width: 0; height: 0; border-top: 112px solid #00A09D; border-right: 300px solid transparent;"/>
-                    <div style="position: absolute; top: 0; left: 150px; width: 0; height: 0; border-top: 112px solid #33B3AF; border-right: 240px solid transparent; opacity: 0.55;"/>
-                    <div style="position: absolute; top: 20px; left: 30px; color: #ffffff;">
-                        <div style="font-size: 25px; font-weight: bold;"><t t-esc="doctor_name"/></div>
-                        <div style="font-size: 11px; letter-spacing: 4px; margin-top: 6px; text-transform: uppercase;"><t t-esc="doctor_dept"/></div>
-                    </div>
-                    <!-- Pastille ronde à droite -->
-                    <div style="position: absolute; top: 15px; right: 26px; width: 82px; height: 82px; border-radius: 50%; background-color: #ffffff;">
-                        <div style="margin: 7px; width: 68px; height: 68px; border-radius: 50%; background-color: #00A09D; color: #ffffff; text-align: center; font-size: 36px; font-weight: bold; line-height: 66px;">+</div>
-                    </div>
+                <!-- ============ EN-TÊTE CSF (codé en dur) ============ -->
+                <t t-call="base_hospital_management.csf_report_header"/>
+
+                <!-- ============ TITRE ============ -->
+                <div style="text-align: center; margin: 18px 0 14px 0;">
+                    <span style="font-size: 22px; font-weight: bold; letter-spacing: 3px; color: #6E2C50;">ORDONNANCE MÉDICALE</span>
                 </div>
 
-                <!-- ============ INFOS PATIENT (lignes à compléter) ============ -->
-                <div style="padding: 22px 12px 6px 12px;">
-                    <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
-                        <tr>
-                            <td style="padding: 7px 4px; width: 62%;">
-                                <span style="color: #017E84; font-weight: bold;">Patient :</span>
-                                <span style="display: inline-block; border-bottom: 1px solid #7FC6C3; min-width: 240px; padding: 0 8px; font-weight: bold;"><t t-esc="patient_name"/></span>
-                            </td>
-                            <td style="padding: 7px 4px;">
-                                <span style="color: #017E84; font-weight: bold;">Date :</span>
-                                <span style="display: inline-block; border-bottom: 1px solid #7FC6C3; min-width: 110px; padding: 0 8px;"><t t-esc="date"/></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 7px 4px;">
-                                <span style="color: #017E84; font-weight: bold;">Âge :</span>
-                                <span style="display: inline-block; border-bottom: 1px solid #7FC6C3; min-width: 60px; padding: 0 8px;"><t t-esc="patient_age"/><t t-if="patient_age != ''"> ans</t></span>
-                                <span style="color: #017E84; font-weight: bold; margin-left: 14px;">Genre :</span>
-                                <span style="display: inline-block; border-bottom: 1px solid #7FC6C3; min-width: 80px; padding: 0 8px;"><t t-esc="patient_gender"/></span>
-                            </td>
-                            <td style="padding: 7px 4px;">
-                                <span style="color: #017E84; font-weight: bold;">N° dossier :</span>
-                                <span style="display: inline-block; border-bottom: 1px solid #7FC6C3; min-width: 90px; padding: 0 8px; font-weight: bold; color: #015a5f;"><t t-esc="patient_seq"/></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" style="padding: 7px 4px;">
-                                <span style="color: #017E84; font-weight: bold;">Diagnostic :</span>
-                                <span style="display: inline-block; border-bottom: 1px solid #7FC6C3; min-width: 420px; padding: 0 8px;"><t t-esc="diagnosis"/></span>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
+                <!-- ============ INFOS PATIENT / PRESCRIPTEUR ============ -->
+                <table style="width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 10px;">
+                    <tr>
+                        <td style="padding: 5px 4px; width: 65%;">
+                            <b>Nom et prénoms :</b>
+                            <span style="border-bottom: 1px dotted #555; padding: 0 8px; font-weight: bold;"><t t-esc="patient_name"/></span>
+                        </td>
+                        <td style="padding: 5px 4px;">
+                            <b>Âge :</b>
+                            <span style="border-bottom: 1px dotted #555; padding: 0 8px;"><t t-esc="patient_age"/><t t-if="patient_age != ''"> ans</t></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 5px 4px;">
+                            <b>Médecin prescripteur :</b>
+                            <span style="border-bottom: 1px dotted #555; padding: 0 8px;"><t t-esc="doctor_name"/></span>
+                        </td>
+                        <td style="padding: 5px 4px;">
+                            <b>Date :</b>
+                            <span style="border-bottom: 1px dotted #555; padding: 0 8px;"><t t-esc="date"/></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="padding: 5px 4px;">
+                            <b>N° de dossier :</b>
+                            <span style="border-bottom: 1px dotted #555; padding: 0 8px; font-weight: bold; color: #6E2C50;"><t t-esc="patient_seq"/></span>
+                        </td>
+                    </tr>
+                </table>
 
-                <!-- ============ GRAND Rx + PRESCRIPTIONS ============ -->
-                <div style="padding: 8px 12px 0 12px;">
-                    <div style="font-family: Georgia, 'Times New Roman', serif; font-size: 58px; font-weight: bold; color: #017E84; line-height: 1;">
-                        R<span style="font-size: 32px;">x</span>
-                    </div>
-                    <table style="width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 12px;">
-                        <t t-set="i" t-value="0"/>
+                <!-- ============ TABLEAU DES MÉDICAMENTS ============ -->
+                <table style="width: 100%; border-collapse: collapse; font-size: 12px; border: 1px solid #1E5C4B;">
+                    <thead>
+                        <tr style="background-color: #1E5C4B; color: #ffffff;">
+                            <th style="border: 1px solid #1E5C4B; padding: 7px 6px; width: 6%;">N°</th>
+                            <th style="border: 1px solid #1E5C4B; padding: 7px 6px; text-align: left; width: 49%;">Médicament / Forme galénique / Dosage</th>
+                            <th style="border: 1px solid #1E5C4B; padding: 7px 6px; width: 12%;">Nombre</th>
+                            <th style="border: 1px solid #1E5C4B; padding: 7px 6px; text-align: left; width: 33%;">Posologie</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                         <tr t-foreach="datas" t-as="line">
-                            <t t-set="i" t-value="i + 1"/>
-                            <td style="width: 30px; padding: 10px 4px; border-bottom: 1px dotted #7FC6C3; vertical-align: top;">
-                                <span style="display: inline-block; width: 20px; height: 20px; border-radius: 50%; background-color: #017E84; color: #ffffff; text-align: center; font-size: 11px; font-weight: bold; line-height: 20px;"><t t-esc="i"/></span>
+                            <td style="border: 1px solid #b7d6d5; padding: 9px 6px; text-align: center; font-weight: bold; vertical-align: top;"><t t-esc="line_index + 1"/></td>
+                            <td style="border: 1px solid #b7d6d5; padding: 9px 6px; vertical-align: top;">
+                                <span style="font-weight: bold;"><t t-esc="line['medicine']"/></span>
+                                <t t-if="line['forme'] or line['dosage']">
+                                    <span style="color: #555;">
+                                        <t t-if="line['forme']"> · <t t-esc="line['forme']"/></t><t t-if="line['dosage']"> · <t t-esc="line['dosage']"/></t>
+                                    </span>
+                                </t>
                             </td>
-                            <td style="padding: 10px 6px; border-bottom: 1px dotted #7FC6C3;">
-                                <span style="font-weight: bold; font-size: 13px;"><t t-esc="line['medicine']"/></span><br/>
-                                <span style="color: #6c757d; font-size: 11px;"><t t-esc="line['time']"/><t t-if="line['note']"> · <t t-esc="line['note']"/></t></span>
-                            </td>
-                            <td style="padding: 10px 6px; border-bottom: 1px dotted #7FC6C3; text-align: right; white-space: nowrap; vertical-align: top;">
-                                <span style="color: #017E84; font-weight: bold;">Qté : <t t-esc="int(line['quantity'])"/></span>
+                            <td style="border: 1px solid #b7d6d5; padding: 9px 6px; text-align: center; vertical-align: top;"><t t-esc="int(line['quantity'])"/></td>
+                            <td style="border: 1px solid #b7d6d5; padding: 9px 6px; vertical-align: top;">
+                                <t t-if="line['posologie']"><t t-esc="line['posologie']"/></t>
+                                <t t-else=""><t t-esc="line['time']"/><t t-if="line['note']"> · <t t-esc="line['note']"/></t></t>
                             </td>
                         </tr>
-                    </table>
+                        <!-- Lignes vides pour atteindre 5 lignes comme la fiche papier -->
+                        <t t-set="nblignes" t-value="len(datas)"/>
+                        <t t-foreach="range(0, 5 - nblignes if nblignes &lt; 5 else 0)" t-as="empty">
+                            <tr>
+                                <td style="border: 1px solid #b7d6d5; padding: 14px 6px; text-align: center; font-weight: bold;"><t t-esc="nblignes + empty + 1"/></td>
+                                <td style="border: 1px solid #b7d6d5;">&#160;</td>
+                                <td style="border: 1px solid #b7d6d5;">&#160;</td>
+                                <td style="border: 1px solid #b7d6d5;">&#160;</td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+
+                <!-- ============ VALIDITÉ + DIAGNOSTIC (cases de la fiche papier) ============ -->
+                <div style="margin-top: 12px; font-size: 12px;">
+                    <t t-if="diagnosis">
+                        <div style="margin-bottom: 8px;"><b>Diagnostic :</b> <t t-esc="diagnosis"/></div>
+                    </t>
+                    <div style="font-weight: bold; margin-bottom: 6px;">Validité de l'ordonnance :</div>
+                    <div style="line-height: 2.1;">
+                        <t t-call="base_hospital_management.fiche_case">
+                            <t t-set="case_on" t-value="validity_type != 'renouvelable'"/>
+                        </t>
+                        &#160; Ordonnance ponctuelle<br/>
+                        <t t-call="base_hospital_management.fiche_case">
+                            <t t-set="case_on" t-value="validity_type == 'renouvelable'"/>
+                        </t>
+                        &#160; Ordonnance renouvelable
+                        <span style="display: inline-block; min-width: 46px; border-bottom: 1px solid #1c1c1c; text-align: center;"><t t-esc="renewable_months"/></span>
+                        mois &#160;&#160;
+                        <span style="display: inline-block; min-width: 46px; border-bottom: 1px solid #1c1c1c; text-align: center;"><t t-esc="renewable_times"/></span>
+                        fois
+                    </div>
                 </div>
 
-                <!-- ============ CACHET + SIGNATURE ============ -->
-                <table style="width: 100%; border-collapse: collapse; margin-top: 55px;">
+                <!-- ============ CACHET ET SIGNATURE ============ -->
+                <table style="width: 100%; border-collapse: collapse; margin-top: 45px;">
                     <tr>
                         <td style="width: 55%;"/>
                         <td style="text-align: center; vertical-align: bottom;">
-                            <!-- Cachet rond du médecin -->
-                            <div style="margin: 0 auto; width: 132px; height: 132px; border: 3px double #017E84; border-radius: 50%; color: #017E84; -webkit-transform: rotate(-8deg); opacity: 0.85;">
-                                <div style="padding-top: 22px; font-size: 9px; font-weight: bold; letter-spacing: 1px; text-align: center;"><t t-esc="company_name"/></div>
-                                <div style="text-align: center; font-size: 12px; font-weight: bold; margin-top: 7px;"><t t-esc="doctor_name"/></div>
-                                <div style="text-align: center; font-size: 8px; margin-top: 3px;"><t t-esc="doctor_dept"/></div>
-                                <div style="text-align: center; font-size: 8px; margin-top: 7px; letter-spacing: 2px;">★ &#160;<t t-esc="date"/>&#160; ★</div>
-                            </div>
-                            <div style="font-family: 'Segoe Script', 'Comic Sans MS', cursive; font-size: 16px; color: #015a5f; margin-top: -30px; text-align: right; padding-right: 4px;"><t t-esc="doctor_name"/></div>
-                            <div style="border-top: 1px solid #017E84; margin-top: 12px; padding-top: 5px; color: #6c757d; font-size: 11px; letter-spacing: 2px;">Signature</div>
+                            <div style="font-weight: bold; color: #6E2C50; font-size: 12px;">Cachet et signature du médecin</div>
+                            <div style="margin: 8px auto 0 auto; width: 130px; height: 90px; border: 1px dashed #999;"/>
                         </td>
                     </tr>
                 </table>
 
-                <!-- ============ PIED DE PAGE ============ -->
-                <table style="width: 100%; border-collapse: collapse; margin-top: 40px; border-top: 3px solid #017E84;">
-                    <tr>
-                        <td style="padding: 12px 6px; font-size: 13px; letter-spacing: 4px; font-weight: bold; color: #2C2C2C; text-transform: uppercase;">
-                            <t t-esc="company_name"/>
-                        </td>
-                        <td style="padding: 8px 0; text-align: right;">
-                            <span style="display: inline-block; background-color: #EAF4F4; color: #015a5f; font-size: 10px; padding: 8px 14px;">
-                                <b>Adresse :</b> <t t-esc="company_street"/><t t-if="company_city">, <t t-esc="company_city"/></t>
-                                &#160;&#160;<b>Tél :</b> <t t-esc="company_phone"/>
-                            </span>
-                        </td>
-                    </tr>
-                </table>
-                <div style="text-align: center; color: #adb5bd; font-size: 9px; margin-top: 8px;">
-                    Réf. <t t-esc="op_reference"/> — Document généré par le Système d'Information Hospitalier
-                </div>
+                <!-- ============ PIED DE PAGE CSF ============ -->
+                <t t-call="base_hospital_management.csf_report_footer"/>
+                <div style="text-align: center; color: #adb5bd; font-size: 8px; margin-top: 4px;">Réf. <t t-esc="op_reference"/></div>
             </div>
         </t>
     </template>

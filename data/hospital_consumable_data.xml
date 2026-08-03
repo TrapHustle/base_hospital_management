@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- ================================================================ -->
+    <!--  CONSOMMABLES (stock) - CSF Medical Center                       -->
+    <!--  Produits stockables (Goods + suivi de stock).                   -->
+    <!--  Les quantités proviennent de l'inventaire du 05/03/2026         -->
+    <!--  (colonne "Quantité restant"). Elles sont chargées UNE SEULE     -->
+    <!--  FOIS par _csf_load_consumable_stock (voir models/               -->
+    <!--  product_template.py) sous forme d'ajustement d'inventaire :     -->
+    <!--  un upgrade ultérieur ne remet donc pas les stocks à zéro.       -->
+    <!-- ================================================================ -->
+    <data noupdate="1">
+        <record id="prod_tube_violet" model="product.template">
+            <field name="name">Tube violet</field>
+            <field name="categ_id" ref="categ_consommables"/>
+            <field name="type">consu</field>
+            <field name="is_storable" eval="True"/>
+            <field name="sale_ok" eval="False"/>
+            <!-- Quantité restante inventaire : 130 -->
+        </record>
+        <record id="prod_tube_rouge" model="product.template">
+            <field name="name">Tube rouge</field>
+            <field name="categ_id" ref="categ_consommables"/>
+            <field name="type">consu</field>
+            <field name="is_storable" eval="True"/>
+            <field name="sale_ok" eval="False"/>
+            <!-- Quantité restante inventaire : 80 -->
+        </record>
+        <record id="prod_tube_vert" model="product.template">
+            <field name="name">Tube vert</field>
+            <field name="categ_id" ref="categ_consommables"/>
+            <field name="type">consu</field>
+            <field name="is_storable" eval="True"/>
+            <field name="sale_ok" eval="False"/>
+            <!-- Quantité restante inventaire : 84 -->
+        </record>
+        <record id="prod_tube_gris" model="product.template">
+            <field name="name">Tube gris</field>
+            <field name="categ_id" ref="categ_consommables"/>
+            <field name="type">consu</field>
+            <field name="is_storable" eval="True"/>
+            <field name="sale_ok" eval="False"/>
+            <!-- Quantité restante inventaire : 121 -->
+        </record>
+        <record id="prod_tube_bleu" model="product.template">
+            <field name="name">Tube bleu</field>
+            <field name="categ_id" ref="categ_consommables"/>
+            <field name="type">consu</field>
+            <field name="is_storable" eval="True"/>
+            <field name="sale_ok" eval="False"/>
+            <!-- Quantité restante inventaire : 94 -->
+        </record>
+        <record id="prod_aiguille_prelevement" model="product.template">
+            <field name="name">Aiguille à prélèvement</field>
+            <field name="categ_id" ref="categ_consommables"/>
+            <field name="type">consu</field>
+            <field name="is_storable" eval="True"/>
+            <field name="sale_ok" eval="False"/>
+            <!-- Quantité restante inventaire : 35 -->
+        </record>
+        <record id="prod_cassette_psa" model="product.template">
+            <field name="name">Cassette PSA</field>
+            <field name="categ_id" ref="categ_consommables"/>
+            <field name="type">consu</field>
+            <field name="is_storable" eval="True"/>
+            <field name="sale_ok" eval="False"/>
+            <!-- Quantité restante inventaire : 50 -->
+        </record>
+        <record id="prod_cassette_malaria" model="product.template">
+            <field name="name">Cassette Malaria</field>
+            <field name="categ_id" ref="categ_consommables"/>
+            <field name="type">consu</field>
+            <field name="is_storable" eval="True"/>
+            <field name="sale_ok" eval="False"/>
+            <!-- Quantité restante inventaire : 15 -->
+        </record>
+        <record id="prod_cassette_hbs" model="product.template">
+            <field name="name">Cassette HBS</field>
+            <field name="categ_id" ref="categ_consommables"/>
+            <field name="type">consu</field>
+            <field name="is_storable" eval="True"/>
+            <field name="sale_ok" eval="False"/>
+            <!-- Quantité restante inventaire : 0 -->
+        </record>
+    </data>
+    <!-- Chargement initial des quantités (idempotent) -->
+    <function model="product.template" name="_csf_load_consumable_stock"/>
+</odoo>

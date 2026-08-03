@@ -28,6 +28,10 @@ from barcode.writer import ImageWriter
 from dateutil.relativedelta import *
 from odoo import api, fields, models
 
+# Valeurs de `patient_seq` qui ne sont PAS un vrai numéro de dossier :
+# 'New' = contact ordinaire, 'Employee' / 'User' = marqueurs internes.
+PATIENT_SEQ_PLACEHOLDERS = (False, '', 'New', 'Employee', 'User')
+
 
 class ResPartner(models.Model):
     """Inherited to add more fields and functions"""
@@ -36,6 +40,19 @@ class ResPartner(models.Model):
 
     date_of_birth = fields.Date(string='Date of Birth',
                                 help='Date of birth of the patient')
+    patient_age = fields.Integer(string='Âge', compute='_compute_patient_age',
+                                 help="Âge du patient calculé depuis la date "
+                                      "de naissance")
+
+    @api.depends('date_of_birth')
+    def _compute_patient_age(self):
+        """Compute the patient age from the date of birth."""
+        today = date.today()
+        for rec in self:
+            if rec.date_of_birth:
+                rec.patient_age = relativedelta(today, rec.date_of_birth).years
+            else:
+                rec.patient_age = 0
     blood_group = fields.Selection(string='Blood Group',
                                    help='Blood group of the patient',
                                    selection=[('a', 'A'), ('b', 'B'),
@@ -54,6 +71,21 @@ class ResPartner(models.Model):
         string='Status',
         selection=[('alive', 'Alive'), ('dead', 'Dead')],
         default='alive', help='True for alive patient')
+    is_patient = fields.Boolean(string='Est un patient',
+                                compute='_compute_is_patient', store=True,
+                                readonly=False,
+                                help="Cochez pour marquer ce contact comme "
+                                     "patient de la clinique. Seuls les "
+                                     "contacts cochés apparaissent dans le "
+                                     "menu Patient.")
+
+    @api.depends('patient_seq')
+    def _compute_is_patient(self):
+        """Un contact est un patient dès qu'il possède un vrai numéro de
+        dossier (les employés et utilisateurs portent un marqueur dédié)."""
+        for rec in self:
+            rec.is_patient = rec.patient_seq not in PATIENT_SEQ_PLACEHOLDERS
+
     patient_seq = fields.Char(string='Patient No.',
                               help='Sequence number of the patient', copy=False,
                               readonly=True, index=True,
@@ -318,11 +350,49 @@ class ResPartner(models.Model):
 
     @api.model
     def create(self, vals):
-        """Inherits create function for sequence generation"""
-        if vals.get('patient_seq', 'New') == 'New':
+        """Inherits create function for sequence generation.
+
+        Le numéro de dossier n'est attribué qu'aux **vrais patients**. Avant,
+        tout contact créé (fournisseur, société, contact du carnet d'adresses)
+        recevait un n° et se retrouvait donc dans le menu Patient.
+        Le contact est reconnu comme patient s'il est créé avec `is_patient`
+        coché, ou depuis une action qui pose `default_is_patient` (menu Patient).
+        """
+        wants_patient = vals.get(
+            'is_patient', self.env.context.get('default_is_patient', False))
+        if wants_patient and vals.get('patient_seq', 'New') == 'New':
             vals['patient_seq'] = self.env['ir.sequence'].next_by_code(
                 'patient.sequence') or 'New'
         return super().create(vals)
+
+    def write(self, vals):
+        """Attribue un n° de dossier quand on coche « Est un patient ».
+
+        Couvre la case à cocher de la fiche : sans ça, un contact promu
+        patient depuis le formulaire resterait sans numéro de dossier.
+        """
+        res = super().write(vals)
+        if vals.get('is_patient'):
+            for rec in self:
+                if rec.patient_seq in PATIENT_SEQ_PLACEHOLDERS:
+                    sequence = self.env['ir.sequence'].next_by_code(
+                        'patient.sequence')
+                    if sequence:
+                        super(ResPartner, rec).write(
+                            {'patient_seq': sequence})
+        return res
+
+    def action_toggle_is_patient(self):
+        """Marque / démarque le contact comme patient depuis la fiche."""
+        for rec in self:
+            if rec.is_patient:
+                rec.is_patient = False
+            else:
+                if rec.patient_seq in PATIENT_SEQ_PLACEHOLDERS:
+                    rec.patient_seq = self.env['ir.sequence'].next_by_code(
+                        'patient.sequence') or rec.patient_seq
+                rec.is_patient = True
+        return True
 
     def action_view_invoice(self):
         """Returns patient invoice"""

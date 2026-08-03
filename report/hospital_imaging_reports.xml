@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- =============================================================== -->
+    <!--  COMPTES RENDUS D'IMAGERIE - format CSF Medical Center          -->
+    <!--  Un seul gabarit, quatre mises en page selon le type d'examen : -->
+    <!--  radiographie, echo mammaire, echo pelvis masculin, ophtalmo.   -->
+    <!-- =============================================================== -->
+    <record id="action_report_imaging" model="ir.actions.report">
+        <field name="name">Compte rendu</field>
+        <field name="model">hospital.imaging</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">base_hospital_management.imaging_report</field>
+        <field name="report_file">base_hospital_management.imaging_report</field>
+        <field name="binding_model_id" ref="model_hospital_imaging"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="base_hospital_management.paperformat_prescription"/>
+    </record>
+
+    <template id="imaging_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.basic_layout">
+                    <t t-set="p" t-value="o.patient_id"/>
+                    <t t-set="titres" t-value="{
+                        'radio_thorax': 'COMPTE RENDU RADIOGRAPHIQUE',
+                        'echo_mammaire': 'ECHOGRAPHIE MAMMAIRE',
+                        'echo_pelvis_masc': 'ECHOGRAPHIE PELVIS MASCULIN',
+                        'ophtalmo': 'COMPTE-RENDU OPHTALMO'}"/>
+                    <div class="page" style="font-family: Arial, Helvetica, sans-serif; color: #1c1c1c; font-size: 12.5px;">
+
+                        <!-- ============ EN-TÊTE CSF + DATE ============ -->
+                        <t t-call="base_hospital_management.csf_report_header"/>
+                        <div style="text-align: right; margin-top: 6px; font-size: 11.5px;">
+                            <t t-esc="o.exam_date.strftime('%d/%m/%Y') if o.exam_date else ''"/>
+                        </div>
+
+                        <!-- ============ TITRE ============ -->
+                        <div style="text-align: center; margin: 10px 0 16px;">
+                            <span style="font-size: 16px; font-weight: bold; letter-spacing: 1.5px; text-decoration: underline;">
+                                <t t-esc="titres.get(o.exam_type, 'COMPTE RENDU')"/>
+                            </span>
+                        </div>
+
+                        <!-- ============ IDENTITÉ ============ -->
+                        <table style="width: 100%; border-collapse: collapse; font-size: 12.5px; line-height: 1.9;">
+                            <tr>
+                                <td style="width: 150px; font-weight: bold;">NOM ET PRENOM :</td>
+                                <td><t t-esc="p.name or ''"/></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;">AGE :</td>
+                                <td><t t-if="o.patient_age"><t t-esc="o.patient_age"/> ANS</t></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;">INDICATION :</td>
+                                <td><t t-esc="o.indication or ''"/></td>
+                            </tr>
+                            <tr t-if="o.exam_demande">
+                                <td style="font-weight: bold;">EXAMEN DEMANDE :</td>
+                                <td><t t-esc="o.exam_demande"/></td>
+                            </tr>
+                            <tr t-if="o.prescriber_id">
+                                <td style="font-weight: bold;">MEDECIN PRESCRIPTEUR :</td>
+                                <td><t t-esc="o.prescriber_id.name"/></td>
+                            </tr>
+                        </table>
+
+                        <!-- ============ OPHTALMO : tableau OD / OG ============ -->
+                        <t t-if="o.exam_type == 'ophtalmo'">
+                            <div style="font-weight: bold; text-decoration: underline; margin: 18px 0 8px; text-align: center;">RESULTATS</div>
+                            <table style="width: 100%; border-collapse: collapse; font-size: 12.5px; text-align: center;">
+                                <tr>
+                                    <td style="border: 1px solid #1c1c1c; padding: 9px; width: 34%;"/>
+                                    <td style="border: 1px solid #1c1c1c; padding: 9px; font-weight: bold; font-style: italic;">ŒIL DROIT</td>
+                                    <td style="border: 1px solid #1c1c1c; padding: 9px; font-weight: bold; font-style: italic;">ŒIL GAUCHE</td>
+                                </tr>
+                                <tr>
+                                    <td style="border: 1px solid #1c1c1c; padding: 12px 9px; font-weight: bold; font-style: italic; text-align: left;">ACUITE VISUELLE DE LOIN</td>
+                                    <td style="border: 1px solid #1c1c1c; padding: 12px 9px;"><t t-esc="o.av_loin_od or ''"/></td>
+                                    <td style="border: 1px solid #1c1c1c; padding: 12px 9px;"><t t-esc="o.av_loin_og or ''"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="border: 1px solid #1c1c1c; padding: 12px 9px; font-weight: bold; font-style: italic; text-align: left;">ACUITE VISUELLE DE PRES</td>
+                                    <td style="border: 1px solid #1c1c1c; padding: 12px 9px;"><t t-esc="o.av_pres_od or ''"/></td>
+                                    <td style="border: 1px solid #1c1c1c; padding: 12px 9px;"><t t-esc="o.av_pres_og or ''"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="border: 1px solid #1c1c1c; padding: 12px 9px; font-weight: bold; font-style: italic; text-align: left;">FOND D'ŒIL</td>
+                                    <td style="border: 1px solid #1c1c1c; padding: 12px 9px;"><t t-esc="o.fond_oeil_od or ''"/></td>
+                                    <td style="border: 1px solid #1c1c1c; padding: 12px 9px;"><t t-esc="o.fond_oeil_og or ''"/></td>
+                                </tr>
+                            </table>
+                        </t>
+
+                        <!-- ============ AUTRES EXAMENS : technique + résultats ============ -->
+                        <t t-else="">
+                            <t t-if="o.technique">
+                                <div style="font-weight: bold; text-decoration: underline; font-style: italic; margin: 16px 0 5px;">TECHNIQUE :</div>
+                                <div style="white-space: pre-line; line-height: 1.6;"><t t-esc="o.technique"/></div>
+                            </t>
+                            <div style="font-weight: bold; text-decoration: underline; margin: 16px 0 5px;">RESULTATS :</div>
+                            <div style="white-space: pre-line; line-height: 1.7;"><t t-esc="o.resultats or ''"/></div>
+                        </t>
+
+                        <!-- ============ CONCLUSION ============ -->
+                        <div style="font-weight: bold; text-decoration: underline; margin: 20px 0 6px;">CONCLUSION :</div>
+                        <div style="white-space: pre-line; font-weight: bold; line-height: 1.6;">
+                            <t t-esc="o.conclusion or ''"/>
+                        </div>
+
+                        <!-- ============ SIGNATURE ============ -->
+                        <div style="margin-top: 46px; text-align: right; line-height: 1.6;">
+                            <div style="font-weight: bold;"><t t-esc="(o.doctor_role or '').upper()"/></div>
+                            <div><t t-esc="o.doctor_id.name or ''"/></div>
+                            <div t-if="o.onmci">N°ONMCI : <t t-esc="o.onmci"/></div>
+                        </div>
+                        <t t-call="base_hospital_management.csf_report_footer"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- =============================================================== -->
+    <!--  FACTURE PROFORMA - format CSF Medical Center                   -->
+    <!--  Reproduit le proforma "bilan d'embauche" : designations,       -->
+    <!--  prix unitaire par personne, effectif, total en toutes lettres. -->
+    <!--  S'imprime depuis un devis (sale.order).                        -->
+    <!-- =============================================================== -->
+    <record id="action_report_proforma_csf" model="ir.actions.report">
+        <field name="name">Proforma CSF</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">base_hospital_management.proforma_csf_report</field>
+        <field name="report_file">base_hospital_management.proforma_csf_report</field>
+        <field name="binding_model_id" ref="sale.model_sale_order"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="base_hospital_management.paperformat_prescription"/>
+    </record>
+
+    <template id="proforma_csf_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.basic_layout">
+                    <!-- Effectif : la quantite la plus elevee du devis
+                         (un bilan d'embauche se chiffre par personne). -->
+                    <t t-set="effectif" t-value="int(max(o.order_line.mapped('product_uom_qty') or [1]))"/>
+                    <div class="page" style="font-family: Arial, Helvetica, sans-serif; color: #1c1c1c; font-size: 12.5px;">
+
+                        <!-- ============ EN-TÊTE CSF + DATE ============ -->
+                        <t t-call="base_hospital_management.csf_report_header"/>
+                        <div style="text-align: right; margin-top: 8px;">
+                            <t t-esc="o.date_order.strftime('%d/%m/%Y') if o.date_order else ''"/>
+                        </div>
+
+                        <!-- ============ SOCIÉTÉ + OBJET ============ -->
+                        <div style="margin-top: 14px;">
+                            <span style="display: inline-block; border: 1.5px solid #1c1c1c; padding: 7px 16px; font-weight: bold;">
+                                SOCIETE : <t t-esc="o.partner_id.name or ''"/>
+                            </span>
+                        </div>
+                        <div style="margin-top: 16px; font-weight: bold; font-size: 13.5px;">
+                            PROFORMA N° <t t-esc="o.name"/> :
+                            <span style="text-decoration: underline;"><t t-esc="o.note and o.note[:60] or 'BILAN D\'EMBAUCHE STANDARD'"/></span>
+                        </div>
+
+                        <!-- ============ TABLEAU DES PRESTATIONS ============ -->
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 12px;">
+                            <thead>
+                                <tr style="background-color: #3d4a5c; color: #ffffff;">
+                                    <th style="border: 1px solid #3d4a5c; padding: 9px 8px; text-align: left; width: 52%;">DESIGNATIONS</th>
+                                    <th style="border: 1px solid #3d4a5c; padding: 9px 8px; width: 24%;">P. UNITAIRE / PERS</th>
+                                    <th style="border: 1px solid #3d4a5c; padding: 9px 8px; width: 24%;">EFFECTIF = <t t-esc="effectif"/></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.order_line.filtered(lambda l: not l.display_type)" t-as="line">
+                                    <td style="border-bottom: 1px solid #c9ced6; padding: 10px 8px; vertical-align: top;">
+                                        <span style="font-weight: bold;"><t t-esc="line.product_id.name or line.name"/></span>
+                                        <t t-if="line.name and line.name != line.product_id.name">
+                                            <div style="color: #555; font-size: 10.5px; line-height: 1.4;"><t t-esc="line.name"/></div>
+                                        </t>
+                                    </td>
+                                    <td style="border-bottom: 1px solid #c9ced6; padding: 10px 8px; text-align: right; vertical-align: top;">
+                                        <t t-esc="'{:,.0f}'.format(line.price_unit).replace(',', ' ')"/>
+                                    </td>
+                                    <td style="border-bottom: 1px solid #c9ced6; padding: 10px 8px; text-align: right; vertical-align: top;">
+                                        <t t-esc="'{:,.0f}'.format(line.price_subtotal).replace(',', ' ')"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 12px 8px; font-weight: bold; text-align: right;">TOTAL TTC FCFA</td>
+                                    <td style="padding: 12px 8px; text-align: right; font-weight: bold; border-top: 2px solid #1c1c1c;">
+                                        <t t-esc="'{:,.0f}'.format(sum(o.order_line.mapped('price_unit'))).replace(',', ' ')"/>
+                                    </td>
+                                    <td style="padding: 12px 8px; text-align: right; font-weight: bold; border-top: 2px solid #1c1c1c;">
+                                        <t t-esc="'{:,.0f}'.format(o.amount_total).replace(',', ' ')"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- ============ MONTANT EN TOUTES LETTRES ============ -->
+                        <div style="margin-top: 22px; font-weight: bold; text-transform: uppercase; line-height: 1.7;">
+                            Arrêtée la présente facture proforma à la somme de
+                            <t t-esc="o.csf_amount_in_words()"/>
+                        </div>
+
+                        <!-- ============ SIGNATURE ============ -->
+                        <div style="margin-top: 40px; text-align: right; font-weight: bold;">
+                            LA COMPTABILITE
+                            <div style="margin: 8px 0 0 auto; width: 170px; height: 90px; border: 1px dashed #999;"/>
+                        </div>
+                        <t t-call="base_hospital_management.csf_report_footer"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

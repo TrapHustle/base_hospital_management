@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- =============================================================== -->
+    <!--  FICHE VISITE MÉDICALE (consultation) - format CSF Medical      -->
+    <!--  Reproduction fidele du formulaire papier :                     -->
+    <!--    en-tete logo + coordonnees, cadre vierge, titre encadre,     -->
+    <!--    cases a caracteres (dossier / naissance / matricule / tel),  -->
+    <!--    cases a cocher (sexe, groupe sanguin), lignes a remplir.     -->
+    <!--  Imprimable depuis la fiche patient (menu Imprimer).            -->
+    <!-- =============================================================== -->
+    <record id="action_report_visite_medicale" model="ir.actions.report">
+        <field name="name">Visite Médicale</field>
+        <field name="model">res.partner</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">base_hospital_management.visite_medicale_report</field>
+        <field name="report_file">base_hospital_management.visite_medicale_report</field>
+        <field name="binding_model_id" ref="model_res_partner"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="base_hospital_management.paperformat_prescription"/>
+    </record>
+
+    <!-- ===============================================================
+         COTES DU FORMULAIRE PAPIER
+         Reprises du generateur Word (unites Word = twips) et converties
+         pour un rendu a 90 dpi : px = twips / 16.
+             case large (dossier, matricule, tel) 620 tw -> 39 px
+             case etroite (date de naissance)     520 tw -> 32 px
+             case a cocher                        420 tw -> 26 px
+         Les largeurs sont FIXES : c'est ce qui donne l'alignement
+         regulier du carnet papier (un % flotterait avec le contenu).
+         =============================================================== -->
+
+    <!-- Bloc reutilisable : suite de cases a caracteres facon formulaire.
+         Parametres : cases_val (texte a repartir), cases_nb (nombre de
+         cases), cases_w (largeur d'une case en px, 39 par defaut). -->
+    <template id="fiche_cases">
+        <table style="border-collapse: collapse; display: inline-table; vertical-align: middle;">
+            <tr>
+                <t t-foreach="range(cases_nb)" t-as="i">
+                    <td t-attf-style="border: 1.2px solid #1c1c1c; #{'border-left: none;' if i else ''} width: #{cases_w or 39}px; height: 28px; text-align: center; font-size: 15px; font-weight: bold; font-family: 'Courier New', monospace;">
+                        <t t-esc="cases_val[i] if cases_val and i &lt; len(cases_val) else ''"/>
+                    </td>
+                </t>
+            </tr>
+        </table>
+    </template>
+
+    <!-- Bloc reutilisable : case a cocher (420 twips = 26 px).
+         Parametres : case_on (booleen : cochee ou non). -->
+    <template id="fiche_case">
+        <span t-attf-style="display: inline-block; width: 26px; height: 26px; border: 1.2px solid #1c1c1c; vertical-align: middle; text-align: center; line-height: 24px; font-weight: bold; font-size: 16px;">
+            <t t-if="case_on">X</t>
+        </span>
+    </template>
+
+    <!-- =============================================================== -->
+    <!--  BULLETIN DE DEMANDE D'EXAMEN (labo / radio / écho / consult.)  -->
+    <!--  Format demi-A4 paysage, comme le carnet papier.                -->
+    <!--  Imprimable depuis une consultation (hospital.outpatient).      -->
+    <!-- =============================================================== -->
+    <record id="paperformat_bulletin" model="report.paperformat">
+        <field name="name">Bulletin A5 paysage</field>
+        <field name="format">A5</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">7</field>
+        <field name="margin_bottom">7</field>
+        <field name="margin_left">9</field>
+        <field name="margin_right">9</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <record id="action_report_bulletin_examen" model="ir.actions.report">
+        <field name="name">Bulletin d'examen</field>
+        <field name="model">hospital.outpatient</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">base_hospital_management.bulletin_examen_report</field>
+        <field name="report_file">base_hospital_management.bulletin_examen_report</field>
+        <field name="binding_model_id" ref="model_hospital_outpatient"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="base_hospital_management.paperformat_bulletin"/>
+    </record>
+
+    <template id="bulletin_examen_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.basic_layout">
+                    <t t-set="p" t-value="o.patient_id"/>
+                    <!-- Cases pré-cochées d'après le contenu de la consultation -->
+                    <t t-set="a_labo" t-value="bool(o.test_ids)"/>
+                    <div class="page" style="font-family: Arial, Helvetica, sans-serif; color: #16223a; font-size: 12.5px;">
+
+                        <!-- ============ EN-TÊTE : logo + bloc encadré ============ -->
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="width: 175px; vertical-align: top;">
+                                    <img src="/base_hospital_management/static/src/img/csf_logo_full.png"
+                                         alt="CSF Medical Center" style="width: 165px;"/>
+                                </td>
+                                <td style="vertical-align: top;">
+                                    <div style="border: 1.5px solid #16223a; padding: 7px 10px; font-size: 10.5px; line-height: 1.5;">
+                                        <div style="text-align: center; font-size: 13.5px; font-weight: bold; margin-bottom: 2px;">CSF Medical Center</div>
+                                        <b>Cocody Angré Bessikoï, non loin du CHU d'Angré,<br/>
+                                            200m du carrefour de la base CIE</b><br/>
+                                        Djorogobité Email : <span style="color: #1F5C8B;">csfmedicalcenter@gmail.com</span><br/>
+                                        Tel : +225 27 23 59 07 95 / Cel : <span style="color: #1F5C8B;">+225 07 78 88 03 04</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- ============ TITRE + CASES DU TYPE D'EXAMEN ============ -->
+                        <div style="margin-top: 14px; font-size: 17px; font-weight: bold; text-decoration: underline; color: #16223a;">
+                            BULLETIN DE
+                        </div>
+                        <table style="width: 92%; border-collapse: collapse; margin: 8px 0 4px 26px; font-size: 16px; font-weight: bold; color: #16223a;">
+                            <tr>
+                                <td style="padding: 5px 0; width: 46%;">
+                                    <t t-call="base_hospital_management.fiche_case">
+                                        <t t-set="case_on" t-value="a_labo"/>
+                                    </t>
+                                    &#160; LABORATOIRE
+                                </td>
+                                <td style="padding: 5px 0;">
+                                    <t t-call="base_hospital_management.fiche_case">
+                                        <t t-set="case_on" t-value="False"/>
+                                    </t>
+                                    &#160; ECHOGRAPHIE
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 5px 0;">
+                                    <t t-call="base_hospital_management.fiche_case">
+                                        <t t-set="case_on" t-value="False"/>
+                                    </t>
+                                    &#160; RADIOLOGIE
+                                </td>
+                                <td style="padding: 5px 0;">
+                                    <t t-call="base_hospital_management.fiche_case">
+                                        <t t-set="case_on" t-value="not a_labo"/>
+                                    </t>
+                                    &#160; CONSULTATION
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- ============ IDENTITÉ DU PATIENT ============ -->
+                        <table style="width: 100%; border-collapse: collapse; font-size: 13px; font-weight: bold; color: #16223a;">
+                            <tr>
+                                <td style="padding: 9px 0; white-space: nowrap; width: 1%;">NOM ET PRENOMS :</td>
+                                <td style="padding: 9px 0; border-bottom: 1px dotted #16223a;" colspan="3">
+                                    <t t-esc="p.name or ''"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 9px 0; white-space: nowrap;">DATE DE NAISSANCE :</td>
+                                <td style="padding: 9px 0; border-bottom: 1px dotted #16223a; width: 34%;">
+                                    <t t-if="p.date_of_birth"><t t-esc="p.date_of_birth.strftime('%d / %m / %Y')"/></t>
+                                </td>
+                                <td style="padding: 9px 0 9px 16px; white-space: nowrap; width: 1%;">SEXE :</td>
+                                <td style="padding: 9px 0; border-bottom: 1px dotted #16223a;">
+                                    <t t-esc="{'male': 'Masculin', 'female': 'Féminin', 'other': 'Autre'}.get(p.gender, '')"/>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- ============ EXAMEN DEMANDÉ ============ -->
+                        <div style="margin-top: 12px; font-size: 13px; font-weight: bold; color: #16223a;">EXAMEN DEMANDE :</div>
+                        <div style="border-bottom: 1px dotted #16223a; height: 20px; margin-top: 6px;">
+                            <t t-if="o.test_ids">
+                                <t t-esc="', '.join(o.test_ids.test_ids.mapped('name'))"/>
+                            </t>
+                        </div>
+                        <div style="border-bottom: 1px dotted #16223a; height: 20px;"/>
+                        <div style="border-bottom: 1px dotted #16223a; height: 20px;"/>
+
+                        <!-- ============ INDICATIONS ============ -->
+                        <div style="margin-top: 12px; font-size: 13px; font-weight: bold; color: #16223a;">INDICATIONS :</div>
+                        <div style="border-bottom: 1px dotted #16223a; height: 20px; margin-top: 6px;">
+                            <t t-esc="o.reason or ''"/>
+                        </div>
+                        <div style="border-bottom: 1px dotted #16223a; height: 20px;"/>
+
+                        <!-- ============ DATE + PRESCRIPTEUR ============ -->
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 18px; font-size: 13px; font-weight: bold; color: #16223a;">
+                            <tr>
+                                <td style="width: 55%;">
+                                    Abidjan le,
+                                    <span style="border-bottom: 1px dotted #16223a; padding: 0 12px;">
+                                        <t t-esc="o.op_date.strftime('%d/%m/%Y') if o.op_date else ''"/>
+                                    </span>
+                                </td>
+                                <td style="text-align: right; text-decoration: underline;">MEDECIN PRESCRIPTEUR</td>
+                            </tr>
+                            <tr>
+                                <td/>
+                                <td style="text-align: right; font-weight: normal; padding-top: 4px;">
+                                    <t t-esc="o.doctor_name or ''"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="visite_medicale_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.basic_layout">
+                    <!-- Valeurs preparees pour les cases -->
+                    <t t-set="dossier" t-value="''.join(c for c in (o.patient_seq or '') if c.isdigit())"/>
+                    <t t-set="naissance" t-value="o.date_of_birth.strftime('%d%m%Y') if o.date_of_birth else ''"/>
+                    <t t-set="tel" t-value="''.join(c for c in (o.phone or o.mobile or '') if c.isdigit())[-10:]"/>
+                    <t t-set="nom_complet" t-value="(o.name or '').split(' ', 1)"/>
+                    <t t-set="groupe" t-value="(o.blood_group or '').upper()"/>
+
+                    <div class="page" style="font-family: Arial, Helvetica, sans-serif; color: #1c1c1c; font-size: 13px;">
+
+                        <!-- ============ EN-TÊTE (logo + coordonnées) ============ -->
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="width: 210px; vertical-align: top;">
+                                    <!-- Logo CSF (croix entrelacées + signature) -->
+                                    <img src="/base_hospital_management/static/src/img/csf_logo_full.png"
+                                         alt="CSF Medical Center" style="width: 195px;"/>
+                                </td>
+                                <td style="vertical-align: top; padding-top: 4px;">
+                                    <div style="font-size: 17px; font-weight: bold; letter-spacing: .5px;">CSF MEDICAL CENTER</div>
+                                    <div style="font-size: 12.5px; line-height: 1.5; margin-top: 2px;">
+                                        Email: csfmedicalcenter@gmail.com<br/>
+                                        Tél: +225 27 23 59 07 95<br/>
+                                        Cel: +225 07 78 88 03 04
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- ============ CADRE VIERGE (étiquette / cachet) ============ -->
+                        <div style="border: 2px solid #6E2C50; border-radius: 7px; height: 74px; margin: 10px 22px 4px 22px;"/>
+
+                        <!-- ============ TITRE ============ -->
+                        <div style="text-align: center; margin: 4px 0 14px;">
+                            <span style="font-family: 'Times New Roman', Times, serif; font-size: 29px; font-weight: bold; letter-spacing: 1.5px; color: #6E2C50;">VISITE MEDICALE</span>
+                        </div>
+
+                        <!-- ============ CHAMPS DU FORMULAIRE ============ -->
+                        <!-- Un tableau par ligne, largeurs de libelles FIXES
+                             (twips du carnet Word / 16) : libelles et traits
+                             s'alignent comme sur le papier. -->
+                        <t t-set="ligne" t-value="'width: 100%; border-collapse: collapse; font-size: 15px; font-weight: bold; margin-bottom: 19px;'"/>
+                        <t t-set="lbl" t-value="'white-space: nowrap; vertical-align: bottom; padding-bottom: 2px;'"/>
+                        <t t-set="trait" t-value="'border-bottom: 1.2px solid #1c1c1c; vertical-align: bottom; padding: 0 6px 2px;'"/>
+
+                        <!-- N. de dossier : 9 cases (620 tw) -->
+                        <table t-att-style="ligne">
+                            <tr>
+                                <td t-attf-style="#{lbl} width: 150px;">N&#176; DE DOSSIER :</td>
+                                <td>
+                                    <t t-call="base_hospital_management.fiche_cases">
+                                        <t t-set="cases_val" t-value="dossier"/>
+                                        <t t-set="cases_nb" t-value="9"/>
+                                    </t>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Nom (1300/3200) / Prenom (1400/4540) -->
+                        <table t-att-style="ligne">
+                            <tr>
+                                <td t-attf-style="#{lbl} width: 81px;">NOM :</td>
+                                <td t-attf-style="#{trait} width: 200px;">
+                                    <t t-esc="nom_complet[0] if nom_complet else ''"/>
+                                </td>
+                                <td t-attf-style="#{lbl} width: 88px; padding-left: 16px;">PRENOM :</td>
+                                <td t-att-style="trait">
+                                    <t t-esc="nom_complet[1] if len(nom_complet) &gt; 1 else ''"/>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Date de naissance : 8 cases etroites (520 tw) + age -->
+                        <table t-att-style="ligne">
+                            <tr>
+                                <td t-attf-style="#{lbl} width: 181px;">DATE DE NAISSANCE :</td>
+                                <td style="width: 262px; vertical-align: middle;">
+                                    <t t-call="base_hospital_management.fiche_cases">
+                                        <t t-set="cases_val" t-value="naissance"/>
+                                        <t t-set="cases_nb" t-value="8"/>
+                                        <t t-set="cases_w" t-value="32"/>
+                                    </t>
+                                </td>
+                                <td t-attf-style="#{lbl} width: 75px; padding-left: 16px;">AGE :</td>
+                                <td t-att-style="trait">
+                                    <t t-if="o.date_of_birth"><t t-esc="o.patient_age"/></t>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Sexe (cases 420 tw) / Profession (2400/7400) -->
+                        <table t-att-style="ligne">
+                            <tr>
+                                <td t-attf-style="#{lbl} width: 75px; vertical-align: middle;">SEXE :</td>
+                                <td style="width: 190px; vertical-align: middle;">
+                                    H &#160;
+                                    <t t-call="base_hospital_management.fiche_case">
+                                        <t t-set="case_on" t-value="o.gender == 'male'"/>
+                                    </t>
+                                    &#160;&#160;&#160;&#160; F &#160;
+                                    <t t-call="base_hospital_management.fiche_case">
+                                        <t t-set="case_on" t-value="o.gender == 'female'"/>
+                                    </t>
+                                </td>
+                                <td t-attf-style="#{lbl} width: 150px;">PROFESSION :</td>
+                                <td t-att-style="trait">
+                                    <t t-esc="o.patient_profession or ''"/>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Matricule : 9 cases, vierge comme sur le carnet -->
+                        <table t-att-style="ligne">
+                            <tr>
+                                <td t-attf-style="#{lbl} width: 150px;">MATRICULE :</td>
+                                <td>
+                                    <t t-call="base_hospital_management.fiche_cases">
+                                        <t t-set="cases_val" t-value="''"/>
+                                        <t t-set="cases_nb" t-value="9"/>
+                                    </t>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Adresse (1700/8740) sur deux lignes -->
+                        <table t-att-style="ligne">
+                            <tr>
+                                <td t-attf-style="#{lbl} width: 106px;">ADRESSE :</td>
+                                <td t-att-style="trait">
+                                    <t t-esc="o.street or ''"/><t t-if="o.street2">, <t t-esc="o.street2"/></t>
+                                </td>
+                            </tr>
+                        </table>
+                        <table t-att-style="ligne">
+                            <tr>
+                                <td t-attf-style="#{trait} height: 20px;">
+                                    <t t-esc="o.city or ''"/>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Telephone : 9 cases -->
+                        <table t-att-style="ligne">
+                            <tr>
+                                <td t-attf-style="#{lbl} width: 150px;">TEL :</td>
+                                <td>
+                                    <t t-call="base_hospital_management.fiche_cases">
+                                        <t t-set="cases_val" t-value="tel"/>
+                                        <t t-set="cases_nb" t-value="10"/>
+                                        <t t-set="cases_w" t-value="36"/>
+                                    </t>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Groupe sanguin : 4 cases a cocher -->
+                        <table t-att-style="ligne">
+                            <tr>
+                                <td t-attf-style="#{lbl} width: 160px; vertical-align: middle;">GROUPE SANGUIN :</td>
+                                <td style="vertical-align: middle;">
+                                    A &#160;
+                                    <t t-call="base_hospital_management.fiche_case">
+                                        <t t-set="case_on" t-value="groupe == 'A'"/>
+                                    </t>
+                                    &#160;&#160;&#160;&#160; B &#160;
+                                    <t t-call="base_hospital_management.fiche_case">
+                                        <t t-set="case_on" t-value="groupe == 'B'"/>
+                                    </t>
+                                    &#160;&#160;&#160;&#160; AB &#160;
+                                    <t t-call="base_hospital_management.fiche_case">
+                                        <t t-set="case_on" t-value="groupe == 'AB'"/>
+                                    </t>
+                                    &#160;&#160;&#160;&#160; O &#160;
+                                    <t t-call="base_hospital_management.fiche_case">
+                                        <t t-set="case_on" t-value="groupe == 'O'"/>
+                                    </t>
+                                    <t t-if="o.rh_type">
+                                        &#160;&#160;&#160; Rh : <t t-esc="o.rh_type"/>
+                                    </t>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Medecin traitant (3800/6640) -->
+                        <table t-att-style="ligne">
+                            <tr>
+                                <td t-attf-style="#{lbl} width: 238px;">NOM DU MEDECIN TRAITANT :</td>
+                                <td t-att-style="trait">
+                                    <t t-esc="o.doctor_id.name or ''"/>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Traitement (2000) -->
+                        <table t-att-style="ligne">
+                            <tr>
+                                <td t-attf-style="#{lbl} width: 125px;">TRAITEMENT :</td>
+                                <td t-attf-style="#{trait} height: 20px;"/>
+                            </tr>
+                        </table>
+
+                        <!-- Allergies (1900) -->
+                        <table t-att-style="ligne">
+                            <tr>
+                                <td t-attf-style="#{lbl} width: 119px;">ALLERGIES :</td>
+                                <td t-attf-style="#{trait} height: 20px;"/>
+                            </tr>
+                        </table>
+
+                        <!-- ============ MENTION DE BAS DE FICHE ============ -->
+                        <div style="margin-top: 40px; text-align: center; font-size: 11.5px; font-weight: bold;">
+                            N'oubliez pas d'apporter les documents médicaux que vous jugerez utiles pour le médecin
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

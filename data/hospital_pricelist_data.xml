@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- ================================================================ -->
+    <!--  LISTE DE PRIX "ASSURANCE"                                       -->
+    <!--  Le prix de base des produits = tarif NON ASSURE.                -->
+    <!--  Cette liste applique la marge/réduction assurance à définir.    -->
+    <!--                                                                   -->
+    <!--  /!\ MARGE = 0% pour l'instant (placeholder).                    -->
+    <!--  Quand tu connais la marge, modifie "price_discount" :           -->
+    <!--    - réduction de 10%  ->  price_discount = 10                   -->
+    <!--    - majoration de 20% ->  price_discount = -20                  -->
+    <!--  (ou édite la règle depuis Ventes > Configuration > Listes de    -->
+    <!--   prix > Assurance).                                             -->
+    <!-- ================================================================ -->
+    <data noupdate="1">
+        <record id="pricelist_assurance" model="product.pricelist">
+            <field name="name">Assurance</field>
+        </record>
+        <record id="pricelist_assurance_rule" model="product.pricelist.item">
+            <field name="pricelist_id" ref="pricelist_assurance"/>
+            <field name="applied_on">3_global</field>
+            <field name="compute_price">formula</field>
+            <field name="base">list_price</field>
+            <field name="price_discount">0</field>
+            <field name="price_surcharge">0</field>
+        </record>
+    </data>
+</odoo>

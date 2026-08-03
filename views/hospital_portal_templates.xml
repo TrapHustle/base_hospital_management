@@ -62,7 +62,7 @@
     <!-- ============================================================
          NAVIGATION : SIDEBAR (desktop) + TIROIR BURGER (mobile)
          Le tiroir mobile est piloté 100 % en CSS via une case à cocher
-         cachée (#hms_drawer_cb) — aucun JavaScript requis.
+         cachée (#hms_drawer_cb), aucun JavaScript requis.
          ============================================================ -->
     <template id="hms_portal_nav" name="HMS Portal Nav">
         <!-- Interrupteur invisible du tiroir mobile (case à cocher) -->
@@ -273,7 +273,7 @@
                                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m-4-4 4 4 4-4M4 21h16"/></svg>Télécharger
                                                 </a>
                                             </t>
-                                            <t t-else=""><span class="hms-muted">—</span></t>
+                                            <t t-else=""><span class="hms-muted">-</span></t>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -375,7 +375,7 @@
                                         <td class="hms-muted"><t t-esc="'%.0f' % (r.price or 0)"/> FCFA</td>
                                         <td class="hms-tar">
                                             <t t-if="r.attachment"><a t-attf-href="/web/content/#{r.id}?model=lab.test.result&amp;field=attachment&amp;download=true" class="hms-link">PDF</a></t>
-                                            <t t-else=""><span class="hms-muted">—</span></t>
+                                            <t t-else=""><span class="hms-muted">-</span></t>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -519,7 +519,7 @@
                         Quitter
                     </a>
                     <div>
-                        <div style="font-weight:600">Téléconsultation — <t t-esc="op.doctor_id.doctor_id.name or 'Médecin'"/></div>
+                        <div style="font-weight:600">Téléconsultation avec <t t-esc="op.doctor_id.doctor_id.name or 'Médecin'"/></div>
                         <div style="font-size:12px;color:#6b7280">Réf. <t t-esc="op.op_reference"/> · <span t-field="op.op_date"/></div>
                     </div>
                     <span style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#059669;font-weight:600">
@@ -581,7 +581,7 @@
                     <div class="hms-section" t-if="o.prescription_ids">
                         <div class="hms-head">
                             <div>
-                                <h3>Ordonnance — <span t-field="o.op_date"/></h3>
+                                <h3>Ordonnance du <span t-field="o.op_date"/></h3>
                                 <div class="hms-sub">Prescrite par <t t-esc="o.doctor_id.doctor_id.name or 'Médecin'"/> · Réf. <t t-esc="o.op_reference"/></div>
                             </div>
                             <a t-att-href="'/my/prescriptions/%s/download' % o.id"
@@ -599,7 +599,7 @@
                                             <td><div class="hms-flexcell"><div class="hms-cellic" style="background:var(--hms-indigo-bg);color:var(--hms-indigo)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="8" width="18" height="8" rx="4"/><path d="M12 8v8"/></svg></div><span class="hms-ref"><t t-esc="line.medicine_id.name"/></span></div></td>
                                             <td><t t-esc="line.quantity"/></td>
                                             <td><span class="hms-badge purple" t-field="line.time"/></td>
-                                            <td class="hms-tar hms-muted"><t t-if="line.note"><span t-field="line.note"/></t><t t-else="">—</t></td>
+                                            <td class="hms-tar hms-muted"><t t-if="line.note"><span t-field="line.note"/></t><t t-else="">-</t></td>
                                         </tr>
                                     </tbody>
                                 </table>
